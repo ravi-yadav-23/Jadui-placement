@@ -1,50 +1,70 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-node_modules
-.pnp
+# Dependencies
+node_modules/
+.pnp/
 .pnp.js
 
-# testing
-coverage
-
-# next.js
+# Next.js & Build Outputs
 .next/
 out/
+build/
+dist/
 
-# production
-build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# local env files
-.env*.local
+# Local Environment Variables & Secrets
 .env
+.env*.local
+.env.local
 .env.development.local
 .env.test.local
 .env.production.local
+*.pem
+*.key
 
-# vercel
-.vercel
+# Testing & Coverage
+coverage/
+.nyc_output/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 .venv/
 venv/
 ENV/
+env/
 env.bak/
 venv.bak/
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor & OS Artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary & Scratch Files
+patch_*.py
+scratch/
+a.txt
+report.txt
+cleanup_manifesto.md
+code_audit_report.md
