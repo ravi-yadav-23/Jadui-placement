@@ -14,8 +14,11 @@ from .utils import (
     AnswerEvaluation,
     clamp_score,
     new_session_id,
-    safe_json_loads,
 )
+from app.shared.json_parser import extract_json_from_llm_response
+from app.shared.db_helpers import fetch_user_history
+from .repository import repository
+from .question_bank import question_bank
 
 
 class InterviewAIService:
@@ -41,11 +44,8 @@ class InterviewAIService:
         # 1. Prefer Gemini for Interview flows
         if settings.GEMINI_API_KEY:
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=settings.GEMINI_API_KEY)
-                model = genai.GenerativeModel(settings.GEMINI_MODEL)
-                response = model.generate_content(prompt)
-                return response.text or ""
+                from app.shared.llm_client import generate_text
+                return generate_text(prompt)
             except Exception as e:
                 print(f"Interview Gemini primary failed: {e}")
 
@@ -65,42 +65,11 @@ class InterviewAIService:
 
         return ""
 
-    def _fallback_question_set(self, role: str, skills: list[str], question_count: int) -> list[str]:
-        seed = ", ".join(skills[:3]) if skills else "your stack"
-        role_l = role.lower()
-        if "data" in role_l or "ml" in role_l:
-            base = [
-                f"Walk through an end-to-end ML project: problem framing, data quality, modeling choice, and how you measured offline vs online performance.",
-                f"Describe a time when a model or pipeline failed in production. What did you monitor, how did you find root cause, and what did you change?",
-                f"How would you design a feature store or training pipeline for {seed}? Call out failure modes and idempotency.",
-                "How do you balance fairness, latency, and interpretability when shipping a model to users?",
-                "Explain how you’d validate a new ranking or recommendation change before full rollout.",
-            ]
-        elif "pm" in role_l or "product" in role_l:
-            base = [
-                "Describe a product decision where data and user research conflicted. How did you prioritize and what shipped?",
-                "How do you turn a vague stakeholder request into a measurable outcome and roadmap?",
-                "Tell me about a launch that missed expectations. What leading indicators would you watch next time?",
-                "How do you run trade-off conversations between engineering, design, and GTM under time pressure?",
-                "What is your framework for saying no to a high-impact idea?",
-            ]
-        elif "system" in role_l or "network" in role_l:
-            base = [
-                f"Design a high‑availability API for {seed}. Cover scaling, failure domains, and how you’d test failure modes.",
-                "How would you design a rate limiter and cache layer for a viral traffic spike? Discuss consistency and hot keys.",
-                "Walk through a production incident: detection, mitigation, communication, and permanent fix.",
-                "Compare synchronous vs event-driven flows for a core user journey. When would you choose each?",
-                "How do you approach capacity planning and cost controls for a growing service?",
-            ]
-        else:
-            base = [
-                f"Walk me through a concrete system or feature you shipped: constraints, design, trade-offs, and how you measured success.",
-                f"Describe a hard bug or outage in production. How did you narrow it down, fix it, and prevent recurrence?",
-                f"How would you review a design for {seed}? What risks, failure modes, and tests would you insist on?",
-                "Tell me about a time you disagreed with a teammate on technical direction. How was it resolved?",
-                "What is your approach to testing, observability, and safe deployment for a critical path?",
-            ]
-        return base[:question_count]
+    def _fallback_question_set(self, role_title: str, skills: list[str] | None = None, question_count: int = 5) -> list[str]:
+        qs = question_bank.get_fallback_question_set(role_title)
+        if question_count and len(qs) > question_count:
+            return qs[:question_count]
+        return qs
 
     def _fallback_evaluation(self, question: str, answer: str, skills: list[str]) -> dict[str, Any]:
         answer_l = answer.lower()
@@ -165,29 +134,10 @@ class InterviewAIService:
         }
 
     def _get_session_row(self, session_id: str) -> dict[str, Any]:
-        supabase = get_supabase_admin_client()
-        resp = (
-            supabase.table("interview_sessions")
-            .select("*")
-            .eq("id", session_id)
-            .limit(1)
-            .execute()
-        )
-        rows = resp.data or []
-        if not rows:
-            raise HTTPException(status_code=404, detail="Interview session not found")
-        return rows[0]
+        return repository.get_session_row(session_id)
 
     def _get_answer_rows(self, session_id: str) -> list[dict[str, Any]]:
-        supabase = get_supabase_admin_client()
-        resp = (
-            supabase.table("interview_answers")
-            .select("*")
-            .eq("session_id", session_id)
-            .order("question_index")
-            .execute()
-        )
-        return resp.data or []
+        return repository.get_answer_rows(session_id)
 
     def start_interview(
         self,
@@ -196,6 +146,7 @@ class InterviewAIService:
         level: str = "not specified",
         interview_type: str = "mixed",
         question_count: int = 5,
+        user_id: str = None,
     ) -> dict[str, Any]:
         if not role:
             raise HTTPException(status_code=400, detail="role is required")
@@ -207,28 +158,27 @@ class InterviewAIService:
         questions: list[str]
         try:
             raw = self._llm_generate(prompt)
-            parsed = safe_json_loads(raw)
+            parsed = extract_json_from_llm_response(raw)
             questions = parsed.get("questions", [])
             if not isinstance(questions, list) or not all(isinstance(q, str) for q in questions):
                 raise ValueError("Invalid questions format")
             questions = questions[:question_count]
             if len(questions) < question_count:
-                questions.extend(self._fallback_question_set(role, skills, question_count - len(questions)))
+                questions.extend(self._fallback_question_set(role))
         except Exception:
-            questions = self._fallback_question_set(role, skills, question_count)
+            questions = self._fallback_question_set(role)
 
         session_id = new_session_id()
-        supabase = get_supabase_admin_client()
-        supabase.table("interview_sessions").insert(
-            {
-                "id": session_id,
-                "role": role,
-                "skills": skills,
-                "level": level,
-                "interview_type": interview_type,
-                "questions": questions,
-            }
-        ).execute()
+        payload = {
+            "id": session_id,
+            "role": role,
+            "skills": skills,
+            "level": level,
+            "interview_type": interview_type,
+            "questions": questions,
+            "user_id": user_id,
+        }
+        repository.create_session(payload)
         return {
             "session_id": session_id,
             "role": role,
@@ -238,8 +188,10 @@ class InterviewAIService:
             "questions": questions,
         }
 
-    def submit_answer(self, session_id: str, question_index: int, answer: str) -> AnswerEvaluation:
+    def submit_answer(self, session_id: str, question_index: int, answer: str, user_id: str) -> AnswerEvaluation:
         session = self._get_session_row(session_id)
+        if session.get("user_id") and session.get("user_id") != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
         questions = session.get("questions") or []
         if question_index < 0 or question_index >= len(questions):
             raise HTTPException(status_code=400, detail="Invalid question_index")
@@ -256,7 +208,7 @@ class InterviewAIService:
 
         try:
             raw = self._llm_generate(prompt)
-            data = safe_json_loads(raw)
+            data = extract_json_from_llm_response(raw)
         except Exception:
             data = self._fallback_evaluation(question, answer, session.get("skills") or [])
 
@@ -288,24 +240,24 @@ class InterviewAIService:
             question=question,
             answer=answer.strip(),
         )
-        get_supabase_admin_client().table("interview_answers").insert(
-            {
-                "session_id": session_id,
-                "question_index": question_index,
-                "question": question,
-                "answer": evaluation.answer,
-                "correctness": evaluation.correctness,
-                "clarity": evaluation.clarity,
-                "relevance": evaluation.relevance,
-                "overall": evaluation.overall,
-                "feedback": evaluation.feedback,
-                "suggestions": evaluation.suggestions,
-            }
-        ).execute()
+        repository.save_answer({
+            "session_id": session_id,
+            "question_index": question_index,
+            "question": question,
+            "answer": evaluation.answer,
+            "correctness": evaluation.correctness,
+            "clarity": evaluation.clarity,
+            "relevance": evaluation.relevance,
+            "overall": evaluation.overall,
+            "feedback": evaluation.feedback,
+            "suggestions": evaluation.suggestions,
+        })
         return evaluation
 
-    def get_result(self, session_id: str) -> dict[str, Any]:
+    def get_result(self, session_id: str, user_id: str) -> dict[str, Any]:
         session = self._get_session_row(session_id)
+        if session.get("user_id") and session.get("user_id") != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
         answers = self._get_answer_rows(session_id)
 
         if not answers:
@@ -359,7 +311,7 @@ class InterviewAIService:
             }
             
         # 1. Simple Scoring Logic based on word count and technicality
-        text_blob = " ".join([m.get("text", "") for m in transcript]).lower()
+        text_blob = " ".join([m.get("content") or m.get("text", "") for m in transcript]).lower()
         word_count = len(text_blob.split())
         
         # Heuristic: Depth and Clarity
@@ -388,21 +340,8 @@ class InterviewAIService:
             
         return feedback
 
-    def get_history(self, user_id: str | None = None, limit: int = 10) -> list[dict[str, Any]]:
-        limit = max(1, min(limit, 50))
-        supabase = get_supabase_admin_client()
-        
-        query = supabase.table("interview_sessions").select("*")
-        if user_id:
-            query = query.eq("user_id", user_id)
-            
-        sessions_resp = (
-            query
-            .order("created_at", desc=True)
-            .limit(limit)
-            .execute()
-        )
-        sessions = sessions_resp.data or []
+    def get_history(self, user_id: str, limit: int = 10) -> list[dict[str, Any]]:
+        sessions = repository.get_history(user_id, limit)
         history: list[dict[str, Any]] = []
         for session in sessions:
             session_id = session.get("id")

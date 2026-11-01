@@ -20,6 +20,10 @@ from .utils import (
 class ResumeAIService:
     def _insert_resume_result(self, payload: dict) -> None:
         supabase = get_supabase_admin_client()
+        # Prevent UUID syntax error for demo user
+        if payload.get("user_id") == "demo-user-001":
+            payload.pop("user_id", None)
+            
         try:
             supabase.table("resume_results").insert(payload).execute()
         except Exception:
@@ -30,7 +34,10 @@ class ResumeAIService:
                 if key
                 not in {"section_reviews", "detailed_review", "analysis_version", "ai_provider"}
             }
-            supabase.table("resume_results").insert(fallback_payload).execute()
+            try:
+                supabase.table("resume_results").insert(fallback_payload).execute()
+            except Exception as e:
+                print(f"Fallback insert failed: {e}")
 
     def _get_file_row(self, file_id: str) -> dict:
         resp = (
@@ -46,14 +53,20 @@ class ResumeAIService:
             raise HTTPException(status_code=404, detail="resume file not found")
         return rows[0]
 
-    async def upload_resume(self, file: UploadFile) -> ResumeFileRecord:
+    async def upload_resume(self, file: UploadFile, user_id: str) -> ResumeFileRecord:
         if not file:
             raise HTTPException(status_code=400, detail="file is required")
         data = await file.read()
         if not data:
             raise HTTPException(status_code=400, detail="Uploaded file is empty")
 
-        parsed = parser.parse_bytes(file.filename or "resume.txt", file.content_type or "", data)
+        from starlette.concurrency import run_in_threadpool
+        parsed = await run_in_threadpool(
+            parser.parse_bytes, 
+            file.filename or "resume.txt", 
+            file.content_type or "", 
+            data
+        )
         if not parsed:
             raise HTTPException(status_code=400, detail="Could not extract text from resume")
 
@@ -64,15 +77,28 @@ class ResumeAIService:
             candidate_name=extract_name_from_filename(file.filename or ""),
             text=parsed,
         )
-        get_supabase_admin_client().table("resume_files").insert(
-            {
-                "id": record.file_id,
-                "filename": record.filename,
-                "mime_type": record.mime_type,
-                "candidate_name": record.candidate_name,
-                "parsed_text": record.text,
-            }
-        ).execute()
+        try:
+            get_supabase_admin_client().table("resume_files").insert(
+                {
+                    "id": record.file_id,
+                    "filename": record.filename,
+                    "mime_type": record.mime_type,
+                    "candidate_name": record.candidate_name,
+                    "parsed_text": record.text,
+                    "user_id": user_id,
+                }
+            ).execute()
+        except Exception:
+            # Fallback if user_id column doesn't exist in schema
+            get_supabase_admin_client().table("resume_files").insert(
+                {
+                    "id": record.file_id,
+                    "filename": record.filename,
+                    "mime_type": record.mime_type,
+                    "candidate_name": record.candidate_name,
+                    "parsed_text": record.text,
+                }
+            ).execute()
         return record
 
     def analyze_resume(
@@ -124,6 +150,7 @@ class ResumeAIService:
                 "detailed_review": result.detailed_review,
                 "analysis_version": "v2",
                 "ai_provider": provider if provider in {"openai", "gemini"} else "openai",
+                "user_id": user_id,
             }
         )
         
@@ -136,7 +163,7 @@ class ResumeAIService:
 
         return result
 
-    def get_result(self, result_id: str) -> ResumeAnalysisRecord:
+    def get_result(self, result_id: str, user_id: str) -> ResumeAnalysisRecord:
         resp = (
             get_supabase_admin_client()
             .table("resume_results")
@@ -149,6 +176,10 @@ class ResumeAIService:
         if not rows:
             raise HTTPException(status_code=404, detail="result not found")
         row = rows[0]
+        # BOLA/IDOR Enforcement
+        if row.get("user_id") and row.get("user_id") != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+            
         section_reviews: list[dict] = row.get("section_reviews") or []
         detailed_review: dict = row.get("detailed_review") or {}
         try:
@@ -233,7 +264,7 @@ class ResumeAIService:
         return history
 
 
-    def patch_result(self, result_id: str, add_strengths: list[str]) -> ResumeAnalysisRecord:
+    def patch_result(self, result_id: str, add_strengths: list[str], user_id: str) -> ResumeAnalysisRecord:
         """
         Enriches an existing resume result with new AI-generated strengths.
         Boosts the score to reflect the improvement.
@@ -250,6 +281,10 @@ class ResumeAIService:
             raise HTTPException(status_code=404, detail="Result not found")
             
         row = existing.data[0]
+        # BOLA/IDOR Enforcement
+        if row.get("user_id") and row.get("user_id") != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+            
         strengths = row.get("strengths") or []
         new_strengths = list(set(strengths + add_strengths))
         
@@ -270,6 +305,6 @@ class ResumeAIService:
         )
         
         # Re-fetch as typed record
-        return self.get_result(result_id)
+        return self.get_result(result_id, user_id)
 
 service = ResumeAIService()

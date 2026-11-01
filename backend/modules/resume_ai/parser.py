@@ -65,7 +65,13 @@ class ResumeParser:
             raise HTTPException(status_code=500, detail="python-docx dependency missing") from exc
 
         document = docx.Document(bytes_to_stream(data))
-        text = " ".join(para.text for para in document.paragraphs if para.text)
+        parts = [para.text for para in document.paragraphs if para.text]
+        for table in document.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    if cell.text.strip():
+                        parts.append(cell.text.strip())
+        text = " ".join(parts)
         return normalize_space(text)
 
 

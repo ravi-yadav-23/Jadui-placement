@@ -41,9 +41,8 @@ class WorkshopService:
     async def _plan_with_ai(self, skill: str, student_count: int) -> dict[str, Any]:
         """Uses AI to generate a title, description, and curriculum for a skill cluster."""
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(settings.GEMINI_MODEL)
+            from app.shared.llm_client import generate_text_async
+            from app.shared.json_parser import extract_json_from_llm_response
             
             prompt = f"""
             Generate a training workshop plan for a group of {student_count} students who are struggling with "{skill}".
@@ -57,10 +56,8 @@ class WorkshopService:
             }}
             """
             
-            response = await model.generate_content_async(prompt)
-            raw = response.text.strip()
-            if "```json" in raw: raw = raw.split("```json")[1].split("```")[0].strip()
-            return json.loads(raw)
+            raw = await generate_text_async(prompt)
+            return extract_json_from_llm_response(raw)
         except Exception:
             return {
                 "title": f"{skill} Mastery Workshop",
@@ -110,8 +107,19 @@ class WorkshopService:
             }
             tasks = state.get("tasks", [])
             tasks.insert(0, new_task)
-            system_service.save_state(user_id=user_id, tasks=tasks)
-        except Exception:
-            pass
+            system_service.save_state(
+                user_id=user_id,
+                tasks=tasks,
+                roadmap=state.get("roadmap", []),
+                notifications=state.get("notifications", []),
+                skill_gaps=state.get("skill_gaps", []),
+                chat_context=state.get("chat_context", {}),
+                chat_history=state.get("chat_history", []),
+                chat_sessions=state.get("chat_sessions", []),
+                active_chat_session_id=state.get("active_chat_session_id", ""),
+            )
+        except Exception as exc:
+            import logging
+            logging.getLogger("admin_ai").error(f"Failed to notify student {user_id} of workshop: {exc}")
 
 workshop_service = WorkshopService()

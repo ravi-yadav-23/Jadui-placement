@@ -13,25 +13,20 @@ class MentorService:
         if not api_key:
             raise HTTPException(status_code=503, detail="GEMINI_API_KEY not configured on backend")
 
-        try:
-            import google.generativeai as genai  # type: ignore
-        except ImportError as exc:  # pragma: no cover
-            raise HTTPException(status_code=500, detail="Gemini SDK not installed") from exc
-
-        genai.configure(api_key=api_key)
-        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
-        gen_cfg = {
-            "temperature": float(os.getenv("MENTOR_TEMPERATURE", "0.88")),
-            "max_output_tokens": int(os.getenv("MENTOR_MAX_OUTPUT_TOKENS", "2048")),
-        }
-        model = genai.GenerativeModel(model_name, generation_config=gen_cfg)
+        from app.shared.llm_client import generate_text
 
         full_prompt = self._build_prompt(system_prompt, history, message)
-        response = model.generate_content(full_prompt)
-        text = (response.text or "").strip()
-        if not text:
-            raise HTTPException(status_code=502, detail="Empty model response")
-        return text
+        try:
+            text = generate_text(
+                full_prompt,
+                temperature=settings.MENTOR_TEMPERATURE,
+                max_output_tokens=settings.MENTOR_MAX_OUTPUT_TOKENS
+            ).strip()
+            if not text:
+                raise HTTPException(status_code=502, detail="Empty model response")
+            return text
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Generation failed: {e}")
 
     def _build_prompt(self, system_prompt: str, history: list[dict[str, Any]], message: str) -> str:
         lines: list[str] = [

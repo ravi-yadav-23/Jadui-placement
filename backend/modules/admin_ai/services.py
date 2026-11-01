@@ -72,14 +72,14 @@ class AdminService:
         ).data or {}
         
         # 1. Latest Resume Results
-        resumes = resume_service.get_history(limit=1)
+        resumes = resume_service.get_history(user_id=user_id, limit=1)
         latest_resume = resumes[0] if resumes else None
         
         # 2. Top PR Reviews
         prs = github_service.get_history(user_id, limit=3)
         
         # 3. Top Interview Outcomes
-        interviews = interview_service.get_history(limit=3)
+        interviews = interview_service.get_history(user_id=user_id, limit=3)
         
         # 4. Technical Footprint (GitHub Stats)
         github_stats = None
@@ -123,23 +123,26 @@ class AdminService:
         get_supabase_admin_client().table("profiles").update({"tpo_notes": notes}).eq("id", user_id).execute()
 
     def rank_students_for_job(self, query: str) -> list[dict[str, Any]]:
-        """AI-assisted ranking of students for a specific tech stack/query."""
+        """AI-assisted ranking of students based on tech stack query matching."""
         students = self.get_all_students()
-        query_terms = [q.strip().lower() for q in query.split(",")]
+        query_terms = [q.strip().lower() for q in query.split(",") if q.strip()]
         
         ranked = []
         for s in students:
-            # Match against resume skills if possible
-            match_score = 0
-            # Simulating deep match logic
-            if s['avgScore'] > 70: match_score += 50
+            matched_terms = []
+            student_skills = [str(sk).lower() for sk in (s.get("skills") or s.get("top_skills") or [])]
+            searchable = " ".join(student_skills + [s.get("name", "").lower(), s.get("target_role", "").lower()])
+            for term in query_terms:
+                if term in searchable:
+                    matched_terms.append(term)
             
-            # Simple term matching in name/metadata for now
-            # In V3 we use LLM embeddings
+            term_ratio = (len(matched_terms) / len(query_terms)) if query_terms else 1.0
+            relevance = int(term_ratio * 70 + (s.get("avgScore", 0) * 0.3))
             ranked.append({
                 **s,
-                "relevance": match_score,
-                "match_details": f"Matches {len(query_terms)} requirements"
+                "relevance": min(100, relevance),
+                "matched_terms": matched_terms,
+                "match_details": f"Matched {len(matched_terms)} of {len(query_terms)} requirements" if query_terms else "Cohort baseline",
             })
             
         return sorted(ranked, key=lambda x: -x['relevance'])
@@ -180,19 +183,12 @@ class AdminService:
             client = get_supabase_admin_client()
             
             # 1. Total Students
-            profiles = client.table("profiles").select("id, is_shortlisted").eq("role", "student").execute().data or []
+            profiles = client.table("profiles").select("id, is_shortlisted, resume_score").eq("role", "student").execute().data or []
             total_students = len(profiles)
             shortlisted_students = len([p for p in profiles if p.get("is_shortlisted")])
             
-            # 2. Avg Readiness (Expensive but accurate)
-            readiness_scores = []
-            for p in profiles[:50]: # Limit sampling for performance in dev
-                try:
-                    radar = intelligence_service.get_readiness_radar(p['id'])
-                    if radar:
-                        readiness_scores.append(sum(radar.values()) / 4)
-                except Exception:
-                    continue
+            # 2. Avg Readiness (Fast: uses cached resume_score, avoids N+1 radar calls)
+            readiness_scores = [p.get("resume_score") for p in profiles if p.get("resume_score") is not None]
             
             avg_readiness = int(sum(readiness_scores) / len(readiness_scores)) if readiness_scores else 0
             

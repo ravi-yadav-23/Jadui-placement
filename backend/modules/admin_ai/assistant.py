@@ -21,7 +21,7 @@ class TPOAssistantService:
                 {
                     "name": s['name'],
                     "avg_score": s['avgScore'],
-                    "radar": s['radar']
+                    "avg_score": s.get('avgScore', 0)
                 } for s in top_performers
             ],
             # To avoid token bloat, we don't send every student, 
@@ -37,9 +37,7 @@ class TPOAssistantService:
         
         # Prefer Gemini for batch analysis
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(settings.GEMINI_MODEL)
+            from app.shared.llm_client import generate_text_async
             
             system_prompt = f"""
             You are the "Jadui TPO Assistant" — an elite AI advisor for the Training & Placement Officer.
@@ -56,8 +54,8 @@ class TPOAssistantService:
             """
             
             full_prompt = f"System: {system_prompt}\n\nUser Question: {query}"
-            response = await model.generate_content_async(full_prompt)
-            return response.text.strip()
+            response_text = await generate_text_async(full_prompt)
+            return response_text.strip()
             
         except Exception as e:
             print(f"TPO Assistant Error: {e}")

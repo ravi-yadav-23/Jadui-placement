@@ -7,8 +7,11 @@ import os
 from typing import Any
 from fastapi import HTTPException
 from app.core.config import settings
-from app.core.supabase_client import get_supabase_admin_client
+from app.shared.json_parser import extract_json_from_llm_response
+from app.shared.llm_client import generate_text_async
+from app.shared.db_helpers import fetch_user_history
 from .prompts import code_review_prompt, repo_analysis_prompt
+from .repository import repository
 
 GITHUB_API = "https://api.github.com"
 
@@ -62,24 +65,7 @@ class GitHubReviewService:
 
             return {"files": files, "readme_snippet": readme, "owner": owner, "repo": repo}
 
-    def _parse_ai_json(self, raw_text: str) -> dict[str, Any]:
-        """Robustly extracts JSON from AI response."""
-        try:
-            cleaned = raw_text.strip()
-            if "```json" in cleaned:
-                cleaned = cleaned.split("```json")[1].split("```")[0].strip()
-            elif "```" in cleaned:
-                cleaned = cleaned.split("```")[1].split("```")[0].strip()
-            return json.loads(cleaned)
-        except Exception:
-            # Last ditch attempt: find first { and last }
-            try:
-                start = raw_text.find("{")
-                end = raw_text.rfind("}")
-                if start != -1 and end != -1:
-                    return json.loads(raw_text[start:end+1])
-            except: pass
-            raise HTTPException(status_code=500, detail="AI Analysis failed to generate a valid JSON review.")
+    # _parse_ai_json replaced by shared json_parser
 
     async def analyze_diff(self, diff_text: str) -> dict[str, Any]:
         """Uses AI to review the diff and generate a scorecard."""
@@ -88,11 +74,8 @@ class GitHubReviewService:
 
         prompt = code_review_prompt.replace("{{DIFF_TEXT}}", diff_text[:12000])
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(settings.GEMINI_MODEL)
-            response = await model.generate_content_async(prompt)
-            return self._parse_ai_json(response.text)
+            raw = await generate_text_async(prompt)
+            return extract_json_from_llm_response(raw)
         except Exception as e:
             print(f"Code Review AI failed: {e}")
             raise HTTPException(status_code=500, detail=str(e))
@@ -101,42 +84,21 @@ class GitHubReviewService:
         """Project-wide architecture and quality audit."""
         prompt = repo_analysis_prompt.replace("{{REPO_METADATA}}", json.dumps(metadata, indent=2))
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(settings.GEMINI_MODEL)
-            response = await model.generate_content_async(prompt)
-            return self._parse_ai_json(response.text)
+            raw = await generate_text_async(prompt)
+            return extract_json_from_llm_response(raw)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     def save_review(self, user_id: str, owner: str, repo: str, pr_number: int, review: dict[str, Any]) -> dict[str, Any]:
-        payload = {
-            "user_id": user_id, "repo_owner": owner, "repo_name": repo, "pr_number": pr_number,
-            "score": review.get("score", 0), "summary": review.get("summary"),
-            "strengths": review.get("strengths", []), "bugs": review.get("bugs", []),
-            "security_risks": review.get("security_risks", []), "ideal_code": review.get("ideal_code"),
-        }
-        resp = get_supabase_admin_client().table("github_pr_reviews").insert(payload).execute()
-        return resp.data[0] if resp.data else {}
+        return repository.save_review(user_id, owner, repo, pr_number, review)
 
     def save_repo_analysis(self, user_id: str, owner: str, repo: str, analysis: dict[str, Any]) -> dict[str, Any]:
-        payload = {
-            "user_id": user_id, "repo_owner": owner, "repo_name": repo,
-            "architecture_score": analysis.get("architecture_score", 0),
-            "tech_stack": analysis.get("tech_stack", []),
-            "summary": analysis.get("summary"),
-            "design_patterns": analysis.get("design_patterns", []),
-            "technical_debt": analysis.get("technical_debt", []),
-        }
-        resp = get_supabase_admin_client().table("github_repo_analyses").insert(payload).execute()
-        return resp.data[0] if resp.data else {}
+        return repository.save_repo_analysis(user_id, owner, repo, analysis)
 
     def get_history(self, user_id: str, limit: int = 10) -> list[dict[str, Any]]:
-        resp = get_supabase_admin_client().table("github_pr_reviews").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(limit).execute()
-        return resp.data or []
+        return fetch_user_history("github_pr_reviews", user_id, limit)
 
     def get_repo_history(self, user_id: str, limit: int = 10) -> list[dict[str, Any]]:
-        resp = get_supabase_admin_client().table("github_repo_analyses").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(limit).execute()
-        return resp.data or []
+        return fetch_user_history("github_repo_analyses", user_id, limit)
 
 service = GitHubReviewService()

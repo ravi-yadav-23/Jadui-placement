@@ -7,6 +7,7 @@ from .services import admin_service
 from .assistant import assistant_service
 from .workshops import workshop_service
 import os
+from app.core.security import get_current_admin
 
 router = APIRouter(tags=["admin-ai"])
 
@@ -20,7 +21,7 @@ def verify_admin_auth(payload: AdminLoginRequest, request: Request):
     return {"status": "success", "token": expected}
 
 @router.get("/admin/workshops/suggestions")
-async def get_workshop_suggestions():
+async def get_workshop_suggestions(user: dict = Depends(get_current_admin)):
     """AI scans all students' gaps and proposes workshops."""
     try:
         suggestions = await workshop_service.generate_suggestions()
@@ -29,7 +30,7 @@ async def get_workshop_suggestions():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/admin/workshops/schedule")
-def schedule_workshop(payload: dict):
+def schedule_workshop(payload: dict, user: dict = Depends(get_current_admin)):
     """Confirm a suggested workshop and notify students."""
     try:
         saved = workshop_service.schedule_workshop(payload)
@@ -42,7 +43,7 @@ class AssistantChatRequest(BaseModel):
     history: list[dict] = []
 
 @router.post("/admin/students/{user_id}/shortlist")
-def toggle_shortlist(user_id: str):
+def toggle_shortlist(user_id: str, user: dict = Depends(get_current_admin)):
     """Flags/unflags a student for placement drives."""
     try:
         status = admin_service.toggle_shortlist(user_id)
@@ -51,7 +52,7 @@ def toggle_shortlist(user_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/admin/students/{user_id}/notes")
-def update_tpo_notes(user_id: str, payload: dict):
+def update_tpo_notes(user_id: str, payload: dict, user: dict = Depends(get_current_admin)):
     """Saves private TPO feedback."""
     try:
         admin_service.update_tpo_notes(user_id, payload.get("notes", ""))
@@ -60,7 +61,7 @@ def update_tpo_notes(user_id: str, payload: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/admin/assistant/chat")
-async def chat_with_assistant(payload: AssistantChatRequest):
+async def chat_with_assistant(payload: AssistantChatRequest, user: dict = Depends(get_current_admin)):
     """Interactive AI chat for the TPO based on batch data."""
     try:
         response = await assistant_service.generate_response(payload.query, payload.history)
@@ -69,7 +70,7 @@ async def chat_with_assistant(payload: AssistantChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/students/{id}/dossier")
-def get_student_dossier(id: str):
+def get_student_dossier(id: str, user: dict = Depends(get_current_admin)):
     """Fetches a detailed hiring dossier for a specific student."""
     try:
         return {"dossier": admin_service.get_student_dossier(id)}
@@ -77,7 +78,7 @@ def get_student_dossier(id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/simulate/hiring")
-def simulate_hiring(q: str = ""):
+def simulate_hiring(q: str = "", user: dict = Depends(get_current_admin)):
     """Ranks students based on a job stack query."""
     try:
         return {"ranked": admin_service.rank_students_for_job(q)}
@@ -89,7 +90,7 @@ class InterveneTaskRequest(BaseModel):
     title: str
 
 @router.post("/admin/intervene/task")
-def assign_tpo_task(payload: InterveneTaskRequest):
+def assign_tpo_task(payload: InterveneTaskRequest, user: dict = Depends(get_current_admin)):
     """Allows Admin to push a mandatory task to a student's dashboard."""
     try:
         return {"state": admin_service.assign_tpo_task(payload.user_id, payload.title)}
@@ -97,7 +98,7 @@ def assign_tpo_task(payload: InterveneTaskRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/students")
-def get_all_students():
+def get_all_students(user: dict = Depends(get_current_admin)):
     """Fetches the complete student roster for the TPO dashboard."""
     try:
         return {"students": admin_service.get_all_students()}
@@ -105,7 +106,7 @@ def get_all_students():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/stats")
-def get_admin_stats():
+def get_admin_stats(user: dict = Depends(get_current_admin)):
     """Provides aggregate metrics for the TPO command center."""
     try:
         return {"stats": admin_service.get_dashboard_stats()}

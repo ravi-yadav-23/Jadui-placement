@@ -163,15 +163,6 @@ def _user_to_client_shape(u: dict[str, Any]) -> dict[str, Any]:
 def _maybe_gemini_insights(profile: dict[str, Any]) -> str | None:
     if os.getenv("GITHUB_PROFILE_DISABLE_AI", "").lower() in ("1", "true", "yes"):
         return None
-    if not os.getenv("GEMINI_API_KEY"):
-        return None
-    try:
-        import google.generativeai as genai  # type: ignore
-    except ImportError:
-        return None
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
-    model = genai.GenerativeModel(model_name)
     summary = {
         "login": profile.get("user", {}).get("login"),
         "quarterCommitCount": profile.get("quarterCommitCount"),
@@ -191,9 +182,9 @@ Provide a sharp, professional assessment for a "Jadui Placement" profile:
 
 Keep it to 5 concise bullet points. Use **bolding** for key skills and metrics. Plain text output."""
     try:
-        resp = model.generate_content(prompt)
-        # Some responses are blocked by safety filters, accessing .text will raise an error
-        return (resp.text or "").strip() or None
+        from app.shared.llm_client import generate_text
+        resp_text = generate_text(prompt)
+        return resp_text.strip() or None
     except Exception as e:
         print(f"Gemini insights failed (likely safety block): {e}")
         return None
