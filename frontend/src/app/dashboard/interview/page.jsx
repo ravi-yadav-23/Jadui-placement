@@ -9,6 +9,7 @@ import FeedbackPanel from '@/features/interview/FeedbackPanel'
 import InterviewCard from '@/features/interview/InterviewCard'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/context/AppContext'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const STAGES = { select: 'select', interview: 'interview', feedback: 'feedback' }
 
@@ -93,7 +94,7 @@ export default function InterviewPage() {
       const meta = ROLE_META[role] || { label: role, techstack: '' }
       let generatedQuestions = []
       try {
-        const response = await fetch('/api/interview/generate', {
+        const response = await fetchWithAuth('/api/interview/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -222,7 +223,7 @@ export default function InterviewPage() {
 
     // Send messages to backend to generate actual AI feedback scorecard
     try {
-      const response = await fetch('/api/interview/feedback', {
+      const response = await fetchWithAuth('/api/interview/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

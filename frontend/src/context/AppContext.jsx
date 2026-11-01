@@ -2,7 +2,9 @@
 
 import { createContext, useContext, useReducer, useEffect, useRef, useState } from 'react'
 import { getCurrentUser } from '@/lib/supabase'
-
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
+import { ACTIONS as MOCK_ACTIONS, seedMockProgress } from '@/lib/mockData';
+import { useStatePersistence } from '@/hooks/useStatePersistence';
 // ─── Initial State ─────────────────────────────────────────────────────────────
 
 const initialState = {
@@ -193,51 +195,24 @@ export function AppProvider({ children }) {
            // initialState is updated via SET_USER payload logic
         }
         if (user) {
-          const res = await fetch(`/api/system/insights?user_id=${encodeURIComponent(user.id || 'demo-user')}`, { cache: 'no-store' })
+          const res = await fetchWithAuth(`/api/system/insights?user_id=${encodeURIComponent(user.id || 'demo-user')}`, { cache: 'no-store' })
           if (res.ok) {
             const data = await res.json()
             dispatch({ type: ACTIONS.SET_SYSTEM_INSIGHTS, payload: data })
+            setReadyToPersist(true) // Only allow persistence when verified real remote state loaded!
           } else {
-            seedMockProgress(dispatch)
+            seedMockProgress(dispatch, ACTIONS)
+            // DO NOT set readyToPersist to true on fallback mock data to prevent remote DB overwrites
           }
         }
       } catch {
         dispatch({ type: ACTIONS.SET_LOADING, payload: false })
-      } finally {
-        setReadyToPersist(true)
       }
     }
     loadUser()
   }, [])
 
-  useEffect(() => {
-    if (!readyToPersist || !state.user?.id) return
-    if (persistTimerRef.current) clearTimeout(persistTimerRef.current)
-    persistTimerRef.current = setTimeout(async () => {
-      try {
-        await fetch('/api/system/state', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: state.user.id,
-            tasks: state.tasks,
-            roadmap: state.roadmap,
-            notifications: state.notifications,
-            skill_gaps: state.skillGaps,
-            chat_context: state.chatContext || {},
-            chat_history: state.chatHistory || [],
-            chat_sessions: state.chatSessions || [],
-            active_chat_session_id: state.activeChatSessionId || '',
-          }),
-        })
-      } catch {
-        // no-op persistence fallback
-      }
-    }, 500)
-    return () => {
-      if (persistTimerRef.current) clearTimeout(persistTimerRef.current)
-    }
-  }, [readyToPersist, state.user?.id, state.tasks, state.roadmap, state.notifications, state.skillGaps, state.chatContext, state.chatHistory, state.chatSessions, state.activeChatSessionId])
+  useStatePersistence(readyToPersist, state)
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
@@ -252,38 +227,4 @@ export function useApp() {
   const ctx = useContext(AppContext)
   if (!ctx) throw new Error('useApp must be used inside <AppProvider>')
   return ctx
-}
-
-// ─── Mock data seeder for development / demo ───────────────────────────────────
-
-function seedMockProgress(dispatch) {
-  dispatch({
-    type: ACTIONS.SET_PROGRESS,
-    payload: {
-      readinessScore: 72,
-      taskCompletion: 58,
-      interviewScore: 81,
-      streak:         5,
-      skillData: [
-        { name: 'DSA',          level: 65 },
-        { name: 'System Design',level: 48 },
-        { name: 'React',        level: 82 },
-        { name: 'Python',       level: 74 },
-        { name: 'SQL',          level: 61 },
-        { name: 'Communication',level: 78 },
-      ],
-    },
-  })
-
-  dispatch({
-    type: ACTIONS.SET_TASKS,
-    payload: [
-      { id: '1', title: 'Solve 3 LeetCode Medium problems', category: 'DSA',     completed: true,  due: 'Today' },
-      { id: '2', title: 'Complete System Design chapter 4',  category: 'Design',  completed: false, due: 'Today' },
-      { id: '3', title: 'Mock interview — Behavioral round', category: 'Interview', completed: false, due: 'Today' },
-      { id: '4', title: 'Build REST API with FastAPI',       category: 'Project', completed: true,  due: 'Yesterday' },
-      { id: '5', title: 'Review DBMS concepts',              category: 'Core',    completed: false, due: 'Tomorrow' },
-      { id: '6', title: 'Update LinkedIn profile summary',   category: 'Career',  completed: false, due: 'Tomorrow' },
-    ],
-  })
 }

@@ -9,6 +9,7 @@ import { Bell, Search, Menu, X, Zap,
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/supabase'
 import { useApp, ACTIONS } from '@/context/AppContext'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const PAGE_TITLES = {
   '/dashboard':          'Overview',
@@ -46,7 +47,7 @@ export default function TopBar() {
   const markAsRead = async (notificationId) => {
     dispatch({ type: ACTIONS.MARK_NOTIFICATION_READ, payload: notificationId })
     try {
-      await fetch('/api/system/notifications/read', {
+      await fetchWithAuth('/api/system/notifications/read', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

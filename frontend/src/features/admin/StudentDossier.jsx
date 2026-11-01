@@ -7,6 +7,8 @@ import {
   Mic2, FileText, Zap, ChevronRight, MessageSquare
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
+import { TPONotes, Section, NoData, Intervention } from './components/DossierComponents'
 
 export default function StudentDossier({ studentId, onClose }) {
   const [dossier, setDossier] = useState(null)
@@ -16,7 +18,7 @@ export default function StudentDossier({ studentId, onClose }) {
     async function fetchDossier() {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
       try {
-        const res = await fetch(`${backendUrl}/api/admin/students/${studentId}/dossier`)
+        const res = await fetchWithAuth(`${backendUrl}/api/admin/students/${studentId}/dossier`)
         const data = await res.json()
         setDossier(data.dossier)
       } catch (err) {
@@ -35,12 +37,20 @@ export default function StudentDossier({ studentId, onClose }) {
      </div>
   )
 
+  if (!dossier) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 gap-4">
+        <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Dossier unavailable</p>
+      </div>
+    )
+  }
+
   const { radar, latest_resume, top_prs, top_interviews, github_stats, profile, overall_tier } = dossier || {}
 
   const handleToggleShortlist = async () => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     try {
-      const res = await fetch(`${backendUrl}/api/admin/students/${studentId}/shortlist`, { method: 'POST' })
+      const res = await fetchWithAuth(`${backendUrl}/api/admin/students/${studentId}/shortlist`, { method: 'POST' })
       if (res.ok) {
         const data = await res.json()
         setDossier(prev => ({ ...prev, profile: { ...prev.profile, is_shortlisted: data.is_shortlisted } }))
@@ -55,7 +65,7 @@ export default function StudentDossier({ studentId, onClose }) {
          <div className="flex items-center gap-4">
             <div className="relative">
                <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-neutral-950 font-black text-xl">
-                  {dossier.user_id[0]?.toUpperCase()}
+                  {dossier?.user_id?.[0]?.toUpperCase() || 'S'}
                </div>
                {profile?.is_shortlisted && (
                  <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-1 border-2 border-neutral-900">
@@ -237,110 +247,6 @@ export default function StudentDossier({ studentId, onClose }) {
          {/* Internal TPO Section */}
          <TPONotes studentId={studentId} initialNotes={profile?.tpo_notes} />
       </div>
-    </div>
-  )
-}
-
-function TPONotes({ studentId, initialNotes }) {
-  const [notes, setNotes] = useState(initialNotes || '')
-  const [isSaving, setIsSaving] = useState(false)
-
-  const handleSave = async () => {
-    setIsSaving(true)
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-    try {
-      await fetch(`${backendUrl}/api/admin/students/${studentId}/notes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes })
-      })
-    } catch { /* error */ }
-    setIsSaving(false)
-  }
-
-  return (
-    <div className="pt-10 border-t border-neutral-800 space-y-4">
-       <div className="flex items-center justify-between">
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-neutral-500">Internal TPO Remarks</h4>
-          <button 
-            onClick={handleSave} 
-            disabled={isSaving}
-            className="text-[10px] font-black text-amber-500 uppercase hover:underline"
-          >
-            {isSaving ? 'Saving...' : 'Save Notes'}
-          </button>
-       </div>
-       <textarea 
-         value={notes}
-         onChange={(e) => setNotes(e.target.value)}
-         placeholder="Enter private observations (FAANG potential, soft-skill gaps, etc.)"
-         className="w-full h-32 bg-neutral-900 border border-neutral-800 rounded-2xl p-4 text-xs text-neutral-400 outline-none focus:border-amber-500/30 font-medium resize-none"
-       />
-       <p className="text-[10px] text-neutral-600 italic">⚠️ These notes are private and NOT visible to the student.</p>
-    </div>
-  )
-}
-
-function Section({ title, icon: Icon, children }) {
-  return (
-    <div className="space-y-4">
-       <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-600">
-          <Icon className="w-4 h-4" /> {title}
-       </h4>
-       {children}
-    </div>
-  )
-}
-
-function NoData() {
-  return <p className="text-xs text-neutral-600 italic">No data synced for this student yet.</p>
-}
-
-function Intervention({ studentId }) {
-  const [taskText, setTaskText] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-
-  const handleAssign = async () => {
-    if (!taskText) return
-    setLoading(true)
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-    try {
-      const res = await fetch(`${backendUrl}/api/admin/intervene/task`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: studentId, title: taskText })
-      })
-      if (res.ok) {
-        setSuccess(true)
-        setTaskText('')
-        setTimeout(() => setSuccess(false), 3000)
-      }
-    } catch { /* error handling */ }
-    setLoading(false)
-  }
-
-  return (
-    <div className="pt-6 border-t border-neutral-800 space-y-4">
-       <h4 className="text-xs font-black uppercase text-amber-500 flex items-center gap-2">
-         <Zap className="w-4 h-4 fill-amber-500" /> Mission Control: Inject Task
-       </h4>
-       <div className="flex gap-2">
-          <input 
-            value={taskText}
-            onChange={(e) => setTaskText(e.target.value)}
-            disabled={loading}
-            placeholder="e.g. Redo System Design Mock Interview"
-            className="flex-1 bg-neutral-800 border border-white/5 rounded-xl px-4 py-2 text-xs outline-none focus:border-amber-500/50"
-          />
-          <button 
-            onClick={handleAssign}
-            disabled={loading || !taskText}
-            className="px-4 py-2 bg-amber-500 text-neutral-950 text-[10px] font-black uppercase rounded-xl disabled:opacity-50"
-          >
-            {loading ? '...' : (success ? 'Sent!' : 'Assign')}
-          </button>
-       </div>
     </div>
   )
 }

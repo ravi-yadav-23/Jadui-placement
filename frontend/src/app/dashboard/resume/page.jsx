@@ -7,6 +7,7 @@ import { useApp } from '@/context/AppContext'
 import ResumeUpload  from '@/features/resume/ResumeUpload'
 import ResumeResults from '@/features/resume/ResumeResults'
 import { FileText, RefreshCw } from 'lucide-react'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function ResumePage() {
   const { state } = useApp()
@@ -19,7 +20,7 @@ export default function ResumePage() {
   const loadHistory = async () => {
     try {
       setHistoryLoading(true)
-      const response = await fetch('/api/resume/history?limit=10', { cache: 'no-store' })
+      const response = await fetchWithAuth('/api/resume/history?limit=10', { cache: 'no-store' })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Failed to load history')
       setHistory(data.history || [])
@@ -39,7 +40,7 @@ export default function ResumePage() {
     try {
       setOpeningResultId(resultId)
       setHistoryOpenErrors((prev) => ({ ...prev, [resultId]: '' }))
-      const response = await fetch(`/api/resume/result?resultId=${encodeURIComponent(resultId)}`, {
+      const response = await fetchWithAuth(`/api/resume/result?resultId=${encodeURIComponent(resultId)}`, {
         cache: 'no-store',
       })
       const data = await response.json()

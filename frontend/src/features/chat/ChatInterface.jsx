@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2, Bot, User, Trash2, Sparkles, History, Plus } from 'lucide-react'
 import { useApp, ACTIONS } from '@/context/AppContext'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function ChatInterface() {
   const { state, dispatch } = useApp()
@@ -76,7 +77,7 @@ MENTORSHIP PRINCIPLES:
         content: typeof m.content === 'string' ? m.content : '',
       }))
       
-      const res = await fetch('/api/mentor/chat', {
+      const res = await fetchWithAuth('/api/mentor/chat', {
         method: 'POST',
         cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },

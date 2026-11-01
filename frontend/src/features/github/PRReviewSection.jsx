@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { GitPullRequest, Search, CheckCircle2, AlertTriangle, Bug, ShieldAlert, Code2, Loader2, Sparkles, FolderTree, BarChart3, Binary, LayoutTemplate } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/context/AppContext'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function GitHubRepoAnalyzer() {
   const { state } = useApp()
@@ -21,7 +22,7 @@ export default function GitHubRepoAnalyzer() {
     if (!state.user?.id) return
     try {
       const endpoint = analysisMode === 'pr' ? 'review' : 'analyze'
-      const res = await fetch(`/api/github/${endpoint}/history?user_id=${state.user.id}`)
+      const res = await fetchWithAuth(`/api/github/${endpoint}/history?user_id=${state.user.id}`)
       const data = await res.json()
       if (res.ok) setHistory(data.history || [])
     } catch (err) {
@@ -49,7 +50,7 @@ export default function GitHubRepoAnalyzer() {
         ? { user_id: state.user.id, repo_url: repoUrl, pr_number: parseInt(prNumber) }
         : { user_id: state.user.id, repo_url: repoUrl }
 
-      const res = await fetch(`/api/github/${endpoint}`, {
+      const res = await fetchWithAuth(`/api/github/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageSquare, Send, X, Bot, Sparkles, BrainCircuit, Maximize2, Minimize2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function TPOAssistant() {
   const [isOpen, setIsOpen] = useState(false)
@@ -31,7 +32,7 @@ export default function TPOAssistant() {
 
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-      const res = await fetch(`${backendUrl}/api/admin/assistant/chat`, {
+      const res = await fetchWithAuth(`${backendUrl}/api/admin/assistant/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userMsg, history: messages.slice(-5) })

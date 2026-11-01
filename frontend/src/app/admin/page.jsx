@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import StudentDossier from '@/features/admin/StudentDossier'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
@@ -23,8 +24,8 @@ export default function AdminDashboard() {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
       try {
         const [statsRes, studentsRes] = await Promise.all([
-          fetch(`${backendUrl}/api/admin/stats`),
-          fetch(`${backendUrl}/api/admin/students`)
+          fetchWithAuth(`${backendUrl}/api/admin/stats`),
+          fetchWithAuth(`${backendUrl}/api/admin/students`)
         ])
         const statsData = await statsRes.json()
         const studentsData = await studentsRes.json()
@@ -47,7 +48,7 @@ export default function AdminDashboard() {
     setLoading(true)
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     try {
-      const res = await fetch(`${backendUrl}/api/admin/simulate/hiring?q=${searchTerm}`)
+      const res = await fetchWithAuth(`${backendUrl}/api/admin/simulate/hiring?q=${searchTerm}`)
       const data = await res.json()
       setStudents(data.ranked || [])
     } catch (err) {

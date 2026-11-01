@@ -15,6 +15,7 @@ import {
   Code2,
   Box,
 } from 'lucide-react'
+import { fetchWithAuth } from '@/lib/fetchWithAuth'
 import {
   ResponsiveContainer,
   PieChart,
@@ -121,7 +122,7 @@ export default function GitHubProfileAnalyzer() {
       if (withAi) qs.set('insights', '1')
       if (state.user?.id) qs.set('user_id', state.user.id)
       
-      const res = await fetch(`/api/github/profile?${qs}`, { cache: 'no-store' })
+      const res = await fetchWithAuth(`/api/github/profile?${qs}`, { cache: 'no-store' })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
         throw new Error(json.error || json.detail || 'Failed to load profile')
@@ -174,7 +175,7 @@ export default function GitHubProfileAnalyzer() {
     }})
     
     try {
-      const res = await fetch('/api/system/state', {
+      const res = await fetchWithAuth('/api/system/state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

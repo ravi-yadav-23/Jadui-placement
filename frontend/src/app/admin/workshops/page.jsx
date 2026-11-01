@@ -6,6 +6,7 @@ import {
   BookOpen, Clock, CheckCircle2, Loader2, Info
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function WorkshopsPage() {
   const [suggestions, setSuggestions] = useState([])
@@ -15,7 +16,7 @@ export default function WorkshopsPage() {
   useEffect(() => {
     async function fetchSuggestions() {
       try {
-        const res = await fetch('/api/admin/workshops/suggestions')
+        const res = await fetchWithAuth('/api/admin/workshops/suggestions')
         const data = await res.json()
         setSuggestions(data.suggestions || [])
       } catch (err) {
@@ -30,7 +31,7 @@ export default function WorkshopsPage() {
   const handleSchedule = async (suggestion) => {
     setScheduling(suggestion.title)
     try {
-      const res = await fetch('/api/admin/workshops/schedule', {
+      const res = await fetchWithAuth('/api/admin/workshops/schedule', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

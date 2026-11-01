@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Users, Search, Trophy, ArrowUpRight, Sparkles, Filter, MoreVertical, DownloadCloud } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import StudentDossier from '@/features/admin/StudentDossier'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([])
@@ -16,7 +17,7 @@ export default function StudentsPage() {
     async function fetchData() {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
       try {
-        const res = await fetch(`${backendUrl}/api/admin/students`);
+        const res = await fetchWithAuth(`${backendUrl}/api/admin/students`);
         const data = await res.json();
         setStudents(data.students || []);
       } catch (err) {
@@ -32,7 +33,7 @@ export default function StudentsPage() {
     if (e) e.stopPropagation();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     try {
-      const res = await fetch(`${backendUrl}/api/admin/students/${userId}/shortlist`, { method: 'POST' });
+      const res = await fetchWithAuth(`${backendUrl}/api/admin/students/${userId}/shortlist`, { method: 'POST' });
       const data = await res.json();
       setStudents(prev => prev.map(s => s.id === userId ? { ...s, is_shortlisted: data.is_shortlisted } : s));
     } catch (err) {

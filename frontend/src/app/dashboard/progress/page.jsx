@@ -6,6 +6,7 @@ import StatCard       from '@/components/dashboard/StatCard'
 import { ProgressBar } from '@/components/ui'
 import ProgressCharts  from '@/features/progress/ProgressCharts'
 import { useApp } from '@/context/AppContext'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const DEFAULT_WEEKLY = [
   { week: 'Week 1', readiness: 0, tasks: 0, interview: 0 },
@@ -25,8 +26,8 @@ export default function ProgressPage() {
     const load = async () => {
       try {
         const [resumeRes, interviewRes] = await Promise.all([
-          fetch('/api/resume/history?limit=20', { cache: 'no-store' }),
-          fetch('/api/interview/history?limit=20', { cache: 'no-store' }),
+          fetchWithAuth('/api/resume/history?limit=20', { cache: 'no-store' }),
+          fetchWithAuth('/api/interview/history?limit=20', { cache: 'no-store' }),
         ])
         const r = await resumeRes.json()
         const i = await interviewRes.json()

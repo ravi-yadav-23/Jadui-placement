@@ -7,6 +7,7 @@ import WeeklyRoadmap from '@/features/tasks/WeeklyRoadmap'
 import { ProgressBar } from '@/components/ui'
 import { useApp, ACTIONS } from '@/context/AppContext'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 const TABS = [
   { id: 'today',    label: 'Today',         icon: List        },
@@ -24,7 +25,7 @@ export default function TasksPage() {
 
   const regenerateRoadmap = async () => {
     try {
-      const response = await fetch('/api/system/roadmap/regenerate', {
+      const response = await fetchWithAuth('/api/system/roadmap/regenerate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

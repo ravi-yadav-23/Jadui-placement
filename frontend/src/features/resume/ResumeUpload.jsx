@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, Loader2, X, CheckCircle2 } from 'lucide-react'
 import { useApp, ACTIONS } from '@/context/AppContext'
 import { cn } from '@/lib/utils'
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 
 export default function ResumeUpload({ onResult, onUploaded }) {
   const { state: { user }, dispatch } = useApp()
@@ -44,7 +45,7 @@ export default function ResumeUpload({ onResult, onUploaded }) {
       if (roleTarget) formData.append('jdText', roleTarget)
       if (targetSkills) formData.append('targetSkills', targetSkills)
       
-      const analyzeRes = await fetch('/api/resume/analyze', {
+      const analyzeRes = await fetchWithAuth('/api/resume/analyze', {
         method: 'POST',
         body: formData,
       })
@@ -56,7 +57,7 @@ export default function ResumeUpload({ onResult, onUploaded }) {
       
       // Auto-refresh Dashboard insights since roadmap was regenerated on backend
       try {
-        const insightsRes = await fetch('/api/system/insights', { cache: 'no-store' })
+        const insightsRes = await fetchWithAuth('/api/system/insights', { cache: 'no-store' })
         if (insightsRes.ok) {
           const insights = await insightsRes.json()
           dispatch({ type: ACTIONS.SET_SYSTEM_INSIGHTS, payload: insights })
