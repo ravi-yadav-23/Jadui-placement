@@ -21,7 +21,7 @@ app.add_middleware(
         "http://localhost:5173", # Vite default
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
