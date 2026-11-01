@@ -24,6 +24,7 @@ function buildIdealFramework(question) {
 }
 
 export async function POST(req) {
+  const authHeader = req.headers.get('authorization');
   try {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     if (!backendUrl) {
@@ -43,7 +44,8 @@ export async function POST(req) {
     for (let i = 0; i < userAnswers.length; i += 1) {
       const res = await fetch(`${backendUrl}/api/interview/answer`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}), 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_id: interviewId,
           question_index: i,
@@ -57,6 +59,7 @@ export async function POST(req) {
 
     const resultRes = await fetch(`${backendUrl}/api/interview/result?session_id=${encodeURIComponent(interviewId)}`, {
       method: 'GET',
+      headers: { ...(authHeader ? { Authorization: authHeader } : {}) },
     });
     const resultData = await resultRes.json();
     if (!resultRes.ok) {

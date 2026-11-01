@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 120; // 2 minutes max processing
 
 export async function POST(req) {
+  const authHeader = req.headers.get('authorization');
   try {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     if (!backendUrl) {
@@ -30,16 +31,26 @@ export async function POST(req) {
     uploadForm.append('file', file);
     const uploadRes = await fetch(`${backendUrl}/api/resume/upload`, {
       method: 'POST',
+      headers: { ...(authHeader ? { Authorization: authHeader } : {}) },
       body: uploadForm,
     });
-    const uploadData = await uploadRes.json();
+    
+    let uploadData;
+    const uploadContentType = uploadRes.headers.get("content-type");
+    if (uploadContentType && uploadContentType.includes("application/json")) {
+      uploadData = await uploadRes.json();
+    } else {
+      uploadData = { detail: await uploadRes.text() };
+    }
+
     if (!uploadRes.ok) {
       return NextResponse.json({ error: uploadData?.detail || 'Resume upload failed' }, { status: uploadRes.status });
     }
 
     const analyzeRes = await fetch(`${backendUrl}/api/resume/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}), 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user_id,
         file_id: uploadData.file_id,
@@ -51,7 +62,15 @@ export async function POST(req) {
         use_llm: true,
       }),
     });
-    const analyzeData = await analyzeRes.json();
+    
+    let analyzeData;
+    const analyzeContentType = analyzeRes.headers.get("content-type");
+    if (analyzeContentType && analyzeContentType.includes("application/json")) {
+      analyzeData = await analyzeRes.json();
+    } else {
+      analyzeData = { detail: await analyzeRes.text() };
+    }
+
     if (!analyzeRes.ok) {
       return NextResponse.json({ error: analyzeData?.detail || 'Resume analysis failed' }, { status: analyzeRes.status });
     }

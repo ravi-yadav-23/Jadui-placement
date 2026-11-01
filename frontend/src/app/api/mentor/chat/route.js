@@ -12,6 +12,7 @@ async function fetchSystemState(userId) {
   try {
     const res = await fetch(`${base}/system/state?user_id=${encodeURIComponent(userId)}`, {
       method: 'GET',
+      headers: { ...(authHeader ? { Authorization: authHeader } : {}) },
       cache: 'no-store',
     })
     if (!res.ok) return null
@@ -259,7 +260,8 @@ function fallbackReply(message, context, resumeRows, interviewRows) {
 async function callBackendMentor(baseUrl, systemPrompt, message, historyPrior) {
   const res = await fetch(`${baseUrl.replace(/\/$/, '')}/mentor/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}), 'Content-Type': 'application/json' },
     cache: 'no-store',
     body: JSON.stringify({
       system_prompt: systemPrompt,
@@ -284,6 +286,7 @@ async function callBackendMentor(baseUrl, systemPrompt, message, historyPrior) {
 }
 
 export async function POST(request) {
+  const authHeader = request.headers.get('authorization')
   try {
     const body = await request.json()
     const message = String(body?.message || '').trim()
@@ -295,10 +298,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'message is required' }, { status: 400 })
     }
 
-    const serverState = await fetchSystemState(userId)
+    const serverState = await fetchSystemState(userId, authHeader)
     context = mergeDashboardContext(context, serverState)
 
-    const { resumeRows, interviewRows } = await fetchDashboardSnapshot(userId)
+    const { resumeRows, interviewRows } = await fetchDashboardSnapshot(userId, authHeader)
 
     const system = buildSystemPrompt({
       context,
@@ -346,7 +349,7 @@ export async function POST(request) {
     // 2) Gemini on Render / FastAPI (same key you already use for interview)
     if (base) {
       try {
-        const data = await callBackendMentor(base, system, message, prior)
+        const data = await callBackendMentor(base, system, message, prior, authHeader)
         return NextResponse.json({
           message: data.message || fallbackReply(message, context, resumeRows, interviewRows),
           usedAI: true,

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
+  const authHeader = req.headers.get('authorization');
   try {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     if (!backendUrl) {
@@ -9,7 +10,8 @@ export async function POST(req) {
     const payload = await req.json();
     const response = await fetch(`${backendUrl}/api/system/roadmap/regenerate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}), 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     const data = await response.json();

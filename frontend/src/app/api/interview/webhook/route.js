@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
+  const authHeader = req.headers.get('authorization');
     try {
         const body = await req.json();
         const toolCalls = body?.toolCalls || [];
@@ -21,7 +22,8 @@ export async function POST(req) {
                     `${baseUrl}/api/interview/generate`,
                     {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}), "Content-Type": "application/json" },
                         body: JSON.stringify(input),
                     }
                 );

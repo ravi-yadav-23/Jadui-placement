@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 
 /**
- * Proxies to FastAPI GET /github/profile/{username}
+ * Proxies to FastAPI GET /github/profile
  * GitHub token stays on the backend (GITHUB_TOKEN on Render).
  */
 export async function GET(request) {
+  const authHeader = request.headers.get('authorization')
   try {
     const { searchParams } = new URL(request.url)
     const username = searchParams.get('username')?.trim()
@@ -24,7 +25,11 @@ export async function GET(request) {
     if (insights) qs.set('insights', 'true')
 
     const url = `${backendUrl.replace(/\/$/, '')}/api/github/profile?${qs}`
-    const res = await fetch(url, { method: 'GET', cache: 'no-store' })
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { ...(authHeader ? { Authorization: authHeader } : {}) },
+      cache: 'no-store',
+    })
     const data = await res.json().catch(() => ({}))
 
     if (!res.ok) {

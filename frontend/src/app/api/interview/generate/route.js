@@ -6,6 +6,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
+    const authHeader = request.headers.get('authorization');
     try {
         const body = await request.json();
         const { type, role, level, techstack, amount, userid } = body;
@@ -31,7 +32,10 @@ export async function POST(request) {
 
         const response = await fetch(`${backendUrl}/api/interview/start`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                ...(authHeader ? { Authorization: authHeader } : {}),
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({
                 role,
                 skills: targetSkills,
