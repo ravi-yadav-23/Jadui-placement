@@ -1,0 +1,23 @@
+# Word lists used by pipeline/lint.py and pipeline/guard.py. Edit freely; no code change needed.
+
+# Strong openers (any past-tense verb ending in "-ed" also counts, see lint.py).
+action_verbs: [build, built, design, develop, create, implement, launch, ship, automate, optimize, reduce,
+  increase, improve, migrate, refactor, deploy, integrate, architect, engineer, lead, led, own, drive, drove,
+  write, wrote, test, debug, scale, cut, grow, grew, run, ran, set, deliver, analyze, analyse, model, train,
+  benchmark, profile, secure, mentor, coordinate, present, publish, research, prototype, containerize,
+  orchestrate, instrument, monitor, streamline, simplify, resolve, fix, rewrite, rebuilt, establish,
+  introduce, spearhead, contribute, collaborate, document, conduct, manage, organize, organise, host]
+
+# Openers that describe duties instead of achievements.
+weak_openers: ["responsible for", "worked on", "helped", "assisted", "involved in", "participated in",
+  "tasked with", "duties included", "in charge of", "handled", "did", "was part of"]
+
+buzzwords: [passionate, hardworking, hard-working, go-getter, synergy, team player, detail-oriented,
+  self-motivated, results-driven, dynamic, rockstar, ninja, guru, think outside the box, best-in-class,
+  cutting-edge, leverage, leveraged, utilize, utilized, various, etc]
+
+vague_phrases: ["various", "etc", "many things", "multiple things", "and more", "and so on", "stuff"]
+
+# Verbs that claim ownership/leadership. The truth guard blocks rewrites that ADD these.
+inflation_verbs: [led, lead, spearheaded, spearhead, architected, architect, headed, directed, owned,
+  orchestrated, championed, pioneered, managed, supervised]

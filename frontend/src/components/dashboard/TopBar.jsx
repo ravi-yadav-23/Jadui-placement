@@ -38,7 +38,11 @@ export default function TopBar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [notifOpen,  setNotifOpen]  = useState(false)
 
-  const pageTitle  = PAGE_TITLES[pathname] || 'Dashboard'
+  // Longest matching prefix, so nested pages (/dashboard/resume/123) keep their section title.
+  const titleKey   = Object.keys(PAGE_TITLES)
+    .filter((path) => pathname === path || pathname.startsWith(`${path}/`))
+    .sort((a, b) => b.length - a.length)[0]
+  const pageTitle  = PAGE_TITLES[titleKey] || 'Dashboard'
   const user       = state.user
   const name       = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
   const initials   = name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()

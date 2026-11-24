@@ -1,0 +1,176 @@
+# Labeled evaluation set for the resume screener. All people and companies are fictional.
+# Labels describe what a careful human would extract; run.py compares the pipeline against them.
+
+resumes:
+  fresher_strong:
+    labels:
+      skills: [Python, FastAPI, PostgreSQL, Redis, Docker, React, Git]
+      bullets:   # beginnings of bullets that must be extracted
+        - Built a FastAPI service for invoice reconciliation
+        - Wrote 120 pytest unit tests
+        - Developed a Next.js dashboard backed by PostgreSQL
+        - Implemented Redis caching that cut page load time
+    text: |
+      Asha Verma
+      asha.verma@example.com | +91 98765 43210 | linkedin.com/in/ashaverma | github.com/ashaverma
+      EDUCATION
+      B.Tech Computer Science, Example Institute of Technology, 2022 - 2026, CGPA 8.4/10
+      EXPERIENCE
+      Backend Intern, Acme Payments, Jun 2025 - Aug 2025
+      Built a FastAPI service for invoice reconciliation handling 20k requests per day
+      Wrote 120 pytest unit tests covering the billing API, raising coverage to 85%
+      PROJECTS
+      Campus Placement Tracker | Next.js, PostgreSQL, Redis, Docker
+      Developed a Next.js dashboard backed by PostgreSQL for 300 students
+      Implemented Redis caching that cut page load time by 40%
+      SKILLS
+      Python, FastAPI, PostgreSQL, Redis, Docker, React, Git
+
+  fresher_weak:
+    labels:
+      skills: [Java, Python, HTML/CSS, MySQL]
+      bullets:
+        - Responsible for making the college website
+        - Worked on various things in the backend
+        - Helped the team with testing
+    text: |
+      Rohan Mehta
+      rohan.m@example.com | +91 91234 56789
+      OBJECTIVE
+      Passionate and hardworking fresher looking for a challenging role in a reputed company.
+      EDUCATION
+      B.E. Information Technology, Sample College of Engineering, 2021 - 2025, CGPA 6.9/10
+      PROJECTS
+      College Website
+      Responsible for making the college website using HTML and CSS
+      Worked on various things in the backend etc
+      INTERNSHIP
+      Intern, Local Software Pvt Ltd, May 2024 - Jun 2024
+      Helped the team with testing and other tasks
+      SKILLS
+      Java, Python, HTML, CSS, MySQL, MS Office
+
+  data_ml:
+    labels:
+      skills: [Python, PyTorch, scikit-learn, Pandas, SQL, Machine Learning]
+      bullets:
+        - Trained a PyTorch image classifier
+        - Built a churn prediction model with scikit-learn
+        - Cleaned and analysed 2 million rows
+    text: |
+      Meera Iyer
+      meera.iyer@example.com | +91 99887 76655 | github.com/meeraiyer
+      EDUCATION
+      B.Tech Data Science, Example University, 2022 - 2026, CGPA 9.1/10
+      PROJECTS
+      Crop Disease Detection | Python, PyTorch
+      Trained a PyTorch image classifier on 12,000 leaf images reaching 94% validation accuracy
+      Customer Churn Prediction | scikit-learn, Pandas
+      Built a churn prediction model with scikit-learn, improving recall from 0.61 to 0.78
+      Cleaned and analysed 2 million rows of transaction data with Pandas and SQL
+      SKILLS
+      Python, PyTorch, scikit-learn, Pandas, SQL, Machine Learning
+
+  frontend_dev:
+    labels:
+      skills: [JavaScript, TypeScript, React, Next.js, Tailwind CSS, Jest]
+      bullets:
+        - Rebuilt the checkout page in React and TypeScript
+        - Added Jest tests
+        - Shipped a Next.js marketing site
+    text: |
+      Kabir Singh
+      kabir.singh@example.com | +91 90000 11111 | linkedin.com/in/kabirsingh | github.com/kabirs
+      EXPERIENCE
+      Frontend Intern, ShopLite, Jan 2025 - Jun 2025
+      Rebuilt the checkout page in React and TypeScript, cutting drop-off by 12%
+      Added Jest tests for 30 UI components used across the store
+      PROJECTS
+      Portfolio Platform | Next.js, Tailwind CSS
+      Shipped a Next.js marketing site with Tailwind CSS that scores 98 on Lighthouse
+      EDUCATION
+      B.Sc Computer Science, Example College, 2022 - 2025, CGPA 8.0/10
+      SKILLS
+      JavaScript, TypeScript, React, Next.js, Tailwind CSS, Jest
+
+  experienced_backend:
+    labels:
+      skills: [Go, PostgreSQL, Kafka, Kubernetes, AWS, Python]
+      bullets:
+        - Designed a Kafka-based event pipeline
+        - Migrated 14 services to Kubernetes
+        - Reduced p99 latency of the ledger API
+    text: |
+      Vikram Rao
+      vikram.rao@example.com | +91 98111 22233 | linkedin.com/in/vikramrao | github.com/vikramrao
+      EXPERIENCE
+      Software Engineer II, PayGrid, Jul 2022 - Present
+      Designed a Kafka-based event pipeline processing 3M payment events per day
+      Migrated 14 services to Kubernetes on AWS, cutting infra cost by 22%
+      Reduced p99 latency of the ledger API from 800ms to 120ms with PostgreSQL index tuning
+      EDUCATION
+      B.Tech Computer Science, Example Institute of Technology, 2018 - 2022, CGPA 8.2/10
+      SKILLS
+      Go, Python, PostgreSQL, Kafka, Kubernetes, AWS
+
+jds:
+  backend_intern:
+    labels:
+      must_skills: [Python, REST APIs, FastAPI, Django, PostgreSQL, SQL, Docker]
+      nice_skills: [Kubernetes, Kafka]
+      knockouts: [grad_year, cgpa, location]
+    text: |
+      Backend Engineering Intern - Example Fintech Pvt Ltd
+      Location: Bengaluru (on-site)
+      About the role
+      You will build and maintain APIs for our payments platform.
+      Requirements
+      - Strong programming skills in Python
+      - Experience building REST APIs with FastAPI or Django
+      - Working knowledge of PostgreSQL and SQL query design
+      - Familiarity with Docker
+      Nice to have
+      - Experience with Kubernetes
+      - Exposure to message queues such as Kafka
+      Eligibility
+      - 2026 batch only
+      - Minimum CGPA 7.5
+
+  frontend_intern:
+    labels:
+      must_skills: [React, JavaScript, HTML/CSS]
+      nice_skills: [TypeScript, Next.js, Jest]
+      knockouts: []
+    text: |
+      Frontend Developer Intern - PixelCraft Studio (Remote)
+      What you'll do: build responsive product pages and reusable UI components.
+      Must have
+      - Solid JavaScript fundamentals and experience with React
+      - Good command of HTML and CSS, including responsive layouts
+      Good to have
+      - TypeScript
+      - Next.js experience
+      - Writing unit tests with Jest
+
+  senior_ml:
+    labels:
+      must_skills: [Python, Machine Learning, PyTorch]
+      nice_skills: [Kubernetes, AWS]
+      knockouts: []
+    text: |
+      Senior Machine Learning Engineer - Northwind AI
+      We need an engineer to own our model training and deployment platform.
+      Requirements
+      - 5+ years of experience building production machine learning systems
+      - Expert in Python and PyTorch
+      - Experience deploying models at scale and mentoring other engineers
+      Preferred
+      - Kubernetes and AWS experience
+
+# Expected tier for (resume, jd). Accuracy counts "within one tier" as a hit.
+pairs:
+  - {resume: fresher_strong, jd: backend_intern, tier: good}
+  - {resume: fresher_weak, jd: backend_intern, tier: not_a_fit}
+  - {resume: frontend_dev, jd: frontend_intern, tier: strong}
+  - {resume: data_ml, jd: senior_ml, tier: stretch}
+  - {resume: experienced_backend, jd: backend_intern, tier: good}

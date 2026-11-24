@@ -55,7 +55,8 @@ class AdminService:
 
     def get_student_dossier(self, user_id: str) -> dict[str, Any]:
         """Fetches a high-fidelity 'Placement Dossier' for a specific student."""
-        from modules.resume_ai.services import service as resume_service
+        from app.core.db import get_db
+        from app.resume.summary import overview
         from modules.interview_ai.services import service as interview_service
         from modules.github_review.services import service as github_service
         from modules.github_profile.services import build_profile
@@ -72,8 +73,11 @@ class AdminService:
         ).data or {}
         
         # 1. Latest Resume Results
-        resumes = resume_service.get_history(user_id=user_id, limit=1)
-        latest_resume = resumes[0] if resumes else None
+        try:
+            recent = overview(get_db(), user_id).recent
+            latest_resume = recent[0].model_dump() if recent else None
+        except Exception:
+            latest_resume = None
         
         # 2. Top PR Reviews
         prs = github_service.get_history(user_id, limit=3)
