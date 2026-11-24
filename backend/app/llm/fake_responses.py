@@ -87,7 +87,7 @@ def _fake_jd_parse(prompt: str) -> dict:
     requirements, knockouts, kind = [], [], "must"
     for line in lines:
         low = line.lower()
-        if any(word in low for word in ("nice to have", "preferred", "bonus")):
+        if any(word in low for word in ("nice to have", "good to have", "preferred", "bonus")):
             kind = "nice"
         elif "eligibility" in low:
             kind = "eligibility"
