@@ -10,7 +10,8 @@ class ExtractedDoc:
     columns: int = 1               # max text columns detected on any page
     image_count: int = 0
     table_count: int = 0           # DOCX only
-    header_footer_text: list[str] = field(default_factory=list)  # text found in page header/footer areas
+    header_footer_text: list[str] = field(default_factory=list)  # text in Word header/footer sections
+    links: list[str] = field(default_factory=list)   # hyperlink targets (may not be visible as text)
 
     @property
     def lines(self) -> list[str]:
@@ -24,4 +25,5 @@ class ExtractedDoc:
             "image_count": self.image_count,
             "table_count": self.table_count,
             "header_footer_text": self.header_footer_text,
+            "links": self.links,
         }

@@ -29,7 +29,7 @@ async def upload_resume(
     data = await file.read(settings.RESUME_MAX_BYTES + 1)  # +1 so "too large" is detectable
     row, is_new = service.create_resume(db, user.id, file.filename or "", data, title)
     if is_new:
-        background.add_task(service.process_resume, db, user.id, row["id"], data)
+        background.add_task(service.process_resume, db, user.id, row["id"], data, file.filename or "")
     else:
         response.status_code = 200  # identical file already uploaded: nothing new to process
     return row

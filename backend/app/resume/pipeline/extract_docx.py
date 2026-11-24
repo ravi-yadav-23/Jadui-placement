@@ -46,10 +46,14 @@ def extract_docx(data: bytes) -> ExtractedDoc:
         for part in (section.header, section.footer):
             header_footer += [p.text.strip() for p in part.paragraphs if p.text.strip()]
 
+    # Hyperlink targets are stored as "relationships" of the document part.
+    links = [rel.target_ref for rel in document.part.rels.values() if rel.reltype.endswith("/hyperlink")]
+
     return ExtractedDoc(
         text="\n".join(lines),
         page_count=0,  # Word decides pagination at render time; the .docx itself doesn't know
         table_count=tables,
         image_count=len(document.inline_shapes),
         header_footer_text=header_footer,
+        links=links,
     )

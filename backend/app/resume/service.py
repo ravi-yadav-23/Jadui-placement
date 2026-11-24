@@ -15,10 +15,13 @@ from datetime import UTC, datetime, timedelta
 from app.core.config import settings
 from app.core.db import Database
 from app.core.errors import AppError
+from app.resume.pipeline.checks import CheckContext, run_checks
+from app.resume.pipeline.contacts import extract_contacts
 from app.resume.pipeline.document import ExtractedDoc
 from app.resume.pipeline.extract_docx import extract_docx
 from app.resume.pipeline.extract_pdf import count_pdf_pages, extract_pdf
 from app.resume.pipeline.ingest import MIME_TYPES, FileKind, sha256_hex, validate_upload
+from app.resume.pipeline.sections import find_sections
 
 log = logging.getLogger(__name__)
 
@@ -70,16 +73,24 @@ def extract(kind: FileKind, data: bytes) -> ExtractedDoc:
     return extract_pdf(data) if kind == "pdf" else extract_docx(data)
 
 
-def process_resume(db: Database, user_id: str, resume_id: str, data: bytes) -> None:
+def process_resume(db: Database, user_id: str, resume_id: str, data: bytes, filename: str = "") -> None:
     """Background job. Never raises: failures are written to the row for the UI to show."""
     db.update("resumes", user_id, resume_id, {"status": "processing"})
     try:
         kind = validate_upload(data)
         doc = extract(kind, data)
+        contacts = extract_contacts(doc.text, doc.links)
+        sections = find_sections(doc.lines)
+        checks = run_checks(CheckContext(doc, contacts, sections, filename))
+        if checks[0].id == "text_extractable" and checks[0].status == "fail":
+            raise AppError("scanned_pdf", checks[0].message)
+
         db.update("resumes", user_id, resume_id, {
             "raw_text": doc.text,
-            "extract_meta": doc.meta(),
+            "extract_meta": {**doc.meta(), "filename": filename, "sections": list(sections.found)},
             "page_count": doc.page_count,
+            "contacts": contacts.model_dump(),
+            "checks": [c.model_dump() for c in checks],
             "status": "ready",
         })
     except AppError as exc:

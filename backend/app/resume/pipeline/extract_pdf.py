@@ -88,6 +88,7 @@ def order_lines(lines: list[Line], gutter: float | None) -> list[Line]:
 
 def extract_pdf(data: bytes) -> ExtractedDoc:
     out_lines: list[str] = []
+    links: list[str] = []
     max_columns, images = 1, 0
 
     with pymupdf.open(stream=data, filetype="pdf") as doc:
@@ -97,6 +98,7 @@ def extract_pdf(data: bytes) -> ExtractedDoc:
             gutter = find_gutter(lines, page.rect.width)
             max_columns = max(max_columns, 2 if gutter else 1)
             images += len(page.get_images())
+            links += [link["uri"] for link in page.get_links() if link.get("uri")]
             out_lines += [ln.text for ln in order_lines(lines, gutter)]
 
     return ExtractedDoc(
@@ -104,6 +106,7 @@ def extract_pdf(data: bytes) -> ExtractedDoc:
         page_count=page_count,
         columns=max_columns,
         image_count=images,
+        links=links,
         # PDFs have no real header/footer sections (unlike Word), so nothing to report here.
     )
 

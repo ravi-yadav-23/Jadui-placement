@@ -1,0 +1,14 @@
+# Heading text (lowercased, without trailing ":") -> canonical section.
+# Add new aliases here; no code change needed.
+summary: [summary, profile, professional summary, about me, about, objective, career objective]
+education: [education, academic background, academics, qualifications, educational qualifications,
+            academic qualifications]
+experience: [experience, work experience, professional experience, internships, internship,
+             internship experience, employment, employment history, work history, experience & internships]
+projects: [projects, project, personal projects, academic projects, key projects, technical projects]
+skills: [skills, technical skills, skills & tools, core skills, tech stack, technologies, skills summary,
+         technical proficiency, core competencies]
+certifications: [certifications, certificates, courses, licenses & certifications, certifications & courses,
+                 certificates & courses]
+achievements: [achievements, awards, honors, honours, accomplishments, leadership, positions of responsibility,
+               extracurricular activities, activities, leadership & achievements, achievements & awards]
