@@ -21,6 +21,23 @@ SKILLS
 Python, FastAPI, PostgreSQL, Redis, Docker, React, Kubernetes"""
 
 
+SAMPLE_JD = """Backend Engineering Intern - Example Fintech Pvt Ltd
+Location: Bengaluru (on-site)
+About the role
+You will build and maintain APIs for our payments platform.
+Requirements
+- Strong programming skills in Python
+- Experience building REST APIs with FastAPI or Django
+- Working knowledge of PostgreSQL and SQL query design
+- Familiarity with Docker
+Nice to have
+- Experience with Kubernetes
+- Exposure to message queues such as Kafka
+Eligibility
+- 2026 batch only
+- Minimum CGPA 7.5"""
+
+
 def single_column_pdf(text: str = SAMPLE_RESUME) -> bytes:
     doc = pymupdf.open()
     page = doc.new_page()

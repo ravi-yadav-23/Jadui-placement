@@ -79,7 +79,46 @@ def _fake_review(prompt: str) -> dict:
     }
 
 
+def _fake_jd_parse(prompt: str) -> dict:
+    """Bullet lines are requirements; lines after a 'nice to have' style heading are optional."""
+    from app.resume.pipeline.taxonomy import find_skills
+
+    lines = [ln.strip() for ln in _quoted_block(prompt).split("\n") if ln.strip()]
+    requirements, knockouts, kind = [], [], "must"
+    for line in lines:
+        low = line.lower()
+        if any(word in low for word in ("nice to have", "preferred", "bonus")):
+            kind = "nice"
+        elif "eligibility" in low:
+            kind = "eligibility"
+        elif line.startswith("-"):
+            text = line.lstrip("- ").strip()
+            if kind == "eligibility":
+                cgpa = re.search(r"CGPA [\d.]+", text)
+                batch = re.search(r"20\d\d batch", text)
+                if cgpa:
+                    knockouts.append({"type": "cgpa", "value": cgpa.group(0)})
+                if batch:
+                    knockouts.append({"type": "grad_year", "value": batch.group(0)})
+            else:
+                requirements.append({"text": text, "kind": kind, "skills": sorted(find_skills(text))})
+    if "on-site" in prompt.lower():
+        location = re.search(r"Location: ([^\n]+)", prompt)
+        if location:
+            knockouts.append({"type": "location", "value": location.group(1).strip()})
+    return {
+        "title": lines[0].split(" - ")[0] if lines else "Unknown role",
+        "company": lines[0].split(" - ")[1] if lines and " - " in lines[0] else None,
+        "seniority": "intern" if "intern" in prompt.lower() else "unknown",
+        "requirements": requirements,
+        "knockouts": knockouts,
+        "keywords": sorted({s for r in requirements for s in r["skills"]}),
+        "responsibilities": [],
+    }
+
+
 _HANDLERS = {
     "resume_structure": _fake_structure,
     "resume_review": _fake_review,
+    "jd_parse": _fake_jd_parse,
 }

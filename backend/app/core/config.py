@@ -23,7 +23,6 @@ class Settings(BaseSettings):
     # --- Resume v2 limits ---
     RESUME_MAX_BYTES: int = 5 * 1024 * 1024
     RESUME_MAX_PAGES: int = 3
-    JD_MAX_CHARS: int = 15_000
     DAILY_UPLOAD_LIMIT: int = 10
     DAILY_ANALYSIS_LIMIT: int = 15
     RESUME_STORAGE_BUCKET: str = "resumes"

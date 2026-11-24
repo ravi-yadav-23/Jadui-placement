@@ -159,6 +159,69 @@ class GeneralReview(BaseModel):
     ungrounded_count: int = 0
 
 
+# ---------- Job descriptions ----------
+
+KnockoutType = Literal["grad_year", "cgpa", "location", "notice_period", "work_authorization", "degree", "other"]
+
+
+class RequirementDraft(BaseModel):
+    text: str = Field(description="The requirement, short, close to the JD wording")
+    kind: Literal["must", "nice"] = Field(description="must = required; nice = preferred / bonus / plus")
+    skills: list[str] = Field(default_factory=list, description="Technologies/skills named in this requirement")
+
+
+class KnockoutDraft(BaseModel):
+    type: KnockoutType
+    value: str = Field(description="The condition exactly as written in the JD, e.g. '2026 batch' or 'CGPA 7.5+'")
+
+
+class JdDraft(BaseModel):
+    """LLM contract for a parsed job description."""
+    title: str
+    company: str | None = None
+    seniority: Literal["intern", "entry", "mid", "senior", "unknown"] = "unknown"
+    min_years: float | None = Field(None, description="Minimum years of experience required, if stated")
+    requirements: list[RequirementDraft] = Field(default_factory=list)
+    knockouts: list[KnockoutDraft] = Field(default_factory=list, description="Hard eligibility conditions only")
+    keywords: list[str] = Field(default_factory=list, description="10-15 terms a recruiter would search for")
+    responsibilities: list[str] = Field(default_factory=list)
+
+
+class Requirement(RequirementDraft):
+    id: str  # "r0", "r1", ...
+
+
+class JobRequirements(BaseModel):
+    title: str
+    company: str | None = None
+    seniority: Literal["intern", "entry", "mid", "senior", "unknown"] = "unknown"
+    min_years: float | None = None
+    requirements: list[Requirement] = Field(default_factory=list)
+    knockouts: list[KnockoutDraft] = Field(default_factory=list)
+    keywords: list[str] = Field(default_factory=list)
+    responsibilities: list[str] = Field(default_factory=list)
+
+
+class CreateJd(BaseModel):
+    raw_text: str = Field(min_length=100, max_length=15_000)
+    title: str | None = Field(None, max_length=120)
+    company: str | None = Field(None, max_length=120)
+
+
+class JdSummary(BaseModel):
+    id: str
+    title: str | None = None
+    company: str | None = None
+    status: Status
+    error: str | None = None
+    created_at: str
+
+
+class JdDetail(JdSummary):
+    raw_text: str
+    parsed: JobRequirements | None = None
+
+
 # ---------- API responses ----------
 
 class ResumeSummary(BaseModel):

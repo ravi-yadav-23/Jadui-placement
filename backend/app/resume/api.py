@@ -8,12 +8,15 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Response, U
 from app.core.auth import CurrentUser, get_current_user
 from app.core.config import settings
 from app.core.db import Database, get_db
-from app.resume import analysis, service
+from app.resume import analysis, jd, service
 from app.resume.schemas import (
     AnalysisDetail,
     AnalysisSummary,
     CreateAnalysis,
+    CreateJd,
     FileUrl,
+    JdDetail,
+    JdSummary,
     ResumeDetail,
     ResumeProfile,
     ResumeSummary,
@@ -72,6 +75,43 @@ def get_resume_file(resume_id: str, user: CurrentUser = Depends(get_current_user
 @router.delete("/resumes/{resume_id}", status_code=204)
 def delete_resume(resume_id: str, user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
     service.delete_resume(db, user.id, resume_id)
+
+
+# ---------- Job descriptions ----------
+
+JD_LIST_COLUMNS = "id,title,company,status,error,created_at"
+
+
+@router.post("/jds", status_code=202, response_model=JdSummary)
+def create_jd(
+    request: CreateJd,
+    background: BackgroundTasks,
+    response: Response,
+    user: CurrentUser = Depends(get_current_user),
+    db: Database = Depends(get_db),
+):
+    row, is_new = jd.create_jd(db, user.id, request)
+    if is_new:
+        background.add_task(jd.process_jd, db, user.id, row["id"])
+    else:
+        response.status_code = 200
+    return row
+
+
+@router.get("/jds", response_model=list[JdSummary])
+def list_jds(user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
+    return db.list("job_descriptions", user.id, columns=JD_LIST_COLUMNS)
+
+
+@router.get("/jds/{jd_id}", response_model=JdDetail)
+def get_jd(jd_id: str, user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
+    return jd.get_jd(db, user.id, jd_id)
+
+
+@router.delete("/jds/{jd_id}", status_code=204)
+def delete_jd(jd_id: str, user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
+    jd.get_jd(db, user.id, jd_id)  # 404 if it isn't yours
+    db.delete("job_descriptions", user.id, jd_id)
 
 
 # ---------- Analyses ----------
