@@ -1,13 +1,21 @@
-fastapi
-uvicorn[standard]
-pydantic
-python-multipart
-openai
-google-generativeai
-httpx
-python-dateutil
-pypdf
-pdfplumber
-python-docx
-supabase
-pydantic-settings
+# Runtime dependencies (pinned). Install: pip install -r requirements.txt
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.4
+pydantic-settings==2.16.3
+python-multipart==0.0.34
+supabase==2.34.1
+PyJWT==2.15.1
+pymupdf==2.1
+python-docx==1.2.0
+google-genai==3.6.1
+openai==3.58.0
+tenacity==9.1.4
+PyYAML==6.0.4
+RapidFuzz==3.14.6
+httpx==0.28.1
+# --- legacy modules (removed at the resume v2 switchover) ---
+google-generativeai==0.8.6
+pypdf==7.1.1
+pdfplumber==0.11.11
+python-dateutil==4.0.0
