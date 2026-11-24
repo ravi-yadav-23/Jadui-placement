@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import GeneralReviewView from '@/features/resume/components/GeneralReviewView'
 import JdMatchView from '@/features/resume/components/JdMatchView'
 import { ErrorBox, Spinner, formatDate } from '@/features/resume/components/ui'
+import VersionCompare from '@/features/resume/components/VersionCompare'
 import { useAnalysis } from '@/features/resume/hooks'
 
 /** Results of one analysis. Polls while the background job is running. */
@@ -29,6 +30,7 @@ export default function AnalysisPage({ params }: { params: { analysisId: string 
       {data?.status === 'done' && data.result && (
         <>
           {data.result.kind === 'jd' ? <JdMatchView match={data.result} /> : <GeneralReviewView review={data.result} />}
+          <VersionCompare current={data} />
           <p className="text-xs text-muted">
             Analysed {formatDate(data.completed_at ?? data.created_at)} · model {data.model ?? 'n/a'} · prompts{' '}
             {Object.entries(data.prompt_versions ?? {}).map(([name, version]) => `${name} ${version}`).join(', ')}
