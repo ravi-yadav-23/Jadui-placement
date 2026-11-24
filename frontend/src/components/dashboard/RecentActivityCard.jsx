@@ -27,7 +27,7 @@ export default function RecentActivityCard({ resumeHistory, interviewHistory }) 
             {interviewHistory?.slice(0, 4).map((item) => (
               <div key={item.session_id} className="rounded-lg border border-border bg-surface/40 p-3">
                 <p className="text-sm text-white font-medium">{item.role}</p>
-                <p className="text-xs text-muted mt-1">Score {item.overall_score}/100 • {item.answered_count}/{item.total_questions} answered</p>
+                <p className="text-xs text-muted mt-1">Score {item.overall_score}/100</p>
               </div>
             ))}
           </div>

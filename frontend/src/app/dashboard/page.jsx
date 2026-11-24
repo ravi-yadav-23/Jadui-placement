@@ -166,7 +166,7 @@ export default function DashboardPage() {
           icon={Mic}
           color="accent"
           trend="up"
-          trendValue={interviewHistory[0] ? `${interviewHistory[0].answered_count}/${interviewHistory[0].total_questions} answered` : 'Start first interview'}
+          trendValue={interviewHistory.length ? `${interviewHistory.length} sessions` : 'Start first interview'}
         />
         <StatCard
           id="stat-resume"

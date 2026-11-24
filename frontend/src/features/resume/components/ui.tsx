@@ -38,7 +38,7 @@ export function ErrorBox({ error }: { error: unknown }) {
   if (error instanceof ApiError && error.status === 401) {
     return (
       <div className="card-base text-sm text-muted">
-        Please <Link href="/auth/login" className="text-primary underline">sign in</Link> to use the resume screener.
+        Please <Link href="/auth/login" className="text-primary underline">sign in</Link> to continue.
       </div>
     )
   }

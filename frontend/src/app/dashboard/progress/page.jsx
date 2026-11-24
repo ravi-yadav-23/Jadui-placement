@@ -6,8 +6,8 @@ import StatCard       from '@/components/dashboard/StatCard'
 import { ProgressBar } from '@/components/ui'
 import ProgressCharts  from '@/features/progress/ProgressCharts'
 import { useApp } from '@/context/AppContext'
-import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { fetchResumeHistory } from '@/lib/api/legacyResumeHistory'
+import { fetchInterviewHistory } from '@/lib/api/legacyInterviewHistory'
 
 const DEFAULT_WEEKLY = [
   { week: 'Week 1', readiness: 0, tasks: 0, interview: 0 },
@@ -26,13 +26,12 @@ export default function ProgressPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [resumeRows, interviewRes] = await Promise.all([
-          fetchResumeHistory().catch(() => []),  // resume v2 general reviews
-          fetchWithAuth('/api/interview/history?limit=20', { cache: 'no-store' }),
+        const [resumeRows, interviewRows] = await Promise.all([
+          fetchResumeHistory().catch(() => []),     // resume v2 general reviews
+          fetchInterviewHistory().catch(() => []),  // interview v2 completed sessions
         ])
-        const i = await interviewRes.json()
         setResumeHistory(resumeRows)
-        if (interviewRes.ok) setInterviewHistory(i.history || [])
+        setInterviewHistory(interviewRows)
       } catch {
         setResumeHistory([])
         setInterviewHistory([])

@@ -602,6 +602,408 @@
           }
         }
       }
+    },
+    "/api/v2/interviews": {
+      "get": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "List Interviews",
+        "operationId": "list_interviews_api_v2_interviews_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/InterviewSummary"
+                  },
+                  "type": "array",
+                  "title": "Response List Interviews Api V2 Interviews Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Create Interview",
+        "operationId": "create_interview_api_v2_interviews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInterview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/interviews/{interview_id}": {
+      "get": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Get Interview",
+        "operationId": "get_interview_api_v2_interviews__interview_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Delete",
+        "operationId": "delete_api_v2_interviews__interview_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/interviews/{interview_id}/turns/{turn_id}/answer": {
+      "post": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Answer",
+        "operationId": "answer_api_v2_interviews__interview_id__turns__turn_id__answer_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          },
+          {
+            "name": "turn_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Turn Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/interviews/{interview_id}/turns/{turn_id}/retry": {
+      "post": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Retry",
+        "operationId": "retry_api_v2_interviews__interview_id__turns__turn_id__retry_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          },
+          {
+            "name": "turn_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Turn Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/interviews/{interview_id}/skip": {
+      "post": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Skip",
+        "operationId": "skip_api_v2_interviews__interview_id__skip_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/interviews/{interview_id}/finish": {
+      "post": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Finish",
+        "operationId": "finish_api_v2_interviews__interview_id__finish_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Interview Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/interview/summary": {
+      "get": {
+        "tags": [
+          "interview-v2"
+        ],
+        "summary": "Interview Summary",
+        "description": "Recent scores, topic averages and open gaps, for the dashboard, planner and coach chat.",
+        "operationId": "interview_summary_api_v2_interview_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewOverview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -856,6 +1258,42 @@
           "created_at"
         ],
         "title": "AnalysisSummary"
+      },
+      "AnswerRequest": {
+        "properties": {
+          "answer": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Answer"
+          },
+          "answer_mode": {
+            "type": "string",
+            "enum": [
+              "text",
+              "voice"
+            ],
+            "title": "Answer Mode",
+            "default": "text"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 3600.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          }
+        },
+        "type": "object",
+        "required": [
+          "answer"
+        ],
+        "title": "AnswerRequest"
       },
       "Body_upload_resume_api_v2_resumes_post": {
         "properties": {
@@ -1121,6 +1559,24 @@
         "type": "object",
         "title": "Contacts"
       },
+      "CoveredPoint": {
+        "properties": {
+          "point": {
+            "type": "string",
+            "title": "Point"
+          },
+          "quote": {
+            "type": "string",
+            "title": "Quote"
+          }
+        },
+        "type": "object",
+        "required": [
+          "point",
+          "quote"
+        ],
+        "title": "CoveredPoint"
+      },
       "CreateAnalysis": {
         "properties": {
           "resume_id": {
@@ -1166,6 +1622,98 @@
         ],
         "title": "CreateAnalysis"
       },
+      "CreateInterview": {
+        "properties": {
+          "track": {
+            "type": "string",
+            "enum": [
+              "resume",
+              "jd",
+              "fundamentals",
+              "behavioral",
+              "mixed"
+            ],
+            "title": "Track",
+            "default": "mixed"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "interview",
+              "practice"
+            ],
+            "title": "Mode",
+            "default": "interview"
+          },
+          "question_count": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 3.0,
+            "title": "Question Count",
+            "default": 5
+          },
+          "topics": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "os",
+                "dbms",
+                "cn",
+                "oop"
+              ]
+            },
+            "type": "array",
+            "title": "Topics"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "any"
+            ],
+            "title": "Difficulty",
+            "default": "any"
+          },
+          "resume_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resume Id"
+          },
+          "jd_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jd Id"
+          },
+          "target_role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Role"
+          }
+        },
+        "type": "object",
+        "title": "CreateInterview"
+      },
       "CreateJd": {
         "properties": {
           "raw_text": {
@@ -1204,6 +1752,113 @@
           "raw_text"
         ],
         "title": "CreateJd"
+      },
+      "Delivery": {
+        "properties": {
+          "words": {
+            "type": "integer",
+            "title": "Words"
+          },
+          "wpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wpm"
+          },
+          "fillers": {
+            "type": "integer",
+            "title": "Fillers",
+            "default": 0
+          },
+          "repeated": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Repeated"
+          },
+          "terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Terms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "words"
+        ],
+        "title": "Delivery"
+      },
+      "DeliverySummary": {
+        "properties": {
+          "voice_answers": {
+            "type": "integer",
+            "title": "Voice Answers"
+          },
+          "wpm": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wpm"
+          },
+          "fillers_per_100_words": {
+            "type": "number",
+            "title": "Fillers Per 100 Words"
+          },
+          "repeated": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Repeated"
+          }
+        },
+        "type": "object",
+        "required": [
+          "voice_answers",
+          "wpm",
+          "fillers_per_100_words",
+          "repeated"
+        ],
+        "title": "DeliverySummary"
+      },
+      "DimensionScore": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "anchor": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Anchor"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "One sentence tied to the chosen anchor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "anchor",
+          "reason"
+        ],
+        "title": "DimensionScore"
       },
       "EducationDraft": {
         "properties": {
@@ -1496,6 +2151,348 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "InterviewDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "track": {
+            "type": "string",
+            "enum": [
+              "resume",
+              "jd",
+              "fundamentals",
+              "behavioral",
+              "mixed"
+            ],
+            "title": "Track"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "interview",
+              "practice"
+            ],
+            "title": "Mode"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "planning",
+              "active",
+              "completed",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "target_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Role"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "question_count": {
+            "type": "integer",
+            "title": "Question Count"
+          },
+          "question_number": {
+            "type": "integer",
+            "title": "Question Number"
+          },
+          "turns": {
+            "items": {
+              "$ref": "#/components/schemas/TurnOut"
+            },
+            "type": "array",
+            "title": "Turns"
+          },
+          "report": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InterviewReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "track",
+          "mode",
+          "status",
+          "created_at",
+          "question_count",
+          "question_number",
+          "turns"
+        ],
+        "title": "InterviewDetail"
+      },
+      "InterviewOverview": {
+        "properties": {
+          "completed_count": {
+            "type": "integer",
+            "title": "Completed Count"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/RecentInterview"
+            },
+            "type": "array",
+            "title": "Recent"
+          },
+          "average_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Score"
+          },
+          "topic_averages": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Topic Averages"
+          },
+          "weakest_dimension": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weakest Dimension"
+          },
+          "open_gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Open Gaps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "completed_count",
+          "recent",
+          "average_score",
+          "topic_averages",
+          "weakest_dimension",
+          "open_gaps"
+        ],
+        "title": "InterviewOverview",
+        "description": "Compact summary for the dashboard, planner and coach chat."
+      },
+      "InterviewReport": {
+        "properties": {
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "band": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "almost",
+              "practice"
+            ],
+            "title": "Band"
+          },
+          "dimensions": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Dimensions"
+          },
+          "topics": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Topics"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionReport"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "delivery": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeliverySummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Gaps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score",
+          "band",
+          "dimensions",
+          "topics",
+          "questions"
+        ],
+        "title": "InterviewReport"
+      },
+      "InterviewSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "track": {
+            "type": "string",
+            "enum": [
+              "resume",
+              "jd",
+              "fundamentals",
+              "behavioral",
+              "mixed"
+            ],
+            "title": "Track"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "interview",
+              "practice"
+            ],
+            "title": "Mode"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "planning",
+              "active",
+              "completed",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "target_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Role"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "track",
+          "mode",
+          "status",
+          "created_at"
+        ],
+        "title": "InterviewSummary"
       },
       "JdDetail": {
         "properties": {
@@ -1912,6 +2909,64 @@
         ],
         "title": "KnockoutResult"
       },
+      "QuestionReport": {
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fundamentals",
+              "project",
+              "jd",
+              "behavioral"
+            ],
+            "title": "Type"
+          },
+          "topic": {
+            "type": "string",
+            "title": "Topic"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "skipped": {
+            "type": "boolean",
+            "title": "Skipped",
+            "default": false
+          },
+          "covered": {
+            "items": {
+              "$ref": "#/components/schemas/CoveredPoint"
+            },
+            "type": "array",
+            "title": "Covered"
+          },
+          "missed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "question_id",
+          "type",
+          "topic",
+          "question",
+          "score"
+        ],
+        "title": "QuestionReport"
+      },
       "RecentAnalysis": {
         "properties": {
           "id": {
@@ -1975,6 +3030,41 @@
           "created_at"
         ],
         "title": "RecentAnalysis"
+      },
+      "RecentInterview": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "track": {
+            "type": "string",
+            "enum": [
+              "resume",
+              "jd",
+              "fundamentals",
+              "behavioral",
+              "mixed"
+            ],
+            "title": "Track"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "track",
+          "score",
+          "created_at"
+        ],
+        "title": "RecentInterview"
       },
       "Requirement": {
         "properties": {
@@ -2414,6 +3504,191 @@
           "rewrite"
         ],
         "title": "TailoredBullet"
+      },
+      "TurnEvaluation": {
+        "properties": {
+          "covered": {
+            "items": {
+              "$ref": "#/components/schemas/CoveredPoint"
+            },
+            "type": "array",
+            "title": "Covered"
+          },
+          "missed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missed"
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/DimensionScore"
+            },
+            "type": "array",
+            "title": "Dimensions"
+          },
+          "rubric": {
+            "type": "integer",
+            "title": "Rubric"
+          },
+          "coverage": {
+            "type": "integer",
+            "title": "Coverage"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "feedback": {
+            "type": "string",
+            "title": "Feedback"
+          },
+          "follow_up": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Follow Up"
+          },
+          "demoted_quotes": {
+            "type": "integer",
+            "title": "Demoted Quotes",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "covered",
+          "missed",
+          "dimensions",
+          "rubric",
+          "coverage",
+          "score",
+          "feedback"
+        ],
+        "title": "TurnEvaluation"
+      },
+      "TurnOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "idx": {
+            "type": "integer",
+            "title": "Idx"
+          },
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "main",
+              "follow_up"
+            ],
+            "title": "Kind"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "answer_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "voice"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer Mode"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "asked",
+              "evaluating",
+              "evaluated",
+              "skipped",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "evaluation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TurnEvaluation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "delivery": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Delivery"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "idx",
+          "question_id",
+          "kind",
+          "question",
+          "status"
+        ],
+        "title": "TurnOut"
       },
       "ValidationError": {
         "properties": {

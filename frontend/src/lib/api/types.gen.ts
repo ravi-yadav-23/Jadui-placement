@@ -165,6 +165,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/interviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Interviews */
+        get: operations["list_interviews_api_v2_interviews_get"];
+        put?: never;
+        /** Create Interview */
+        post: operations["create_interview_api_v2_interviews_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interviews/{interview_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Interview */
+        get: operations["get_interview_api_v2_interviews__interview_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete */
+        delete: operations["delete_api_v2_interviews__interview_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interviews/{interview_id}/turns/{turn_id}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer */
+        post: operations["answer_api_v2_interviews__interview_id__turns__turn_id__answer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interviews/{interview_id}/turns/{turn_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry */
+        post: operations["retry_api_v2_interviews__interview_id__turns__turn_id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interviews/{interview_id}/skip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Skip */
+        post: operations["skip_api_v2_interviews__interview_id__skip_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interviews/{interview_id}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finish */
+        post: operations["finish_api_v2_interviews__interview_id__finish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/interview/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Interview Summary
+         * @description Recent scores, topic averages and open gaps, for the dashboard, planner and coach chat.
+         */
+        get: operations["interview_summary_api_v2_interview_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -236,6 +360,19 @@ export interface components {
             created_at: string;
             /** Completed At */
             completed_at?: string | null;
+        };
+        /** AnswerRequest */
+        AnswerRequest: {
+            /** Answer */
+            answer: string;
+            /**
+             * Answer Mode
+             * @default text
+             * @enum {string}
+             */
+            answer_mode: "text" | "voice";
+            /** Duration Seconds */
+            duration_seconds?: number | null;
         };
         /** Body_upload_resume_api_v2_resumes_post */
         Body_upload_resume_api_v2_resumes_post: {
@@ -313,6 +450,13 @@ export interface components {
             /** Portfolio */
             portfolio?: string | null;
         };
+        /** CoveredPoint */
+        CoveredPoint: {
+            /** Point */
+            point: string;
+            /** Quote */
+            quote: string;
+        };
         /** CreateAnalysis */
         CreateAnalysis: {
             /** Resume Id */
@@ -328,6 +472,40 @@ export interface components {
             /** Target Role */
             target_role?: string | null;
         };
+        /** CreateInterview */
+        CreateInterview: {
+            /**
+             * Track
+             * @default mixed
+             * @enum {string}
+             */
+            track: "resume" | "jd" | "fundamentals" | "behavioral" | "mixed";
+            /**
+             * Mode
+             * @default interview
+             * @enum {string}
+             */
+            mode: "interview" | "practice";
+            /**
+             * Question Count
+             * @default 5
+             */
+            question_count: number;
+            /** Topics */
+            topics?: ("os" | "dbms" | "cn" | "oop")[];
+            /**
+             * Difficulty
+             * @default any
+             * @enum {string}
+             */
+            difficulty: "easy" | "medium" | "hard" | "any";
+            /** Resume Id */
+            resume_id?: string | null;
+            /** Jd Id */
+            jd_id?: string | null;
+            /** Target Role */
+            target_role?: string | null;
+        };
         /** CreateJd */
         CreateJd: {
             /** Raw Text */
@@ -336,6 +514,45 @@ export interface components {
             title?: string | null;
             /** Company */
             company?: string | null;
+        };
+        /** Delivery */
+        Delivery: {
+            /** Words */
+            words: number;
+            /** Wpm */
+            wpm?: number | null;
+            /**
+             * Fillers
+             * @default 0
+             */
+            fillers: number;
+            /** Repeated */
+            repeated?: string[];
+            /** Terms */
+            terms?: string[];
+        };
+        /** DeliverySummary */
+        DeliverySummary: {
+            /** Voice Answers */
+            voice_answers: number;
+            /** Wpm */
+            wpm: number | null;
+            /** Fillers Per 100 Words */
+            fillers_per_100_words: number;
+            /** Repeated */
+            repeated: string[];
+        };
+        /** DimensionScore */
+        DimensionScore: {
+            /** Name */
+            name: string;
+            /** Anchor */
+            anchor: number;
+            /**
+             * Reason
+             * @description One sentence tied to the chosen anchor
+             */
+            reason: string;
         };
         /** EducationDraft */
         EducationDraft: {
@@ -432,6 +649,116 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** InterviewDetail */
+        InterviewDetail: {
+            /** Id */
+            id: string;
+            /**
+             * Track
+             * @enum {string}
+             */
+            track: "resume" | "jd" | "fundamentals" | "behavioral" | "mixed";
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "interview" | "practice";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "planning" | "active" | "completed" | "failed";
+            /** Target Role */
+            target_role?: string | null;
+            /** Score */
+            score?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Created At */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Question Count */
+            question_count: number;
+            /** Question Number */
+            question_number: number;
+            /** Turns */
+            turns: components["schemas"]["TurnOut"][];
+            report?: components["schemas"]["InterviewReport"] | null;
+        };
+        /**
+         * InterviewOverview
+         * @description Compact summary for the dashboard, planner and coach chat.
+         */
+        InterviewOverview: {
+            /** Completed Count */
+            completed_count: number;
+            /** Recent */
+            recent: components["schemas"]["RecentInterview"][];
+            /** Average Score */
+            average_score: number | null;
+            /** Topic Averages */
+            topic_averages: {
+                [key: string]: number;
+            };
+            /** Weakest Dimension */
+            weakest_dimension: string | null;
+            /** Open Gaps */
+            open_gaps: string[];
+        };
+        /** InterviewReport */
+        InterviewReport: {
+            /** Score */
+            score: number;
+            /**
+             * Band
+             * @enum {string}
+             */
+            band: "ready" | "almost" | "practice";
+            /** Dimensions */
+            dimensions: {
+                [key: string]: number;
+            };
+            /** Topics */
+            topics: {
+                [key: string]: number;
+            };
+            /** Questions */
+            questions: components["schemas"]["QuestionReport"][];
+            delivery?: components["schemas"]["DeliverySummary"] | null;
+            /** Gaps */
+            gaps?: string[];
+        };
+        /** InterviewSummary */
+        InterviewSummary: {
+            /** Id */
+            id: string;
+            /**
+             * Track
+             * @enum {string}
+             */
+            track: "resume" | "jd" | "fundamentals" | "behavioral" | "mixed";
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "interview" | "practice";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "planning" | "active" | "completed" | "failed";
+            /** Target Role */
+            target_role?: string | null;
+            /** Score */
+            score?: number | null;
+            /** Error */
+            error?: string | null;
+            /** Created At */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
         };
         /** JdDetail */
         JdDetail: {
@@ -566,6 +893,31 @@ export interface components {
             /** Message */
             message: string;
         };
+        /** QuestionReport */
+        QuestionReport: {
+            /** Question Id */
+            question_id: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "fundamentals" | "project" | "jd" | "behavioral";
+            /** Topic */
+            topic: string;
+            /** Question */
+            question: string;
+            /** Score */
+            score: number;
+            /**
+             * Skipped
+             * @default false
+             */
+            skipped: boolean;
+            /** Covered */
+            covered?: components["schemas"]["CoveredPoint"][];
+            /** Missed */
+            missed?: string[];
+        };
         /** RecentAnalysis */
         RecentAnalysis: {
             /** Id */
@@ -585,6 +937,20 @@ export interface components {
             jd_title?: string | null;
             /** Overall Score */
             overall_score: number;
+            /** Created At */
+            created_at: string;
+        };
+        /** RecentInterview */
+        RecentInterview: {
+            /** Id */
+            id: string;
+            /**
+             * Track
+             * @enum {string}
+             */
+            track: "resume" | "jd" | "fundamentals" | "behavioral" | "mixed";
+            /** Score */
+            score: number;
             /** Created At */
             created_at: string;
         };
@@ -752,6 +1118,61 @@ export interface components {
             keywords?: string[];
             /** Guard Notes */
             guard_notes?: string[];
+        };
+        /** TurnEvaluation */
+        TurnEvaluation: {
+            /** Covered */
+            covered: components["schemas"]["CoveredPoint"][];
+            /** Missed */
+            missed: string[];
+            /** Dimensions */
+            dimensions: components["schemas"]["DimensionScore"][];
+            /** Rubric */
+            rubric: number;
+            /** Coverage */
+            coverage: number;
+            /** Score */
+            score: number;
+            /** Feedback */
+            feedback: string;
+            /** Follow Up */
+            follow_up?: string | null;
+            /**
+             * Demoted Quotes
+             * @default 0
+             */
+            demoted_quotes: number;
+        };
+        /** TurnOut */
+        TurnOut: {
+            /** Id */
+            id: string;
+            /** Idx */
+            idx: number;
+            /** Question Id */
+            question_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "main" | "follow_up";
+            /** Question */
+            question: string;
+            /** Answer */
+            answer?: string | null;
+            /** Answer Mode */
+            answer_mode?: ("text" | "voice") | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "asked" | "evaluating" | "evaluated" | "skipped" | "failed";
+            /** Error */
+            error?: string | null;
+            /** Score */
+            score?: number | null;
+            evaluation?: components["schemas"]["TurnEvaluation"] | null;
+            delivery?: components["schemas"]["Delivery"] | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -1178,6 +1599,269 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_interviews_api_v2_interviews_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewSummary"][];
+                };
+            };
+        };
+    };
+    create_interview_api_v2_interviews_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInterview"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_interview_api_v2_interviews__interview_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_api_v2_interviews__interview_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    answer_api_v2_interviews__interview_id__turns__turn_id__answer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_api_v2_interviews__interview_id__turns__turn_id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    skip_api_v2_interviews__interview_id__skip_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    finish_api_v2_interviews__interview_id__finish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                interview_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    interview_summary_api_v2_interview_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InterviewOverview"];
                 };
             };
         };
