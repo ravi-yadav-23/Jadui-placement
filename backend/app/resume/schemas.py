@@ -150,6 +150,7 @@ class SubScore(BaseModel):
 
 
 class GeneralReview(BaseModel):
+    kind: Literal["general"] = "general"
     overall_score: int
     sub_scores: list[SubScore]
     bullets: list[BulletFeedback]
@@ -222,6 +223,80 @@ class JdDetail(JdSummary):
     parsed: JobRequirements | None = None
 
 
+# ---------- JD match ----------
+
+class RequirementJudgment(BaseModel):
+    """LLM contract: verdict on one requirement."""
+    requirement_id: str
+    status: Literal["strong", "partial", "missing"]
+    evidence_bullet_ids: list[str] = Field(default_factory=list, description="IDs of bullets that prove it")
+    reason: str = Field(description="One short sentence")
+
+
+class TailoredBulletDraft(BaseModel):
+    bullet_id: str
+    rewrite: str
+    keywords: list[str] = Field(default_factory=list, description="JD keywords this rewrite surfaces")
+
+
+class MatchDraft(BaseModel):
+    """LLM contract for the JD match call."""
+    judgments: list[RequirementJudgment] = Field(default_factory=list)
+    role_alignment: int = Field(ge=0, le=5, description="0 = unrelated direction, 5 = exactly this kind of role")
+    tailored_bullets: list[TailoredBulletDraft] = Field(default_factory=list)
+    summary_suggestion: str | None = None
+
+
+class Evidence(BaseModel):
+    bullet_id: str
+    text: str
+
+
+class RequirementMatch(BaseModel):
+    requirement_id: str
+    text: str
+    kind: Literal["must", "nice"]
+    skills: list[str] = Field(default_factory=list)
+    status: Literal["strong", "partial", "listed_only", "missing"]
+    evidence: list[Evidence] = Field(default_factory=list)
+    reason: str
+    decided_by: Literal["rules", "ai"]
+
+
+class KnockoutResult(BaseModel):
+    type: KnockoutType
+    jd_value: str
+    resume_value: str | None = None
+    status: Literal["ok", "conflict", "unknown"]
+    message: str
+
+
+class TailoredBullet(BaseModel):
+    bullet_id: str
+    original: str
+    rewrite: str
+    keywords: list[str] = Field(default_factory=list)
+    guard_notes: list[str] = Field(default_factory=list)
+
+
+class JdMatch(BaseModel):
+    kind: Literal["jd"] = "jd"
+    overall_score: int
+    tier: Literal["strong", "good", "stretch", "not_a_fit"]
+    tier_message: str
+    sub_scores: list[SubScore]
+    jd_title: str
+    jd_company: str | None = None
+    requirements: list[RequirementMatch]
+    knockouts: list[KnockoutResult] = Field(default_factory=list)
+    keywords_to_surface: list[str] = Field(default_factory=list)  # you have it, but no bullet shows it
+    missing_keywords: list[str] = Field(default_factory=list)      # not on the resume at all
+    bullet_order: list[str] = Field(default_factory=list)          # bullet IDs, most relevant first
+    tailored_bullets: list[TailoredBullet] = Field(default_factory=list)
+    summary_suggestion: str | None = None
+    gaps: list[str] = Field(default_factory=list)
+
+
 # ---------- API responses ----------
 
 class ResumeSummary(BaseModel):
@@ -269,6 +344,6 @@ class AnalysisSummary(BaseModel):
 
 class AnalysisDetail(AnalysisSummary):
     sub_scores: list[SubScore] | None = None
-    result: GeneralReview | None = None
+    result: GeneralReview | JdMatch | None = Field(None, discriminator="kind")
     prompt_versions: dict = Field(default_factory=dict)
     model: str | None = None

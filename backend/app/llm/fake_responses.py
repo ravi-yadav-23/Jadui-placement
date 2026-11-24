@@ -117,8 +117,30 @@ def _fake_jd_parse(prompt: str) -> dict:
     }
 
 
+def _fake_match(prompt: str) -> dict:
+    """'partial' when a bullet shares a long word with the requirement, else 'missing'."""
+    requirements = json.loads(_quoted_block(prompt))
+    bullets_part = prompt.split("Candidate bullets (JSON):")[1].split("Candidate skills section:")[0]
+    bullets = json.loads(bullets_part)
+    judgments = []
+    for req in requirements:
+        words = {w for w in re.findall(r"[a-z]{5,}", req["text"].lower())}
+        hit = next((b for b in bullets if words & set(re.findall(r"[a-z]{5,}", b["text"].lower()))), None)
+        judgments.append({"requirement_id": req["requirement_id"], "status": "partial" if hit else "missing",
+                          "evidence_bullet_ids": [hit["bullet_id"]] if hit else [],
+                          "reason": "Related work found." if hit else "Not shown in the resume."})
+    tailored = []
+    if bullets:
+        first = bullets[0]
+        tailored.append({"bullet_id": first["bullet_id"], "keywords": ["APIs"],
+                         "rewrite": "Engineered " + first["text"].split(" ", 1)[-1]})
+    return {"judgments": judgments, "role_alignment": 3, "tailored_bullets": tailored,
+            "summary_suggestion": "Engineering student building backend services and data-driven web apps."}
+
+
 _HANDLERS = {
     "resume_structure": _fake_structure,
     "resume_review": _fake_review,
     "jd_parse": _fake_jd_parse,
+    "jd_match": _fake_match,
 }

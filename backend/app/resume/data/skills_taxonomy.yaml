@@ -20,12 +20,12 @@ Bash: {aliases: [bash, shell scripting, shell], category: language}
 HTML/CSS: {aliases: [html, css, html5, css3, html/css], category: frontend}
 
 # Backend / frameworks
-FastAPI: {aliases: [fastapi], category: backend, implies: [Python]}
-Flask: {aliases: [flask], category: backend, implies: [Python]}
+FastAPI: {aliases: [fastapi], category: backend, implies: [Python, REST APIs]}
+Flask: {aliases: [flask], category: backend, implies: [Python, REST APIs]}
 Django: {aliases: [django], category: backend, implies: [Python]}
 Node.js: {aliases: [node.js, nodejs, node], category: backend, implies: [JavaScript]}
-Express.js: {aliases: [express, express.js, expressjs], category: backend, implies: [Node.js, JavaScript]}
-Spring Boot: {aliases: [spring boot, spring], category: backend, implies: [Java]}
+Express.js: {aliases: [express, express.js, expressjs], category: backend, implies: [Node.js, JavaScript, REST APIs]}
+Spring Boot: {aliases: [spring boot, spring], category: backend, implies: [Java, REST APIs]}
 REST APIs: {aliases: [rest, rest api, rest apis, restful, restful apis], category: backend}
 GraphQL: {aliases: [graphql], category: backend}
 gRPC: {aliases: [grpc], category: backend}

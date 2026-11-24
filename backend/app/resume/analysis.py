@@ -1,4 +1,4 @@
-"""Analysis runs (general review now, JD match later): create, cache, run in background, read.
+"""Analysis runs (general review or JD match): create, cache, run in background, read.
 
 Caching: the same profile + mode + JD + target role + prompt versions + model gives the
 same `input_hash`. If a finished analysis with that hash exists, we return it instead of
@@ -10,20 +10,32 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+from datetime import UTC, datetime
 
 from app.core.config import settings
 from app.core.db import Database, utc_now
 from app.core.errors import AppError
 from app.llm.client import PROMPT_VERSIONS, get_llm
+from app.resume.jd import get_jd
+from app.resume.pipeline.knockouts import check_knockouts
 from app.resume.pipeline.lint import lint_resume, unsupported_skills
+from app.resume.pipeline.match import bullet_order, keyword_coverage, match_profile
 from app.resume.pipeline.review import review_profile
-from app.resume.pipeline.scoring import general_score
-from app.resume.schemas import Check, Contacts, CreateAnalysis, GeneralReview, ResumeProfile
+from app.resume.pipeline.scoring import general_score, jd_score
+from app.resume.schemas import (
+    Check,
+    Contacts,
+    CreateAnalysis,
+    GeneralReview,
+    JdMatch,
+    JobRequirements,
+    ResumeProfile,
+)
 from app.resume.service import enforce_daily_limit, get_resume, is_stale
 
 log = logging.getLogger(__name__)
 
-PROMPTS_BY_MODE = {"general": ["resume_review"], "jd": ["jd_match"]}
+PROMPTS_BY_MODE = {"general": ["resume_review"], "jd": ["jd_parse", "jd_match"]}
 
 
 def input_hash(profile: dict, request: CreateAnalysis, jd_text_hash: str | None) -> str:
@@ -46,7 +58,12 @@ def create_analysis(db: Database, user_id: str, request: CreateAnalysis) -> tupl
         raise AppError("not_ready", "The resume is still being processed.", 409)
     jd_hash = None
     if request.mode == "jd":
-        raise AppError("not_implemented", "JD matching is not available yet.", 501)
+        if not request.jd_id:
+            raise AppError("jd_required", "Choose a job description to match against.", 422)
+        jd_row = get_jd(db, user_id, request.jd_id)
+        if jd_row["status"] != "ready":
+            raise AppError("not_ready", "The job description is still being parsed.", 409)
+        jd_hash = jd_row["text_sha256"]
 
     digest = input_hash(resume["profile"], request, jd_hash)
     cached = db.find_one("resume_analyses", user_id, input_hash=digest, status="done")
@@ -72,7 +89,12 @@ def run_analysis(db: Database, user_id: str, analysis_id: str) -> None:
     try:
         resume = get_resume(db, user_id, row["resume_id"])
         llm = get_llm(db, user_id)
-        result = run_general_review(llm, resume, row.get("target_role"))
+        if row["mode"] == "jd":
+            jd_row = get_jd(db, user_id, row["jd_id"])
+            result = run_jd_match(llm, resume, jd_row)
+            save_gaps(db, user_id, analysis_id, result)
+        else:
+            result = run_general_review(llm, resume, row.get("target_role"))
         db.update("resume_analyses", user_id, analysis_id, {
             "status": "done",
             "overall_score": result.overall_score,
@@ -105,6 +127,37 @@ def run_general_review(llm, resume: dict, target_role: str | None) -> GeneralRev
         top_actions=top_actions,
         ungrounded_count=sum(not b.grounded for b in profile.all_bullets()),
     )
+
+
+def run_jd_match(llm, resume: dict, jd_row: dict) -> JdMatch:
+    profile = ResumeProfile.model_validate(resume["profile"])
+    jd = JobRequirements.model_validate(jd_row["parsed"])
+
+    output = match_profile(llm, profile, jd)
+    knockouts = check_knockouts(jd.knockouts, profile)
+    is_student = any((e.grad_year or 0) >= datetime.now(UTC).year for e in profile.education)
+    overall, tier, message, subs = jd_score(output.requirements, knockouts, output.role_alignment,
+                                            jd.seniority, jd.min_years, is_student)
+    to_surface, missing = keyword_coverage(profile, jd)
+    gaps = [skill for m in output.requirements if m.status == "missing" for skill in (m.skills or [m.text])]
+    return JdMatch(
+        overall_score=overall, tier=tier, tier_message=message, sub_scores=subs,
+        jd_title=jd.title, jd_company=jd.company,
+        requirements=output.requirements, knockouts=knockouts,
+        keywords_to_surface=to_surface, missing_keywords=missing,
+        bullet_order=bullet_order(profile, jd, output.requirements),
+        tailored_bullets=output.tailored, summary_suggestion=output.summary,
+        gaps=list(dict.fromkeys(gaps)),
+    )
+
+
+def save_gaps(db: Database, user_id: str, analysis_id: str, result: JdMatch) -> None:
+    """Missing requirements become skill_gaps rows; the future planner turns them into tasks."""
+    rows = [{
+        "user_id": user_id, "skill": skill, "source": "jd_match", "source_id": analysis_id,
+        "severity": "must_have" if match.kind == "must" else "nice_to_have",
+    } for match in result.requirements if match.status == "missing" for skill in (match.skills or [match.text])]
+    db.upsert_many("skill_gaps", rows, on_conflict="user_id,skill,source,source_id")
 
 
 def get_analysis(db: Database, user_id: str, analysis_id: str) -> dict:

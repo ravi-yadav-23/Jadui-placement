@@ -69,6 +69,71 @@ def substance(bullets: list[BulletFeedback], unsupported_skills: int) -> SubScor
                 f"across {len(rated)} bullets, minus {penalty} for skills listed without evidence.")
 
 
+# ---------- JD match ----------
+# Must-haves 45 + Nice-to-haves 15 + Evidence depth 15 + Experience fit 10 + Role alignment 5 + Knockouts 10
+
+STATUS_WEIGHT = {"strong": 1.0, "partial": 0.5, "listed_only": 0.5, "missing": 0.0}
+
+TIERS = [  # (minimum score, tier, honest advice)
+    (80, "strong", "Strong fit. Apply, and use the tailoring suggestions for your top bullets."),
+    (60, "good", "Good fit. Apply after closing the easy gaps below."),
+    (40, "stretch", "Stretch. Apply with your base resume; don't stretch claims. The gaps are saved to your plan."),
+    (0, "not_a_fit", "Not a fit yet. Don't stretch your resume for this one; focus on the missing must-haves."),
+]
+
+
+def coverage(matches, kind: str, maximum: int, label: str) -> SubScore:
+    items = [m for m in matches if m.kind == kind]
+    if not items:
+        return _sub(f"{kind}_coverage", label, maximum, maximum, f"The JD lists no {label.lower()}.")
+    met = sum(STATUS_WEIGHT[m.status] for m in items)
+    return _sub(f"{kind}_coverage", label, maximum * met / len(items), maximum,
+                f"{met:g} of {len(items)} covered (strong = 1, partial or only listed = 0.5).")
+
+
+def evidence_depth(matches) -> SubScore:
+    musts = [m for m in matches if m.kind == "must" and m.status != "missing"]
+    if not musts:
+        return _sub("evidence_depth", "Evidence depth", 0, 15, "No must-have requirement is covered yet.")
+    proven = sum(m.status == "strong" for m in musts)
+    return _sub("evidence_depth", "Evidence depth", 15 * proven / len(musts), 15,
+                f"{proven} of {len(musts)} covered must-haves are proven by a bullet, not just listed.")
+
+
+def experience_fit(seniority: str, min_years: float | None, is_student: bool) -> SubScore:
+    if min_years is None and seniority in ("intern", "entry", "unknown"):
+        return _sub("experience_fit", "Experience fit", 10, 10, "No experience requirement beyond entry level.")
+    if seniority in ("mid", "senior") or (min_years or 0) >= 2:
+        if is_student:
+            return _sub("experience_fit", "Experience fit", 0, 10,
+                        f"The role asks for {min_years or seniority} experience; your resume reads as a student.")
+        return _sub("experience_fit", "Experience fit", 5, 10, "Years of experience couldn't be verified.")
+    return _sub("experience_fit", "Experience fit", 10, 10, "Experience requirement looks achievable.")
+
+
+def knockout_points(knockouts) -> SubScore:
+    if any(k.status == "conflict" for k in knockouts):
+        return _sub("knockouts", "Knockouts", 0, 10, "At least one eligibility rule isn't met (see the warning).")
+    if any(k.status == "unknown" for k in knockouts):
+        return _sub("knockouts", "Knockouts", 5, 10, "Some eligibility rules couldn't be checked from the resume.")
+    return _sub("knockouts", "Knockouts", 10, 10, "No eligibility conflicts found.")
+
+
+def jd_score(matches, knockouts, role_alignment: int, seniority: str, min_years, is_student: bool):
+    subs = [
+        coverage(matches, "must", 45, "Must-haves"),
+        coverage(matches, "nice", 15, "Nice-to-haves"),
+        evidence_depth(matches),
+        experience_fit(seniority, min_years, is_student),
+        _sub("role_alignment", "Role alignment", role_alignment, 5,
+             f"AI rating {role_alignment}/5 of how well your overall direction fits this role."),
+        knockout_points(knockouts),
+    ]
+    total = round(sum(s.score for s in subs))
+    _, tier, message = next(t for t in TIERS if total >= t[0])
+    return total, tier, message, subs
+
+
 def general_score(checks, bullets, profile, contacts, unsupported_skills: int) -> tuple[int, list[SubScore]]:
     subs = [
         parse_health(checks),
