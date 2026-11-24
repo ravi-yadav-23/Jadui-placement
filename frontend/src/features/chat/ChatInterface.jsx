@@ -43,25 +43,21 @@ export default function ChatInterface() {
   }, [messages])
 
   const buildSystemPrompt = () => {
-    const tech = chatContext.github_tech_stack?.join(', ') || 'modern frameworks'
     const gaps = topGaps.join(', ') || 'general career metrics'
     const role = chatContext.targetRole || 'Software Professional'
-    const ghUser = chatContext.githubUsername || 'Candidate'
 
     return `
 You are Antigravity, the Elite Career Architect and AI Mentor at Jadui Placement. 
 Your goal is to get the user placed in their dream role: ${role}.
 
 TECHNICAL CONTEXT:
-- GitHub Identity: @${ghUser}
-- Primary Tech Stack (Synced from GitHub): ${tech}
 - Current Top Skill Gaps (Synced from Resume/Interview): ${gaps}
 
 MENTORSHIP PRINCIPLES:
-1. BE PROACTIVE: Reference their GitHub repos or Resume gaps if relevant.
+1. BE PROACTIVE: Reference their resume or interview gaps if relevant.
 2. BE STRATEGIC: Don't just answer questions; suggest the "Next Best Action" for their roadmap.
 3. ELITE TONE: Professional, high-standards, but supportive.
-4. AGENTIC: You know their progress. If they ask "How am I doing?", refer to their ${tech} skills and ${gaps} gaps.
+4. AGENTIC: You know their progress. If they ask "How am I doing?", refer to their ${gaps} gaps.
 `.trim()
   }
 
@@ -153,9 +149,6 @@ MENTORSHIP PRINCIPLES:
               <div className="flex items-center gap-2 border-l border-border pl-3">
                 {state.resumeData && (
                   <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded uppercase font-bold">📄 Resume Synced</span>
-                )}
-                {chatContext.githubUsername && (
-                  <span className="text-[9px] bg-secondary/10 text-secondary border border-secondary/20 px-1.5 py-0.5 rounded uppercase font-bold">🔗 GitHub Linked</span>
                 )}
                 {state.interviewHistory?.length > 0 && (
                   <span className="text-[9px] bg-accent/10 text-accent border border-accent/20 px-1.5 py-0.5 rounded uppercase font-bold">🎙️ Interview Data</span>

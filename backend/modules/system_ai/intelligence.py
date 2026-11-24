@@ -1,109 +1,35 @@
 """
-Unified Intelligence Layer: Aggregates Resume, Interview, and GitHub metrics.
-Generates placement-specific suggestions and 'Readiness Radar' data.
+Legacy readiness radar for the old dashboard: resume, interview and usage breadth.
+Replaced by the dashboard service in the dashboard rebuild.
 """
 
 from __future__ import annotations
-from typing import Any
-import math
+
 from app.core.db import get_db
 from app.resume.summary import recent_general_scores
 from modules.interview_ai.services import service as interview_service
-from modules.github_profile.services import build_profile
+
 
 class CareerIntelligenceService:
-    def get_readiness_radar(self, user_id: str, github_username: str | None = None) -> dict[str, int]:
-        """
-        Calculates scores for a 4-point Radar Chart:
-        1. Resume Quality
-        2. Technical Depth (GitHub)
-        3. Interview Performance
-        4. Consistency (Tasks/Activity)
-        """
-        # 1. Resume Score (average of the latest resume v2 general reviews)
+    def get_readiness_radar(self, user_id: str) -> dict[str, int]:
+        """Scores (0-100) for a 3-point radar: resume quality, interview performance, consistency."""
+        # 1. Resume: average of the latest resume v2 general reviews
         try:
             resume_history = recent_general_scores(get_db(), user_id)
         except Exception:  # legacy demo user ids are not UUIDs
             resume_history = []
         resume_score = int(sum(resume_history) / len(resume_history)) if resume_history else 0
-            
-        # 2. Interview Score (Average of all sessions)
+
+        # 2. Interview: average of the last sessions
         interview_history = interview_service.get_history(user_id=user_id, limit=5)
         interview_score = 0
         if interview_history:
-            interview_score = int(sum(i['overall_score'] for i in interview_history) / len(interview_history))
-            
-        # 3. Technical Depth (GitHub)
-        github_score = 0
-        if github_username:
-            try:
-                gh_profile = build_profile(github_username, include_insights=False)
-                # Simple logic: stars, repo count, and commits
-                stars = sum(gh_profile.get('repoStarCount', {}).values())
-                commits = sum(gh_profile.get('repoCommitCount', {}).values())
-                repos = gh_profile.get('meta', {}).get('reposAnalyzed', 0)
-                
-                s_pts = min(40, stars * 2) # max 40 from stars
-                r_pts = min(30, repos * 3) # max 30 from repo count
-                c_pts = min(30, commits / 5) # max 30 from commits
-                github_score = int(s_pts + r_pts + c_pts)
-            except Exception:
-                github_score = 0
-                
-        # 4. Consistency (Activity + Code Quality)
-        # Base it on usage + average quality of PR reviews
-        from modules.github_review.services import service as review_service
-        pr_history = review_service.get_history(user_id, limit=10)
-        
-        usage_score = min(40, ((1 if resume_history else 0) + (1 if interview_history else 0) + (1 if github_username else 0) + (1 if pr_history else 0)) * 10)
-        
-        const_quality = 0
-        if pr_history:
-            const_quality = int(sum(r['score'] for r in pr_history) / len(pr_history))
-        
-        # Merge: 40% usage breadth, 60% code quality depth (if reviews available)
-        if pr_history:
-            consistency_score = int((usage_score * 0.4) + (const_quality * 0.6))
-        else:
-            # Fallback to simple usage breadth score if no reviews yet
-            consistency_score = int((usage_score / 40) * 100)
+            interview_score = int(sum(i["overall_score"] for i in interview_history) / len(interview_history))
 
-        return {
-            "resume": resume_score,
-            "technical": github_score,
-            "interview": interview_score,
-            "consistency": consistency_score
-        }
+        # 3. Consistency: how many of the two practice areas have been used (0, 50 or 100)
+        consistency_score = 50 * (bool(resume_history) + bool(interview_history))
 
-    def get_placement_suggestions(self, github_username: str) -> list[str]:
-        """Generates high-impact resume bullet point suggestions based on GitHub activity."""
-        try:
-            gh_profile = build_profile(github_username, include_insights=False)
-            top_repos = sorted(
-                gh_profile.get('repoStarCount', {}).items(), 
-                key=lambda x: x[1], 
-                reverse=True
-            )[:3]
-            
-            suggestions = []
-            for name, stars in top_repos:
-                desc = gh_profile.get('repoStarCountDescriptions', {}).get(name) or "a high-impact technical project"
-                # Generate professional-sounding bullet points
-                if stars > 10:
-                    suggestions.append(
-                        f"Architected and maintained '{name}' ({desc}), achieving over {stars} stars from the developer community."
-                    )
-                else:
-                    langs = list(gh_profile.get('langRepoCount', {}).keys())[:2]
-                    lang_str = " and ".join(langs) if langs else "modern frameworks"
-                    suggestions.append(
-                        f"Engineered '{name}', a robust project focused on {desc}, leverageing {lang_str} for optimized performance."
-                    )
-            
-            if not suggestions:
-                return ["Your GitHub profile is ready. Start building more public repositories to unlock AI resume boosters!"]
-            return suggestions
-        except Exception:
-            return ["Link your GitHub profile in the scanner to unlock automatic technical resume boosters."]
+        return {"resume": resume_score, "interview": interview_score, "consistency": consistency_score}
+
 
 intelligence_service = CareerIntelligenceService()

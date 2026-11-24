@@ -40,7 +40,7 @@ export default function DashboardPage() {
     derived,
     todayTasks,
     completedToday
-  } = useDashboard(state.user?.id, state.chatContext?.githubUsername, tasks, state.progress, chatContext)
+  } = useDashboard(state.user?.id, tasks, state.progress, chatContext)
 
   const {
     syncStatus,

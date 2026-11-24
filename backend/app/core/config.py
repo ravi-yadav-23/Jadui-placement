@@ -32,13 +32,12 @@ class Settings(BaseSettings):
 
     # --- Legacy AI settings (old modules, removed at the switchover) ---
     GEMINI_API_KEY: str | None = None
-    GEMINI_MODEL: str = "gemini-2.0-flash"
+    GEMINI_MODEL: str = "gemini-3.8-flash"
     GROQ_API_KEY: str | None = None
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
     OPENAI_API_KEY: str | None = None
     MENTOR_TEMPERATURE: float = 0.88
     MENTOR_MAX_OUTPUT_TOKENS: int = 2048
-    GITHUB_TOKEN: str | None = None
 
     # --- App ---
     PORT: int = 8000

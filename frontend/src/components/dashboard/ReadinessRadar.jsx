@@ -22,8 +22,7 @@ export default function ReadinessRadar({ readinessData }) {
         </div>
         <div className="flex gap-2">
            <span className="text-[10px] uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded">Resume</span>
-           <span className="text-[10px] uppercase font-bold text-accent bg-accent/10 px-2 py-1 rounded">Dev</span>
-           <span className="text-[10px] uppercase font-bold text-success bg-success/10 px-2 py-1 rounded">Comm</span>
+           <span className="text-[10px] uppercase font-bold text-success bg-success/10 px-2 py-1 rounded">Interview</span>
         </div>
       </div>
       
@@ -49,7 +48,7 @@ export default function ReadinessRadar({ readinessData }) {
           </ResponsiveContainer>
         ) : (
           <div className="flex items-center justify-center h-full text-xs text-muted">
-            Connect GitHub & Resume for Radar scan
+            Review your resume and take a mock interview to fill the radar
           </div>
         )}
       </div>

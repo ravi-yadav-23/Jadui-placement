@@ -1,8 +1,7 @@
 import { supabase } from './supabase';
 
 /**
- * A wrapper around native fetch that automatically attaches the Supabase JWT
- * and optional admin session token.
+ * A wrapper around native fetch that automatically attaches the Supabase JWT.
  * Works for both Next.js API proxy routes and direct backend calls.
  */
 export async function fetchWithAuth(url, options = {}) {
@@ -21,12 +20,6 @@ export async function fetchWithAuth(url, options = {}) {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  if (typeof window !== 'undefined') {
-    const adminToken = sessionStorage.getItem('admin_token');
-    if (adminToken) {
-      headers.set('X-Admin-Token', adminToken);
-    }
-  }
   
   return fetch(url, {
     ...options,

@@ -6,8 +6,7 @@ asyncio_default_fixture_loop_scope = "function"
 line-length = 120
 target-version = "py313"
 # Legacy modules are linted only once they are rewritten.
-extend-exclude = ["modules", ".venv", "app/shared", "app/core/security.py", "app/core/supabase_client.py",
-                  "tests/test_admin_services.py"]
+extend-exclude = ["modules", ".venv", "app/shared", "app/core/security.py", "app/core/supabase_client.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]

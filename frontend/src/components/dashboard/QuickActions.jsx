@@ -6,12 +6,11 @@ export default function QuickActions() {
   return (
     <div>
       <h3 className="font-semibold text-white mb-4">Quick Actions</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'Upload Resume',   href: '/dashboard/resume',    emoji: '📄', color: 'hover:border-primary/40 hover:bg-primary/5'    },
           { label: 'Start Interview', href: '/dashboard/interview', emoji: '🎤', color: 'hover:border-accent/40 hover:bg-accent/5'      },
           { label: 'Ask AI Mentor',   href: '/dashboard/chat',      emoji: '🧠', color: 'hover:border-secondary/40 hover:bg-secondary/5'},
-          { label: 'GitHub profile',  href: '/dashboard/github-profile', emoji: '🐙', color: 'hover:border-primary/40 hover:bg-primary/5' },
           { label: 'View Progress',   href: '/dashboard/progress',  emoji: '📈', color: 'hover:border-success/40 hover:bg-success/5'    },
         ].map((action) => (
           <Link

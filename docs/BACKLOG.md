@@ -14,9 +14,19 @@ Deferred tasks to do before the project is called finished. Tick them off as you
       first real check that Gemini accepts the output schemas. Tune prompts from the results.
 - [ ] **First real end-to-end run** against Supabase (not memory/fake mode): upload, review, JD match.
       Not yet verified: the Supabase data layer and JWKS (asymmetric key) login.
-- [ ] **Push `feat/resume-v2`** and check the GitHub Actions run (backend, frontend, e2e).
+- [ ] **Check the GitHub Actions run on `main`** (backend, frontend, e2e) at
+      https://github.com/ravi-yadav-23/Jadui-placement/actions
 - [ ] **Update CV bullets** in `CV Optimizer/profile/projects/jadui-placement.json`: mark the old,
       inaccurate Jadui bullets unverified; add the new ones (draft in `docs/learn/resume-screener-guide.md`
       §12) with numbers from the eval report.
-- [ ] **Optional: update the local git remote.** The repo moved to `ravi-yadav-23/Jadui-placement` (the old
-      `Ravi-Dahiya-00` URL still redirects): `git remote set-url origin https://github.com/ravi-yadav-23/Jadui-placement.git`
+
+## Cleanup leftovers (from the Phase 0 cleanup, 2026-11-25)
+
+- [ ] **Drop the unused tables in Supabase** once you have checked they hold nothing you want to keep:
+      `workshops`, `github_pr_reviews`, `github_repo_analyses`, and the `role` column on `profiles`
+      (the code that used them is deleted). Not done automatically because dropping tables deletes data.
+- [ ] **Delete the old audit files in the parent folder** (`../a.txt`, `../report.txt`,
+      `../cleanup_manifesto.md`, `../code_audit_report.md`). They are outside git, so deleting them cannot be
+      undone; `REVIEW.md` replaces them.
+- [ ] **Pick a license.** The README used to say MIT and link a `LICENSE` file that does not exist. Add one
+      (e.g. MIT) if you want others to reuse the code.

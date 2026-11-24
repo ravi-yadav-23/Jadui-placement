@@ -127,7 +127,7 @@ function appReducer(state, action) {
         // Use the master radar score from the backend
         const radar = action.payload.radar || {}
         const masterScore = radar.consistency !== undefined 
-          ? Math.round((radar.resume + radar.technical + radar.interview + radar.consistency) / 4)
+          ? Math.round((radar.resume + radar.interview + radar.consistency) / 3)
           : Math.round(((action.payload.chatContext?.avgResumeScore || 0) * 0.45) + ((action.payload.chatContext?.avgInterviewScore || 0) * 0.4) + (taskCompletion * 0.15))
 
       return {

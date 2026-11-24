@@ -19,7 +19,7 @@ The goal: you can explain any part of this system, and why it was built that way
 > The part I'm proudest of is the truth guard: AI rewrites may rephrase your bullet but can never add a
 > number, technology, company or leadership claim. Invented numbers become `[X]` placeholders that you
 > fill in yourself. Names and contact details are redacted before any LLM call, to reduce name-based
-> bias. It's tested with 108 unit/API tests, a Playwright E2E test, and an eval harness on a labeled set."
+> bias. It's tested with 107 unit/API tests, a Playwright E2E test, and an eval harness on a labeled set."
 
 ---
 
@@ -247,7 +247,7 @@ the eval harness, which is the right tool for a non-deterministic component.
 # Backend (from backend/)
 python -m venv .venv && .venv\Scripts\activate
 pip install -r requirements-dev.txt
-pytest -q                     # 108 tests, no database or API keys needed
+pytest -q                     # 107 tests, no database or API keys needed
 ruff check .
 
 # Local app without Supabase or API keys
@@ -308,4 +308,4 @@ frontend/e2e/              resume.spec.ts (Playwright)
 - Built a schema-validated LLM layer (Pydantic structured output, repair retry, Gemini→Groq fallback,
   per-call latency/token logging, versioned prompts), cutting AI calls per analysis from 7 to 1–2.
 - Evaluated on a labeled set: [N]% bullet recall, [N]% skill recall, score std-dev [X] points over
-  repeated runs. Tested with 108 pytest tests, a Playwright E2E test and GitHub Actions CI.
+  repeated runs. Tested with 107 pytest tests, a Playwright E2E test and GitHub Actions CI.

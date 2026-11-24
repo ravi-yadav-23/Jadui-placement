@@ -1,5 +1,10 @@
 # Jadui Placement — Full Project Review (2026-11-24)
 
+> **Status (2026-11-25):** the resume screener is rebuilt (v2), and the Phase 0 cleanup is done: admin/TPO
+> panel, workshops, student dossiers, GitHub PR review and GitHub profile analytics are deleted, with unused
+> packages and stale docs. The legacy interview, mentor and system modules stay until their pillars are
+> rebuilt. File references below describe the code as it was on 2026-11-24.
+
 This report replaces the old audits in the parent folder (`a.txt`, `report.txt`, `cleanup_manifesto.md`, `code_audit_report.md`). Those describe files that no longer exist and an earlier version of the product.
 
 Every finding below was checked by reading the code. File references are relative to `agentic-ai-career-coach/`.

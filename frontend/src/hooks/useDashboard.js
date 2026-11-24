@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { fetchResumeHistory } from '@/lib/api/legacyResumeHistory'
 
-export function useDashboard(userId, githubUsername, tasks, progress, chatContext) {
+export function useDashboard(userId, tasks, progress, chatContext) {
   const [resumeHistory, setResumeHistory] = useState([])
   const [interviewHistory, setInterviewHistory] = useState([])
   const [loadingStats, setLoadingStats] = useState(true)
@@ -10,11 +10,9 @@ export function useDashboard(userId, githubUsername, tasks, progress, chatContex
 
   const [readinessData, setReadinessData] = useState([
     { subject: 'Resume', A: 0, value: 0, fullMark: 100 },
-    { subject: 'Technical', A: 0, value: 0, fullMark: 100 },
     { subject: 'Interview', A: 0, value: 0, fullMark: 100 },
     { subject: 'Consistency', A: 0, value: 0, fullMark: 100 },
   ])
-  const [careerSuggestions, setCareerSuggestions] = useState([])
   const [loadingRadar, setLoadingRadar] = useState(true)
 
   const todayTasks = useMemo(() => tasks.filter((t) => t.due === 'Today'), [tasks])
@@ -48,32 +46,23 @@ export function useDashboard(userId, githubUsername, tasks, progress, chatContex
       }
     }
 
-    const loadRadarAndBio = async () => {
+    const loadRadar = async () => {
       if (!userId) {
         setLoadingRadar(false)
         return
       }
       try {
         setLoadingRadar(true)
-        const gh = githubUsername || ''
-        const [radarRes, sugRes] = await Promise.all([
-          fetchWithAuth(`/api/system/readiness?user_id=${userId}${gh ? `&github_username=${gh}` : ''}`, { cache: 'no-store' }),
-          gh ? fetchWithAuth(`/api/system/suggestions?github_username=${gh}`, { cache: 'no-store' }) : Promise.resolve({ ok: false })
-        ])
+        const radarRes = await fetchWithAuth(`/api/system/readiness?user_id=${userId}`, { cache: 'no-store' })
         
         if (mounted) {
           if (radarRes.ok) {
             const radarJson = await radarRes.json()
             setReadinessData([
               { subject: 'Resume', A: radarJson.resume || 0, value: radarJson.resume || 0, fullMark: 100 },
-              { subject: 'Technical', A: radarJson.technical || 0, value: radarJson.technical || 0, fullMark: 100 },
               { subject: 'Interview', A: radarJson.interview || 0, value: radarJson.interview || 0, fullMark: 100 },
               { subject: 'Execution', A: radarJson.consistency || 0, value: radarJson.consistency || 0, fullMark: 100 },
             ])
-          }
-          if (sugRes.ok) {
-            const sugJson = await sugRes.json()
-            setCareerSuggestions(sugJson.suggestions || [])
           }
         }
       } catch (err) {
@@ -86,9 +75,9 @@ export function useDashboard(userId, githubUsername, tasks, progress, chatContex
     }
 
     loadStats()
-    loadRadarAndBio()
+    loadRadar()
     return () => { mounted = false }
-  }, [userId, githubUsername])
+  }, [userId])
 
   const derived = useMemo(() => {
     const latestResume = resumeHistory[0] || null
@@ -126,7 +115,6 @@ export function useDashboard(userId, githubUsername, tasks, progress, chatContex
     loadingStats,
     lastSyncedAt,
     readinessData,
-    careerSuggestions,
     loadingRadar,
     derived,
     todayTasks,

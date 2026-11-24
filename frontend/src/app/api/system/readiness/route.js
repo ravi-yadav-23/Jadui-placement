@@ -10,16 +10,12 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('user_id');
-    const githubUsername = searchParams.get('github_username');
 
     if (!userId) {
       return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
     }
 
-    let url = `${backendUrl}/api/system/readiness?user_id=${encodeURIComponent(userId)}`;
-    if (githubUsername) {
-      url += `&github_username=${encodeURIComponent(githubUsername)}`;
-    }
+    const url = `${backendUrl}/api/system/readiness?user_id=${encodeURIComponent(userId)}`;
 
     const response = await fetch(url, {
       method: 'GET',

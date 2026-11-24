@@ -99,13 +99,8 @@ def regenerate_roadmap(payload: RegenerateRoadmapRequest, user: dict = Depends(g
 
 
 @router.get("/system/readiness")
-def get_readiness_scorecard(github_username: str | None = None, user: dict = Depends(get_current_user)):
-    return intelligence_service.get_readiness_radar(user["sub"], github_username)
-
-
-@router.get("/system/suggestions")
-def get_career_suggestions(github_username: str, user: dict = Depends(get_current_user)):
-    return {"suggestions": intelligence_service.get_placement_suggestions(github_username)}
+def get_readiness_scorecard(user: dict = Depends(get_current_user)):
+    return intelligence_service.get_readiness_radar(user["sub"])
 
 
 @router.get("/system/insights")
@@ -114,6 +109,6 @@ def get_system_insights(user: dict = Depends(get_current_user)):
     radar = intelligence_service.get_readiness_radar(user["sub"])
     return {
         "radar": radar,
-        "avgScore": int(sum(radar.values()) / 4) if radar else 0,
+        "avgScore": int(sum(radar.values()) / len(radar)) if radar else 0,
         "readinessTier": "INTERVIEW_READY" if (radar.get('interview') or 0) > 70 else "BUILD_MODE"
     }

@@ -323,7 +323,7 @@ export async function POST(request) {
 
     // 1) Optional: Gemini on Vercel (env var on the frontend deployment)
     if (vercelGemini) {
-      const modelId = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+      const modelId = process.env.GEMINI_MODEL || 'gemini-3.8-flash'
       const google = createGoogleGenerativeAI({ apiKey: vercelGemini })
       const { text } = await generateText({
         model: google(modelId),
