@@ -4,6 +4,7 @@ They are realistic enough for the UI to render every section, and deterministic,
 so E2E assertions never flake. Real behaviour is measured by the eval suite instead.
 """
 
+import json
 import re
 
 from app.resume.pipeline.sections import alias_map, normalize_heading
@@ -57,6 +58,28 @@ def _fake_structure(prompt: str) -> dict:
     }
 
 
+def _fake_review(prompt: str) -> dict:
+    """Bullets with a number rate higher; bullets without one get a [X] rewrite and a coach question."""
+    ratings = []
+    for item in json.loads(_quoted_block(prompt)):
+        has_metric = "no_metric" not in item["rule_issues"]
+        ratings.append({
+            "bullet_id": item["bullet_id"],
+            "specificity": 4 if has_metric else 3,
+            "technical_depth": 3,
+            "outcome": 4 if has_metric else 2,
+            "issues": [] if has_metric else ["unclear_outcome"],
+            "rewrite": None if has_metric else item["text"].rstrip(".") + ", reducing manual effort by [X]%",
+            "coach_questions": [] if has_metric else ["What measurable result did this have?"],
+        })
+    return {
+        "bullets": ratings,
+        "strengths": ["Relevant backend stack shown in real projects."],
+        "top_actions": ["Add a measurable result to every bullet that lacks one."],
+    }
+
+
 _HANDLERS = {
     "resume_structure": _fake_structure,
+    "resume_review": _fake_review,
 }

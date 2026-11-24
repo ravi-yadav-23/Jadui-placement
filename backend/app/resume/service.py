@@ -35,7 +35,7 @@ def _since(hours: int) -> str:
     return (datetime.now(UTC) - timedelta(hours=hours)).isoformat()
 
 
-def _enforce_daily_limit(db: Database, user_id: str, table: str, limit: int) -> None:
+def enforce_daily_limit(db: Database, user_id: str, table: str, limit: int) -> None:
     if db.count_since(table, user_id, _since(24)) >= limit:
         raise AppError("rate_limited", f"Daily limit reached ({limit}). Try again tomorrow.", 429)
 
@@ -52,7 +52,7 @@ def create_resume(db: Database, user_id: str, filename: str, data: bytes, title:
     if existing:  # same file failed before: let the user retry it
         return db.update("resumes", user_id, existing["id"], {"status": "queued", "error": None}), True
 
-    _enforce_daily_limit(db, user_id, "resumes", settings.DAILY_UPLOAD_LIMIT)
+    enforce_daily_limit(db, user_id, "resumes", settings.DAILY_UPLOAD_LIMIT)
     page_count = count_pdf_pages(data) if kind == "pdf" else 0
     if page_count > settings.RESUME_MAX_PAGES:
         raise AppError("too_many_pages", f"Resumes are limited to {settings.RESUME_MAX_PAGES} pages.", 422)
@@ -111,14 +111,14 @@ def get_resume(db: Database, user_id: str, resume_id: str) -> dict:
     row = db.get("resumes", user_id, resume_id)
     if row is None:
         raise AppError("not_found", "Resume not found", 404)
-    if row["status"] in ("queued", "processing") and _is_stale(row["created_at"]):
+    if row["status"] in ("queued", "processing") and is_stale(row["created_at"]):
         row = db.update("resumes", user_id, resume_id, {
             "status": "failed", "error": "Processing was interrupted. Please upload the file again.",
         })
     return row
 
 
-def _is_stale(created_at: str) -> bool:
+def is_stale(created_at: str) -> bool:
     return datetime.fromisoformat(created_at) < datetime.now(UTC) - STALE_AFTER
 
 

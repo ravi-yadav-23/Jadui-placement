@@ -1,0 +1,109 @@
+# Canonical skill name -> aliases and category. Seeded from the CV Optimizer tag table.
+# Matching is case-insensitive and whole-word ("git" does not match "digital").
+# Add skills here as they show up in JDs; unknown skills are still handled, just not normalised.
+# `implies`: using X shows you know Y (FastAPI -> Python), used when looking for evidence of a skill.
+
+# Languages
+Python: {aliases: [python, python3, py], category: language}
+Java: {aliases: [java], category: language}
+JavaScript: {aliases: [javascript, js, es6], category: language}
+TypeScript: {aliases: [typescript, ts], category: language}
+C++: {aliases: [c++, cpp, c++17], category: language}
+C: {aliases: [c language], category: language}
+C#: {aliases: [c#, csharp, .net], category: language}
+Go: {aliases: [golang], category: language}
+Rust: {aliases: [rust], category: language}
+Kotlin: {aliases: [kotlin], category: language}
+Swift: {aliases: [swift], category: language}
+SQL: {aliases: [sql], category: language}
+Bash: {aliases: [bash, shell scripting, shell], category: language}
+HTML/CSS: {aliases: [html, css, html5, css3, html/css], category: frontend}
+
+# Backend / frameworks
+FastAPI: {aliases: [fastapi], category: backend, implies: [Python]}
+Flask: {aliases: [flask], category: backend, implies: [Python]}
+Django: {aliases: [django], category: backend, implies: [Python]}
+Node.js: {aliases: [node.js, nodejs, node], category: backend, implies: [JavaScript]}
+Express.js: {aliases: [express, express.js, expressjs], category: backend, implies: [Node.js, JavaScript]}
+Spring Boot: {aliases: [spring boot, spring], category: backend, implies: [Java]}
+REST APIs: {aliases: [rest, rest api, rest apis, restful, restful apis], category: backend}
+GraphQL: {aliases: [graphql], category: backend}
+gRPC: {aliases: [grpc], category: backend}
+Microservices: {aliases: [microservices, microservice], category: backend}
+WebSockets: {aliases: [websocket, websockets], category: backend}
+OAuth/JWT: {aliases: [oauth, oauth2, jwt, oauth 2.0], category: backend}
+Celery: {aliases: [celery], category: backend, implies: [Python]}
+Pydantic: {aliases: [pydantic], category: backend, implies: [Python]}
+
+# Frontend
+React: {aliases: [react, react.js, reactjs], category: frontend, implies: [JavaScript]}
+Next.js: {aliases: [next.js, nextjs], category: frontend, implies: [React, JavaScript]}
+Vue: {aliases: [vue, vue.js, vuejs], category: frontend}
+Angular: {aliases: [angular], category: frontend}
+Tailwind CSS: {aliases: [tailwind, tailwind css, tailwindcss], category: frontend}
+Redux: {aliases: [redux, zustand], category: frontend}
+
+# Data stores
+PostgreSQL: {aliases: [postgresql, postgres, psql], category: database, implies: [SQL]}
+MySQL: {aliases: [mysql], category: database, implies: [SQL]}
+MongoDB: {aliases: [mongodb, mongo], category: database}
+Redis: {aliases: [redis], category: database}
+SQLite: {aliases: [sqlite], category: database, implies: [SQL]}
+Supabase: {aliases: [supabase], category: database, implies: [PostgreSQL]}
+Firebase: {aliases: [firebase, firestore], category: database}
+Elasticsearch: {aliases: [elasticsearch, elastic search], category: database}
+Kafka: {aliases: [kafka, apache kafka], category: database}
+RabbitMQ: {aliases: [rabbitmq], category: database}
+
+# DevOps / cloud
+Docker: {aliases: [docker, docker-compose, containerization, containerized], category: devops}
+Kubernetes: {aliases: [kubernetes, k8s], category: devops, implies: [Docker]}
+AWS: {aliases: [aws, amazon web services, ec2, s3, lambda], category: cloud}
+GCP: {aliases: [gcp, google cloud], category: cloud}
+Azure: {aliases: [azure], category: cloud}
+CI/CD: {aliases: [ci/cd, ci, cd, continuous integration], category: devops}
+GitHub Actions: {aliases: [github actions], category: devops, implies: [CI/CD, Git]}
+Jenkins: {aliases: [jenkins], category: devops}
+Terraform: {aliases: [terraform], category: devops}
+Linux: {aliases: [linux, unix], category: devops}
+Git: {aliases: [git, github, gitlab], category: devops}
+Nginx: {aliases: [nginx], category: devops}
+Vercel: {aliases: [vercel], category: devops}
+
+# Testing
+pytest: {aliases: [pytest], category: testing, implies: [Python]}
+Jest: {aliases: [jest], category: testing, implies: [JavaScript]}
+Playwright: {aliases: [playwright], category: testing}
+Selenium: {aliases: [selenium], category: testing}
+Cypress: {aliases: [cypress], category: testing}
+Unit Testing: {aliases: [unit testing, unit tests, integration testing, test automation], category: testing}
+Postman: {aliases: [postman], category: testing}
+
+# AI / ML / data
+Machine Learning: {aliases: [machine learning, ml], category: ai}
+Deep Learning: {aliases: [deep learning], category: ai}
+PyTorch: {aliases: [pytorch, torch], category: ai, implies: [Python]}
+TensorFlow: {aliases: [tensorflow, keras], category: ai}
+scikit-learn: {aliases: [scikit-learn, sklearn], category: ai, implies: [Python]}
+NLP: {aliases: [nlp, natural language processing], category: ai}
+LLMs: {aliases: [llm, llms, large language models, gpt, gemini, prompt engineering], category: ai}
+RAG: {aliases: [rag, retrieval augmented generation, retrieval-augmented generation], category: ai}
+LangChain: {aliases: [langchain, langgraph], category: ai}
+Vector Databases: {aliases: [vector database, vector databases, chromadb, pinecone, pgvector, embeddings], category: ai}
+Pandas: {aliases: [pandas], category: data, implies: [Python]}
+NumPy: {aliases: [numpy], category: data, implies: [Python]}
+Spark: {aliases: [spark, pyspark, apache spark], category: data}
+Airflow: {aliases: [airflow], category: data}
+Data Analysis: {aliases: [data analysis, data analytics], category: data}
+Power BI: {aliases: [power bi, powerbi, tableau], category: data}
+
+# CS fundamentals
+DSA: {aliases: [dsa, data structures, data structures and algorithms, data structures & algorithms, dsa & algorithms], category: fundamentals}
+OOP: {aliases: [oop, object oriented programming, object-oriented programming, oops], category: fundamentals}
+System Design: {aliases: [system design, distributed systems, scalability], category: fundamentals}
+DBMS: {aliases: [dbms, database management], category: fundamentals}
+Operating Systems: {aliases: [operating systems, os concepts], category: fundamentals}
+Computer Networks: {aliases: [computer networks, networking, tcp/ip], category: fundamentals}
+Multithreading: {aliases: [multithreading, concurrency, multi-threading], category: fundamentals}
+Caching: {aliases: [caching, cache], category: fundamentals}
+Agile: {aliases: [agile, scrum, jira], category: process}

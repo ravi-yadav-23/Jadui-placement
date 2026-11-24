@@ -102,6 +102,63 @@ class ResumeProfile(BaseModel):
         return bullets + self.achievements
 
 
+# ---------- General review ----------
+
+class BulletRating(BaseModel):
+    """LLM contract: one judged bullet."""
+    bullet_id: str
+    specificity: int = Field(ge=1, le=5)
+    technical_depth: int = Field(ge=1, le=5)
+    outcome: int = Field(ge=1, le=5)
+    issues: list[Literal["low_depth", "unclear_outcome", "vague", "jargon"]] = Field(default_factory=list)
+    rewrite: str | None = Field(None, description="Improved bullet, or null if it is already strong")
+    coach_questions: list[str] = Field(default_factory=list, description="1-2 questions to the candidate")
+
+
+class ReviewDraft(BaseModel):
+    """LLM contract: the whole review call."""
+    bullets: list[BulletRating]
+    strengths: list[str] = Field(default_factory=list, description="2-3 genuine strengths of this resume")
+    top_actions: list[str] = Field(default_factory=list, description="The 3 most valuable fixes, most important first")
+
+
+class Finding(BaseModel):
+    code: str
+    message: str
+
+
+class BulletFeedback(BaseModel):
+    bullet_id: str
+    section: Literal["experience", "projects", "achievements"]
+    entry_title: str | None = None
+    text: str
+    issues: list[str] = Field(default_factory=list)
+    specificity: int | None = None
+    technical_depth: int | None = None
+    outcome: int | None = None
+    rewrite: str | None = None
+    coach_questions: list[str] = Field(default_factory=list)
+    guard_notes: list[str] = Field(default_factory=list)
+
+
+class SubScore(BaseModel):
+    key: str
+    label: str
+    score: float
+    max: int
+    explanation: str
+
+
+class GeneralReview(BaseModel):
+    overall_score: int
+    sub_scores: list[SubScore]
+    bullets: list[BulletFeedback]
+    findings: list[Finding] = Field(default_factory=list)
+    strengths: list[str] = Field(default_factory=list)
+    top_actions: list[str] = Field(default_factory=list)
+    ungrounded_count: int = 0
+
+
 # ---------- API responses ----------
 
 class ResumeSummary(BaseModel):
@@ -125,3 +182,30 @@ class ResumeDetail(ResumeSummary):
 
 class FileUrl(BaseModel):
     url: str
+
+
+class CreateAnalysis(BaseModel):
+    resume_id: str
+    mode: Literal["general", "jd"] = "general"
+    jd_id: str | None = None
+    target_role: str | None = Field(None, max_length=100)
+
+
+class AnalysisSummary(BaseModel):
+    id: str
+    resume_id: str
+    jd_id: str | None = None
+    mode: Literal["general", "jd"]
+    target_role: str | None = None
+    status: Literal["queued", "running", "done", "failed"]
+    error: str | None = None
+    overall_score: int | None = None
+    created_at: str
+    completed_at: str | None = None
+
+
+class AnalysisDetail(AnalysisSummary):
+    sub_scores: list[SubScore] | None = None
+    result: GeneralReview | None = None
+    prompt_versions: dict = Field(default_factory=dict)
+    model: str | None = None
