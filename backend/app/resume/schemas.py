@@ -322,6 +322,23 @@ class FileUrl(BaseModel):
     url: str
 
 
+class RecentAnalysis(BaseModel):
+    id: str
+    resume_id: str
+    resume_title: str
+    mode: Literal["general", "jd"]
+    target_role: str | None = None
+    jd_title: str | None = None
+    overall_score: int
+    created_at: str
+
+
+class ResumeOverview(BaseModel):
+    resume_count: int
+    recent: list[RecentAnalysis]
+    top_gaps: list[str]
+
+
 class CreateAnalysis(BaseModel):
     resume_id: str
     mode: Literal["general", "jd"] = "general"

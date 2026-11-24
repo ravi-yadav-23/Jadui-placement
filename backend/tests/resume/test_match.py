@@ -122,6 +122,15 @@ def test_jd_match_end_to_end(client, db):
     assert "Kafka" in gaps
 
 
+def test_summary_lists_recent_analyses_and_open_gaps(client):
+    detail = setup_match(client)
+    summary = client.get("/api/v2/resume/summary", headers=auth()).json()
+    assert summary["resume_count"] == 1
+    assert summary["recent"][0]["id"] == detail["id"] and summary["recent"][0]["mode"] == "jd"
+    assert summary["recent"][0]["jd_title"] == "Backend Engineering Intern"
+    assert "Kafka" in summary["top_gaps"]
+
+
 def test_jd_mode_needs_a_ready_jd(client):
     resume_id = client.post("/api/v2/resumes", files={"file": ("Asha_Verma.pdf", builders.single_column_pdf())},
                             headers=auth()).json()["id"]

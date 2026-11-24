@@ -268,6 +268,33 @@
         }
       }
     },
+    "/api/v2/resume/summary": {
+      "get": {
+        "tags": [
+          "resume-v2"
+        ],
+        "summary": "Resume Summary",
+        "description": "Latest scores and open skill gaps, for the dashboard and (later) the planner and coach.",
+        "operationId": "resume_summary_api_v2_resume_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeOverview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/v2/jds": {
       "get": {
         "tags": [
@@ -1885,6 +1912,70 @@
         ],
         "title": "KnockoutResult"
       },
+      "RecentAnalysis": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "resume_id": {
+            "type": "string",
+            "title": "Resume Id"
+          },
+          "resume_title": {
+            "type": "string",
+            "title": "Resume Title"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "general",
+              "jd"
+            ],
+            "title": "Mode"
+          },
+          "target_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Role"
+          },
+          "jd_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jd Title"
+          },
+          "overall_score": {
+            "type": "integer",
+            "title": "Overall Score"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "resume_id",
+          "resume_title",
+          "mode",
+          "overall_score",
+          "created_at"
+        ],
+        "title": "RecentAnalysis"
+      },
       "Requirement": {
         "properties": {
           "text": {
@@ -2083,6 +2174,35 @@
           "created_at"
         ],
         "title": "ResumeDetail"
+      },
+      "ResumeOverview": {
+        "properties": {
+          "resume_count": {
+            "type": "integer",
+            "title": "Resume Count"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/RecentAnalysis"
+            },
+            "type": "array",
+            "title": "Recent"
+          },
+          "top_gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Top Gaps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resume_count",
+          "recent",
+          "top_gaps"
+        ],
+        "title": "ResumeOverview"
       },
       "ResumeProfile": {
         "properties": {

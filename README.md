@@ -21,7 +21,7 @@
 ┌────────────────────────▼────────────────────────────┐
 │              FastAPI Backend (Python)               │
 │                                                     │
-│  resume_ai  ·  interview_ai  ·  github_profile      │
+│  resume (v2)  ·  interview_ai  ·  github_profile    │
 │  github_review  ·  mentor_ai  ·  admin_ai           │
 │  system_ai                                          │
 └────────────────────────┬────────────────────────────┘
@@ -39,7 +39,7 @@
 A career intelligence suite for serious job seekers.
 
 - **Readiness Radar** — Real-time 4-axis score aggregating Resume Quality, Technical Depth (GitHub), Interview Performance, and Consistency into a single placement-readiness metric
-- **AI Resume Intelligence** — Deep resume parsing via Groq, identifying strengths, gaps, and high-impact improvements with section-level feedback
+- **Resume Screener (v2)** — Layout-aware PDF/DOCX parsing, 16 parse-health checks, bullet-by-bullet review with a truth guard (AI rewrites never add facts), and evidence-cited JD matching with eligibility knockouts. See [Resume Screener](#resume-screener-v2).
 - **Voice Interview Engine** — AI-driven mock interviews powered by Gemini + Vapi, with adaptive question generation based on target role and real-time per-answer scoring
 - **GitHub Action Agent** — Automated PR review and technical bio generation derived from commit history and repository analysis
 - **AI Mentor Chat** — Conversational career mentor with full dashboard context awareness
@@ -55,6 +55,30 @@ A control layer for managing users and platform insights.
 
 ---
 
+## Resume Screener (v2)
+
+The first pillar rebuilt from scratch (`backend/app/resume`, `frontend/src/features/resume`).
+
+```
+upload -> layout-aware text extraction -> 16 parse-health checks -> PII redaction
+       -> LLM structuring + grounding check -> general review  or  JD match -> documented score
+```
+
+- **Deterministic first.** 75/100 of the general score is computed by rules; the LLM rates substance on an
+  anchored 1-5 rubric. Every sub-score shows its formula in the UI.
+- **Grounded AI output.** Every bullet the LLM extracts must exist in the original text; every requirement
+  marked as met quotes the bullet that proves it.
+- **Truth guard.** Suggested rewrites can rephrase but never add numbers, technologies, companies or
+  leadership claims. Missing metrics become `[X]` placeholders plus coach questions.
+- **Bias reduction.** Name and contact details are redacted before any LLM call.
+- **Engineering.** Pydantic-validated LLM layer (repair retry, Gemini->Groq fallback, call logging,
+  versioned prompts), user-scoped data access + Supabase RLS, content-hash caching, 108 backend tests,
+  Playwright E2E, eval harness on labeled cases, GitHub Actions CI.
+
+Study guide with design decisions and formulas: [docs/learn/resume-screener-guide.md](docs/learn/resume-screener-guide.md)
+
+---
+
 ## Technology Stack
 
 | Layer | Technology |
@@ -62,10 +86,10 @@ A control layer for managing users and platform insights.
 | **Frontend** | Next.js 14, Tailwind CSS, Radix UI, Recharts, Framer Motion |
 | **Backend** | FastAPI (Python), Pydantic, Uvicorn |
 | **Database** | Supabase (PostgreSQL + Realtime) |
-| **AI — Resume** | Groq (fast inference, resume parsing) |
+| **AI — Resume** | Gemini (primary) + Groq (fallback), Pydantic-validated structured output |
 | **AI — Interviews** | Google Gemini (question generation + scoring), fallback to OpenAI |
 | **AI — Voice** | Vapi (real-time voice interview sessions) |
-| **Storage** | Cloudinary (resume file storage) |
+| **Storage** | Supabase Storage (private bucket, signed URLs) |
 | **Dev Tools** | GitHub REST API, Git |
 
 ---
@@ -75,7 +99,6 @@ A control layer for managing users and platform insights.
 ```
 backend/
 ├── modules/
-│   ├── resume_ai/        # PDF upload, Groq parsing, analysis, Supabase storage
 │   ├── interview_ai/     # Gemini question generation, per-answer scoring, sessions
 │   ├── github_profile/   # GitHub API aggregation with 6hr caching layer
 │   ├── github_review/    # AI-powered PR review service

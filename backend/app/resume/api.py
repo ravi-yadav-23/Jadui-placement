@@ -8,7 +8,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Response, U
 from app.core.auth import CurrentUser, get_current_user
 from app.core.config import settings
 from app.core.db import Database, get_db
-from app.resume import analysis, jd, service
+from app.resume import analysis, jd, service, summary
 from app.resume.schemas import (
     AnalysisDetail,
     AnalysisSummary,
@@ -18,6 +18,7 @@ from app.resume.schemas import (
     JdDetail,
     JdSummary,
     ResumeDetail,
+    ResumeOverview,
     ResumeProfile,
     ResumeSummary,
 )
@@ -75,6 +76,12 @@ def get_resume_file(resume_id: str, user: CurrentUser = Depends(get_current_user
 @router.delete("/resumes/{resume_id}", status_code=204)
 def delete_resume(resume_id: str, user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
     service.delete_resume(db, user.id, resume_id)
+
+
+@router.get("/resume/summary", response_model=ResumeOverview)
+def resume_summary(user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
+    """Latest scores and open skill gaps, for the dashboard and (later) the planner and coach."""
+    return summary.overview(db, user.id)
 
 
 # ---------- Job descriptions ----------

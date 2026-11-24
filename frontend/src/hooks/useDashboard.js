@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
+import { fetchResumeHistory } from '@/lib/api/legacyResumeHistory'
 
 export function useDashboard(userId, githubUsername, tasks, progress, chatContext) {
   const [resumeHistory, setResumeHistory] = useState([])
@@ -25,14 +26,13 @@ export function useDashboard(userId, githubUsername, tasks, progress, chatContex
       try {
         setLoadingStats(true)
         const uid = userId || '';
-        const [resumeRes, interviewRes] = await Promise.all([
-          fetchWithAuth(`/api/resume/history?limit=12${uid ? `&user_id=${uid}` : ''}`, { cache: 'no-store' }),
+        const [resumeRows, interviewRes] = await Promise.all([
+          fetchResumeHistory().catch(() => []),  // resume v2 general reviews
           fetchWithAuth(`/api/interview/history?limit=12${uid ? `&user_id=${uid}` : ''}`, { cache: 'no-store' }),
         ])
-        const resumeData = await resumeRes.json()
         const interviewData = await interviewRes.json()
         if (mounted) {
-          if (resumeRes.ok) setResumeHistory(resumeData.history || [])
+          setResumeHistory(resumeRows)
           if (interviewRes.ok) setInterviewHistory(interviewData.history || [])
         }
       } catch {

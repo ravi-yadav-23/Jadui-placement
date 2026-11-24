@@ -74,6 +74,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/resume/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Resume Summary
+         * @description Latest scores and open skill gaps, for the dashboard and (later) the planner and coach.
+         */
+        get: operations["resume_summary_api_v2_resume_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/jds": {
         parameters: {
             query?: never;
@@ -546,6 +566,28 @@ export interface components {
             /** Message */
             message: string;
         };
+        /** RecentAnalysis */
+        RecentAnalysis: {
+            /** Id */
+            id: string;
+            /** Resume Id */
+            resume_id: string;
+            /** Resume Title */
+            resume_title: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "general" | "jd";
+            /** Target Role */
+            target_role?: string | null;
+            /** Jd Title */
+            jd_title?: string | null;
+            /** Overall Score */
+            overall_score: number;
+            /** Created At */
+            created_at: string;
+        };
         /** Requirement */
         Requirement: {
             /**
@@ -629,6 +671,15 @@ export interface components {
             checks?: components["schemas"]["Check"][];
             contacts?: components["schemas"]["Contacts"];
             profile?: components["schemas"]["ResumeProfile"] | null;
+        };
+        /** ResumeOverview */
+        ResumeOverview: {
+            /** Resume Count */
+            resume_count: number;
+            /** Recent */
+            recent: components["schemas"]["RecentAnalysis"][];
+            /** Top Gaps */
+            top_gaps: string[];
         };
         /** ResumeProfile */
         ResumeProfile: {
@@ -899,6 +950,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resume_summary_api_v2_resume_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumeOverview"];
                 };
             };
         };

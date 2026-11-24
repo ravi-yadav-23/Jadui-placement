@@ -12,7 +12,7 @@ import { useDashboard } from '@/hooks/useDashboard'
 import { useDashboardActions } from '@/hooks/useDashboardActions'
 
 import ReadinessRadar from '@/components/dashboard/ReadinessRadar'
-import TechBioBooster from '@/components/dashboard/TechBioBooster'
+import Link from 'next/link'
 import CoachSummary from '@/components/dashboard/CoachSummary'
 import RiskAlerts from '@/components/dashboard/RiskAlerts'
 import TaskOverview from '@/components/dashboard/TaskOverview'
@@ -37,7 +37,6 @@ export default function DashboardPage() {
     loadingStats,
     lastSyncedAt,
     readinessData,
-    careerSuggestions,
     derived,
     todayTasks,
     completedToday
@@ -183,7 +182,15 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <ReadinessRadar readinessData={readinessData} />
-        <TechBioBooster careerSuggestions={careerSuggestions} latestResumeId={derived.latestResume?.id} />
+        <Link href="/dashboard/resume" className="card-base flex flex-col justify-between hover:border-primary/50">
+          <div>
+            <p className="text-lg font-semibold text-white">Resume Screener</p>
+            <p className="mt-2 text-sm text-muted">
+              Check how parsers read your resume, get truth-guarded bullet feedback, and match it against a job description.
+            </p>
+          </div>
+          <span className="mt-4 text-sm text-primary">Open the screener →</span>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -6,7 +6,8 @@ Generates placement-specific suggestions and 'Readiness Radar' data.
 from __future__ import annotations
 from typing import Any
 import math
-from modules.resume_ai.services import service as resume_service
+from app.core.db import get_db
+from app.resume.summary import recent_general_scores
 from modules.interview_ai.services import service as interview_service
 from modules.github_profile.services import build_profile
 
@@ -19,11 +20,12 @@ class CareerIntelligenceService:
         3. Interview Performance
         4. Consistency (Tasks/Activity)
         """
-        # 1. Resume Score (Average of all analyses)
-        resume_history = resume_service.get_history(user_id=user_id, limit=5)
-        resume_score = 0
-        if resume_history:
-            resume_score = int(sum(r['score'] for r in resume_history) / len(resume_history))
+        # 1. Resume Score (average of the latest resume v2 general reviews)
+        try:
+            resume_history = recent_general_scores(get_db(), user_id)
+        except Exception:  # legacy demo user ids are not UUIDs
+            resume_history = []
+        resume_score = int(sum(resume_history) / len(resume_history)) if resume_history else 0
             
         # 2. Interview Score (Average of all sessions)
         interview_history = interview_service.get_history(user_id=user_id, limit=5)
