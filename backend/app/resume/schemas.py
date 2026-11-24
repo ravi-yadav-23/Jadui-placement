@@ -32,6 +32,76 @@ class Contacts(BaseModel):
     portfolio: str | None = None
 
 
+# ---------- Structured profile ----------
+# The LLM fills the *Draft* models (plain strings, no IDs). Our code then converts the draft
+# into ResumeProfile: it assigns stable bullet IDs and checks every bullet against the raw text.
+
+class EntryDraft(BaseModel):
+    title: str = Field(description="Role title for a job, or the project name")
+    org: str | None = Field(None, description="Company / organisation; null for personal projects")
+    location: str | None = None
+    start: str | None = Field(None, description="Start date exactly as written, e.g. 'Jun 2025'")
+    end: str | None = Field(None, description="End date exactly as written, e.g. 'Aug 2025' or 'Present'")
+    tech: list[str] = Field(default_factory=list, description="Technologies explicitly listed for this entry")
+    bullets: list[str] = Field(default_factory=list, description="Bullet points copied verbatim")
+
+
+class EducationDraft(BaseModel):
+    institution: str
+    degree: str | None = None
+    field: str | None = None
+    start: str | None = None
+    end: str | None = None
+    grad_year: int | None = Field(None, description="Graduation year as a number, e.g. 2026")
+    cgpa: float | None = Field(None, description="CGPA/GPA as a number, e.g. 8.4")
+    cgpa_scale: float | None = Field(None, description="Scale of the CGPA, e.g. 10 or 4")
+
+
+class ProfileDraft(BaseModel):
+    headline: str | None = Field(None, description="Title line under the name, if any")
+    summary: str | None = None
+    location: str | None = None
+    education: list[EducationDraft] = Field(default_factory=list)
+    experience: list[EntryDraft] = Field(default_factory=list, description="Jobs and internships")
+    projects: list[EntryDraft] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list, description="Each individual skill as its own item")
+    certifications: list[str] = Field(default_factory=list)
+    achievements: list[str] = Field(default_factory=list, description="Awards, leadership, activities")
+
+
+class Bullet(BaseModel):
+    id: str              # e.g. "exp0.b1" = experience entry 0, bullet 1
+    text: str
+    grounded: bool = True  # False = not found in the resume text -> excluded from scoring
+
+
+class Entry(BaseModel):
+    id: str
+    title: str
+    org: str | None = None
+    location: str | None = None
+    start: str | None = None
+    end: str | None = None
+    tech: list[str] = Field(default_factory=list)
+    bullets: list[Bullet] = Field(default_factory=list)
+
+
+class ResumeProfile(BaseModel):
+    headline: str | None = None
+    summary: str | None = None
+    location: str | None = None
+    education: list[EducationDraft] = Field(default_factory=list)
+    experience: list[Entry] = Field(default_factory=list)
+    projects: list[Entry] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list)
+    certifications: list[str] = Field(default_factory=list)
+    achievements: list[Bullet] = Field(default_factory=list)
+
+    def all_bullets(self) -> list[Bullet]:
+        bullets = [b for entry in self.experience + self.projects for b in entry.bullets]
+        return bullets + self.achievements
+
+
 # ---------- API responses ----------
 
 class ResumeSummary(BaseModel):
@@ -50,6 +120,7 @@ class ResumeDetail(ResumeSummary):
     extract_meta: dict = Field(default_factory=dict)
     checks: list[Check] = Field(default_factory=list)
     contacts: Contacts = Field(default_factory=Contacts)
+    profile: ResumeProfile | None = None
 
 
 class FileUrl(BaseModel):

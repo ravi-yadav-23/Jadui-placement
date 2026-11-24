@@ -15,6 +15,7 @@ from datetime import UTC, datetime, timedelta
 from app.core.config import settings
 from app.core.db import Database
 from app.core.errors import AppError
+from app.llm.client import get_llm
 from app.resume.pipeline.checks import CheckContext, run_checks
 from app.resume.pipeline.contacts import extract_contacts
 from app.resume.pipeline.document import ExtractedDoc
@@ -22,6 +23,8 @@ from app.resume.pipeline.extract_docx import extract_docx
 from app.resume.pipeline.extract_pdf import count_pdf_pages, extract_pdf
 from app.resume.pipeline.ingest import MIME_TYPES, FileKind, sha256_hex, validate_upload
 from app.resume.pipeline.sections import find_sections
+from app.resume.pipeline.structure import reassign_ids, structure_resume
+from app.resume.schemas import ResumeProfile
 
 log = logging.getLogger(__name__)
 
@@ -85,14 +88,16 @@ def process_resume(db: Database, user_id: str, resume_id: str, data: bytes, file
         if checks[0].id == "text_extractable" and checks[0].status == "fail":
             raise AppError("scanned_pdf", checks[0].message)
 
+        # Save the deterministic results first: they stay visible even if the LLM step fails.
         db.update("resumes", user_id, resume_id, {
             "raw_text": doc.text,
             "extract_meta": {**doc.meta(), "filename": filename, "sections": list(sections.found)},
             "page_count": doc.page_count,
             "contacts": contacts.model_dump(),
             "checks": [c.model_dump() for c in checks],
-            "status": "ready",
         })
+        profile = structure_resume(get_llm(db, user_id), doc.text, contacts)
+        db.update("resumes", user_id, resume_id, {"profile": profile.model_dump(), "status": "ready"})
     except AppError as exc:
         db.update("resumes", user_id, resume_id, {"status": "failed", "error": exc.message})
     except Exception:
@@ -115,6 +120,15 @@ def get_resume(db: Database, user_id: str, resume_id: str) -> dict:
 
 def _is_stale(created_at: str) -> bool:
     return datetime.fromisoformat(created_at) < datetime.now(UTC) - STALE_AFTER
+
+
+def update_profile(db: Database, user_id: str, resume_id: str, profile: ResumeProfile) -> dict:
+    """The user corrected the extracted profile (wrong section, missed bullet, typo from parsing)."""
+    row = get_resume(db, user_id, resume_id)
+    if row["status"] != "ready":
+        raise AppError("not_ready", "The resume is still being processed.", 409)
+    cleaned = reassign_ids(profile)
+    return db.update("resumes", user_id, resume_id, {"profile": cleaned.model_dump(), "profile_edited": True})
 
 
 def delete_resume(db: Database, user_id: str, resume_id: str) -> None:

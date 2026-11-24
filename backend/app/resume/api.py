@@ -9,7 +9,7 @@ from app.core.auth import CurrentUser, get_current_user
 from app.core.config import settings
 from app.core.db import Database, get_db
 from app.resume import service
-from app.resume.schemas import FileUrl, ResumeDetail, ResumeSummary
+from app.resume.schemas import FileUrl, ResumeDetail, ResumeProfile, ResumeSummary
 
 router = APIRouter(tags=["resume-v2"])
 
@@ -43,6 +43,16 @@ def list_resumes(user: CurrentUser = Depends(get_current_user), db: Database = D
 @router.get("/resumes/{resume_id}", response_model=ResumeDetail)
 def get_resume(resume_id: str, user: CurrentUser = Depends(get_current_user), db: Database = Depends(get_db)):
     return service.get_resume(db, user.id, resume_id)
+
+
+@router.patch("/resumes/{resume_id}/profile", response_model=ResumeDetail)
+def update_profile(
+    resume_id: str,
+    profile: ResumeProfile,
+    user: CurrentUser = Depends(get_current_user),
+    db: Database = Depends(get_db),
+):
+    return service.update_profile(db, user.id, resume_id, profile)
 
 
 @router.get("/resumes/{resume_id}/file", response_model=FileUrl)
