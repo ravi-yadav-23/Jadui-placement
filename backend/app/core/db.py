@@ -176,5 +176,7 @@ class InMemoryDatabase:
 
 @lru_cache(maxsize=1)
 def get_db() -> Database:
-    """FastAPI dependency. Tests replace it with `app.dependency_overrides[get_db]`."""
+    """FastAPI dependency (one shared instance). Tests replace it with `app.dependency_overrides[get_db]`."""
+    if settings.DATABASE_BACKEND == "memory":
+        return InMemoryDatabase()
     return SupabaseDatabase()

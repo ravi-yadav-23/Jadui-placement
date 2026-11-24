@@ -68,3 +68,10 @@ a.txt
 report.txt
 cleanup_manifesto.md
 code_audit_report.md
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+
+# Private eval data (real resumes/JDs never leave your machine)
+backend/evals/resume/private/

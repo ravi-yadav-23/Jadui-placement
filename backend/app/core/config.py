@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     # Projects using asymmetric signing keys are verified through the public JWKS endpoint instead.
     SUPABASE_JWT_SECRET: str = ""
 
+    # "memory" keeps everything in RAM: for local development and the E2E test run only.
+    DATABASE_BACKEND: Literal["supabase", "memory"] = "supabase"
+
     # --- LLM (resume v2) ---
     # "fake" returns canned JSON; used by tests and the Playwright E2E run.
     LLM_PROVIDER: Literal["gemini", "fake"] = "gemini"
