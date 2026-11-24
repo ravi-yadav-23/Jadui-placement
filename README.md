@@ -12,7 +12,7 @@ The project is being rebuilt pillar by pillar. Each pillar gets a research-backe
 | Pillar | Status |
 |:---|:---|
 | Resume screener (general review + JD match) | **Rebuilt (v2)** |
-| Mock interviews | Legacy, being rebuilt next |
+| Mock interviews (resume, JD, CS fundamentals, HR tracks) | **Rebuilt (v2)** |
 | AI goal-based task planner | Legacy, planned |
 | Dashboard | Legacy, planned |
 | Coach chat | Legacy, planned |
@@ -27,8 +27,9 @@ Next.js 14 (App Router, TypeScript for new code, React Query)
 FastAPI (Python 3.13)
   app/core     auth (JWT/JWKS), errors, user-scoped data layer
   app/llm      one LLM client: versioned prompts, schema validation, retry, fallback, call log
-  app/resume   resume v2 pipeline, API at /api/v2
-  modules/     legacy interview, mentor and system modules (replaced as each pillar is rebuilt)
+  app/resume     resume v2 pipeline, API at /api/v2
+  app/interview  interview v2 engine, API at /api/v2
+  modules/       legacy mentor and system modules (replaced as each pillar is rebuilt)
         |
 Supabase: Postgres with RLS, private Storage, Auth
 ```
@@ -52,10 +53,33 @@ upload -> layout-aware text extraction -> 16 parse-health checks -> PII redactio
   leadership claims. Missing metrics become `[X]` placeholders plus coach questions.
 - **Bias reduction.** Name and contact details are redacted before any LLM call.
 - **Engineering.** Pydantic-validated LLM layer (repair retry, Gemini->Groq fallback, call logging,
-  versioned prompts), user-scoped data access + Supabase RLS, content-hash caching, 107 backend tests,
+  versioned prompts), user-scoped data access + Supabase RLS, content-hash caching, 107 resume tests,
   Playwright E2E, eval harness on labeled cases, GitHub Actions CI.
 
 Study guide with design decisions and formulas: [docs/learn/resume-screener-guide.md](docs/learn/resume-screener-guide.md)
+
+---
+
+## Mock Interviews (v2)
+
+The second pillar (`backend/app/interview`, `frontend/src/features/interview`).
+
+```
+pick a track -> plan questions (resume / JD via 1 LLM call with grounding, or the curated bank)
+  -> answer (text or voice) -> judge: key points + anchored 1-5 rubric -> at most one follow-up -> report
+```
+
+- **Campus-style tracks:** resume deep-dive, JD-based, CS fundamentals (OS, DBMS, CN, OOP), HR/STAR, or a
+  mixed round.
+- **Evidence-based scoring.** Each dimension has a written 1-5 scale. A key point counts only if the judge quotes
+  the answer and code verifies the quote is really there. Score = 60% rubric + 40% key-point coverage.
+- **Hard to game.** Padding and prompt-injection answers are adversarial eval cases; the answer key never
+  reaches the browser.
+- **Connected.** Missed topics are written to `skill_gaps`, next to the resume screener's gaps, for the planner.
+- **Engineering.** Pure state machine for the turn flow, background judging with polling, 32 tests, Playwright
+  E2E, eval harness with hand-labeled answers.
+
+Study guide: [docs/learn/mock-interview-guide.md](docs/learn/mock-interview-guide.md)
 
 ---
 

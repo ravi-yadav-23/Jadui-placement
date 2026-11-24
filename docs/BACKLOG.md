@@ -30,3 +30,15 @@ Deferred tasks to do before the project is called finished. Tick them off as you
       undone; `REVIEW.md` replaces them.
 - [ ] **Pick a license.** The README used to say MIT and link a `LICENSE` file that does not exist. Add one
       (e.g. MIT) if you want others to reuse the code.
+
+## Mock interviews: go-live (from the v2 build, 2026-11-25)
+
+- [ ] **Review the question bank** (`backend/app/interview/data/fundamentals.yaml`, `behavioral.yaml`): fix any
+      key point you disagree with. Wrong key points teach wrong answers.
+- [ ] **Apply the migration** `supabase/migrations/20261126000000_interview_v2.sql` (after the resume one).
+- [ ] **Run the real eval** from `backend/`: `python -m evals.interview.run --out ../docs/evals/interview-v1.md`.
+      Check key-point precision, the padding and injection rows, and HR answers; tune `interview_judge` if needed.
+- [ ] **Try a real interview** in Chrome with voice, then one in practice mode.
+- [ ] **Drop the legacy interview tables** `interview_sessions` and `interview_answers` once you've checked
+      nothing in them is worth keeping (the code that used them is deleted).
+- [ ] **Update CV bullets** with numbers from the eval report (drafts in `docs/learn/mock-interview-guide.md` §14).

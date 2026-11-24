@@ -21,8 +21,10 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: pytest -q
-      - name: Eval harness runs (fake LLM, no API calls)
-        run: python -m evals.resume.run --fake --runs 1
+      - name: Eval harnesses run (fake LLM, no API calls)
+        run: |
+          python -m evals.resume.run --fake --runs 1
+          python -m evals.interview.run --fake --runs 1
 
   frontend:
     runs-on: ubuntu-latest

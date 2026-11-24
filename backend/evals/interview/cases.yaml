@@ -1,0 +1,227 @@
+# Labeled answers for the interview judge eval (synthetic, written by hand).
+# `covered` = indices of the question's key points (in data/fundamentals.yaml / behavioral.yaml)
+# that the answer really covers. Strong answers cover all of them, partial some, weak none.
+# The harness also builds adversarial variants from these: padded, prompt-injection and off-topic.
+
+cases:
+  - bank_id: os.deadlock
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        A deadlock is when a set of processes each wait for a resource held by another, so none of them can
+        proceed. It needs all four Coffman conditions: mutual exclusion, hold and wait, no preemption and circular
+        wait. To prevent it you break one condition, for example acquiring locks in a fixed global order so a
+        circular wait cannot form. The alternatives are avoidance with the Banker's algorithm, or detection and
+        recovery, where the OS finds the cycle and kills or rolls back a process.
+    partial:
+      covered: [0, 2]
+      text: >-
+        Deadlock happens when two processes wait for each other's resources forever and nothing moves. In code I
+        avoid it by always taking locks in the same order in every thread.
+    weak:
+      covered: []
+      text: >-
+        Deadlock is a problem in operating systems where the program gets stuck. It is bad for performance and you
+        should avoid it by writing good code.
+
+  - bank_id: os.paging
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        Paging splits a process's logical memory into fixed-size pages and physical memory into frames of the same
+        size. A page table maps each page number to a frame number, and every address is split into a page number
+        and an offset inside the page. Because any free frame can hold any page, paging removes external
+        fragmentation. To avoid a page table lookup on every access, the TLB caches recent translations.
+    partial:
+      covered: [0, 1]
+      text: >-
+        Memory is divided into fixed-size pages, and RAM is divided into frames of the same size. The page table
+        maps page numbers to frame numbers so the CPU can find the physical address.
+    weak:
+      covered: []
+      text: >-
+        Paging is when the computer uses pages to store things in memory. It helps the computer run more programs.
+
+  - bank_id: os.process_thread
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        A process has its own address space, while threads of the same process share memory, code and open
+        files. Each thread still has its own stack, registers and program counter. Threads are cheaper to create
+        and to context switch than processes. The shared memory makes communication fast but needs
+        synchronization, and one crashing thread can take down the whole process, so for isolation I would use
+        separate processes.
+    partial:
+      covered: [0, 2]
+      text: >-
+        A process has its own memory space, but threads inside a process share the same memory. Threads are
+        lighter, so they are cheaper to create and switch between.
+    weak:
+      covered: []
+      text: >-
+        A thread is a smaller version of a process. Both are used to run programs on the computer.
+
+  - bank_id: dbms.acid
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        Atomicity means all operations in a transaction happen or none do, like a bank transfer where the debit and
+        credit commit together. Consistency means a transaction moves the database from one valid state to another
+        and respects constraints, for example balances never going negative. Isolation means concurrent
+        transactions do not see each other's partial results. Durability means once a transaction commits, the
+        change survives a crash, which databases ensure with a write-ahead log.
+    partial:
+      covered: [0, 3]
+      text: >-
+        Atomicity means either all operations happen or none do, like a money transfer. Durability means once
+        committed, the data survives crashes. The other two are about keeping the data correct.
+    weak:
+      covered: []
+      text: >-
+        ACID is a set of properties that databases follow so that the data is safe and good.
+
+  - bank_id: dbms.indexing
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        An index is a separate sorted structure, usually a B+ tree, that points to the table's rows. With it a lookup
+        becomes logarithmic instead of a full table scan. A clustered index decides the physical order of rows, so
+        there is one per table, while non-clustered indexes are separate structures. The cost is extra storage and
+        slower inserts, updates and deletes, because every index must be maintained on each write.
+    partial:
+      covered: [0, 1]
+      text: >-
+        An index is usually a B+ tree that keeps keys sorted and points to rows, so the database can find a row in
+        logarithmic time instead of scanning the whole table.
+    weak:
+      covered: []
+      text: >-
+        Indexes make queries faster. You should add them to columns you use a lot.
+
+  - bank_id: dbms.keys
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        A super key is any set of columns that uniquely identifies a row. A candidate key is a minimal super key,
+        and a table can have several. The primary key is the candidate key we choose, and it cannot be NULL. A
+        foreign key references the key of another table to enforce referential integrity, like orders.customer_id
+        pointing to customers.id.
+    partial:
+      covered: [2, 3]
+      text: >-
+        The primary key uniquely identifies each row and cannot be NULL. A foreign key references the primary key
+        of another table, so you cannot insert an order for a customer that does not exist.
+    weak:
+      covered: []
+      text: >-
+        Keys are columns in a table. The primary key is the most important one.
+
+  - bank_id: cn.tcp_udp
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        TCP is connection-oriented and reliable: it delivers bytes in order and retransmits lost packets. It also has
+        flow control and congestion control so it does not overwhelm the receiver or the network. UDP is
+        connectionless, with no delivery or ordering guarantees, but it has lower overhead and latency. So TCP
+        fits web pages, file transfer and email, while UDP fits video calls, online gaming and DNS lookups.
+    partial:
+      covered: [0, 3]
+      text: >-
+        TCP is reliable and ordered because it retransmits lost packets, so we use it for web pages and file
+        transfer. UDP is used for video calls and gaming.
+    weak:
+      covered: []
+      text: >-
+        TCP and UDP are both protocols. TCP is more popular and UDP is used sometimes.
+
+  - bank_id: cn.url_flow
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        First, DNS resolution turns the domain into an IP address, checking the browser cache, the OS cache and
+        then the resolver. Then the browser opens a TCP connection, plus a TLS handshake for HTTPS. It sends an HTTP
+        request and the server returns a response with the HTML. Finally the browser parses the HTML, fetches the
+        CSS, JavaScript and images, and renders the page.
+    partial:
+      covered: [0, 2]
+      text: >-
+        DNS turns the domain name into an IP address. Then the browser sends an HTTP request to that server and
+        gets back an HTTP response.
+    weak:
+      covered: []
+      text: >-
+        The browser goes to the website and loads it. The internet sends the page back.
+
+  - bank_id: oop.pillars
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        Encapsulation bundles data with the methods that use it and hides internal state, like a BankAccount whose
+        balance is private and changed only through deposit. Abstraction exposes what an object does, not how, like
+        calling send on a notifier without knowing the protocol. Inheritance lets a class reuse and extend another,
+        like SavingsAccount extending BankAccount. Polymorphism means the same call behaves differently depending
+        on the object's actual type, like draw on a Circle versus a Square.
+    partial:
+      covered: [0, 2]
+      text: >-
+        Encapsulation hides internal state behind methods, like a private balance field. Inheritance means a class
+        can reuse and extend another class. There are two more, abstraction and polymorphism.
+    weak:
+      covered: []
+      text: >-
+        OOP has four pillars that make code organised. They are important in Java.
+
+  - bank_id: oop.overloading_overriding
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        Overloading is the same method name with different parameter lists in the same class, like add(int, int)
+        and add(double, double), and it is resolved at compile time, which is static polymorphism. Overriding is a
+        subclass redefining a parent method with the same signature, and the version that runs is chosen at run
+        time based on the object, which is dynamic polymorphism.
+    partial:
+      covered: [0, 2]
+      text: >-
+        Overloading means the same method name with different parameters in one class. Overriding is when a
+        subclass redefines a method from the parent class with the same signature.
+    weak:
+      covered: []
+      text: >-
+        Both are ways of writing methods in object-oriented programming. They are similar.
+
+  - bank_id: hr.conflict
+    strong:
+      covered: [0, 1, 2, 3, 4]
+      text: >-
+        In my second-year team project, a teammate wanted MongoDB while I wanted PostgreSQL for our booking app.
+        Before arguing, I asked him to explain his reasons, and I understood he wanted to move fast without a
+        fixed schema. I suggested we build a small prototype of the booking flow with both, and the data showed we
+        needed joins and transactions for payments. We chose PostgreSQL together, and he took over the schema
+        design, so we stayed on good terms. I learned that data from a quick prototype settles arguments better
+        than opinions.
+    partial:
+      covered: [0, 3]
+      text: >-
+        In a college project my teammate and I disagreed about which database to use. In the end we went with
+        PostgreSQL and the project worked out fine.
+    weak:
+      covered: []
+      text: >-
+        I do not really have conflicts with people. I am easy to work with and I get along with everyone.
+
+  - bank_id: hr.failure
+    strong:
+      covered: [0, 1, 2, 3]
+      text: >-
+        I pushed a database migration to our club's event app without testing it on a copy of the data, and it
+        dropped a column we still used. Registration broke for about two hours during an event launch. I rolled the
+        migration back, restored the column from the backup and posted an update to the users. Since then I always
+        run migrations on a staging copy first and I added a migration check to our CI pipeline.
+    partial:
+      covered: [0, 2]
+      text: >-
+        I once pushed a migration that broke our app. I rolled it back and fixed the problem quickly.
+    weak:
+      covered: []
+      text: >-
+        My biggest failure is that I work too hard and care too much about quality.
