@@ -18,5 +18,5 @@ Deferred tasks to do before the project is called finished. Tick them off as you
 - [ ] **Update CV bullets** in `CV Optimizer/profile/projects/jadui-placement.json`: mark the old,
       inaccurate Jadui bullets unverified; add the new ones (draft in `docs/learn/resume-screener-guide.md`
       §12) with numbers from the eval report.
-- [ ] **Check the GitHub link on your CV**: it points to `ravi-yadav-23/Jadui-placement`, while this repo's
-      remote is `Ravi-Dahiya-00/Jadui-placement`.
+- [ ] **Optional: update the local git remote.** The repo moved to `ravi-yadav-23/Jadui-placement` (the old
+      `Ravi-Dahiya-00` URL still redirects): `git remote set-url origin https://github.com/ravi-yadav-23/Jadui-placement.git`
