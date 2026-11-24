@@ -36,16 +36,14 @@ class Settings(BaseSettings):
     # --- Planner v2 ---
     PLANNER_BUFFER: float = 0.15        # plan with 85% of the hours you state (planning fallacy)
     PLANNER_HORIZON_DAYS: int = 14      # dated tasks are kept this far ahead; the rest is weekly milestones
+
+    # --- Coach ---
+    COACH_DAILY_MESSAGES: int = 60
     RESUME_STORAGE_BUCKET: str = "resumes"
 
-    # --- Legacy AI settings (old modules, removed at the switchover) ---
+    # --- LLM keys (Gemini primary, Groq fallback) ---
     GEMINI_API_KEY: str | None = None
-    GEMINI_MODEL: str = "gemini-3.8-flash"
     GROQ_API_KEY: str | None = None
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
-    OPENAI_API_KEY: str | None = None
-    MENTOR_TEMPERATURE: float = 0.88
-    MENTOR_MAX_OUTPUT_TOKENS: int = 2048
 
     # --- App ---
     PORT: int = 8000

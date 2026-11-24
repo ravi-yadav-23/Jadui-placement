@@ -202,7 +202,21 @@ def _fake_planner_projects(prompt: str) -> dict:
                           "milestones": ["Design the tables", "Build the API", "Add tests", "Deploy it"]}]}
 
 
+def _fake_coach(prompt: str) -> dict:
+    """Mentions today's first task and proposes opening the planner (+ marking that task done if asked)."""
+    context = json.loads(_quoted_block(prompt))
+    message = prompt.split("<message>")[-1].split("</message>")[0].lower()   # the last tag holds the message
+    tasks = [t for t in (context.get("plan") or {}).get("tasks", []) if t["status"] == "todo"]
+    actions = [{"type": "open_page", "label": "Open planner", "page": "planner"}]
+    if tasks and "finished" in message:
+        actions.insert(0, {"type": "mark_task_done", "label": "Mark it done", "task_id": tasks[0]["id"]})
+    actions.append({"type": "mark_task_done", "label": "Invented task", "task_id": "not-a-real-id"})
+    first = f"Next up: {tasks[0]['title']}." if tasks else "You have no tasks yet; create a study plan first."
+    return {"reply": first, "actions": actions}
+
+
 _HANDLERS = {
+    "coach": _fake_coach,
     "planner_summary": _fake_planner_summary,
     "planner_projects": _fake_planner_projects,
     "interview_plan": _fake_plan,

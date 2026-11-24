@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
+from app.core.config import settings
 from app.planner.capacity import (
     build_calendar,
     default_target,
@@ -24,7 +25,7 @@ from app.planner.scheduler import Schedule, Settings, build_schedule
 from app.planner.schemas import Feasibility, PlannerProfile, PlanTopic, SubjectAllocation
 from app.planner.selection import LANGUAGES, minutes_per_problem, select_topics, subject_weights
 
-DEFAULT_FACTOR = 0.85  # plan with 85% of the stated hours (15% buffer)
+DEFAULT_FACTOR = 1 - settings.PLANNER_BUFFER  # plan with 85% of the stated hours (15% buffer)
 MIN_TOP_UP = 60
 # Spare time goes to more practice in subjects that can absorb it, up to each subject's share (plan §5.2).
 TOP_UPS = {

@@ -19,7 +19,7 @@ from app.core.db import Database, utc_now
 from app.core.errors import AppError
 from app.llm.client import get_llm
 from app.planner import text
-from app.planner.builder import BuiltPlan, allocation, build_plan, schedule_topics
+from app.planner.builder import DEFAULT_FACTOR, BuiltPlan, allocation, build_plan, schedule_topics
 from app.planner.capacity import day_minutes
 from app.planner.curriculum import CURRICULUM_VERSION, load_curriculum
 from app.planner.schemas import (
@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 
 CS_GAP_LABELS = {"os": "OS", "dbms": "DBMS", "cn": "Computer Networks", "oop": "OOP"}  # interview gap prefixes
 RELEARN_MINUTES = 90
-MIN_FACTOR, MAX_FACTOR = 0.4, 0.85
+MIN_FACTOR, MAX_FACTOR = 0.4, DEFAULT_FACTOR
 
 
 def today() -> date:
@@ -137,7 +137,7 @@ def create_plan(db: Database, user_id: str, profile: PlannerProfile) -> dict:
         "allocation": [a.model_dump() for a in built.allocation],
         "roadmap": built.schedule.roadmap.model_dump(mode="json"),
         "feasibility": built.feasibility.model_dump(),
-        "capacity_factor": 0.85,
+        "capacity_factor": DEFAULT_FACTOR,
         "summary": text.template_summary(facts).model_dump(),
         "curriculum_version": CURRICULUM_VERSION,
         "refreshed_on": today().isoformat(),
@@ -374,7 +374,7 @@ def checkin(db: Database, user_id: str, request: CheckinRequest) -> dict:
     recent = [c for c in db.list("plan_checkins", user_id, limit=10, plan_id=plan["id"]) if c["planned_minutes"]][:2]
     if len(recent) == 2:   # plan with what you really do: 0.85 × your completion rate, between 0.4 and 0.85
         rate = sum(c["done_minutes"] / c["planned_minutes"] for c in recent) / 2
-        update["capacity_factor"] = round(min(MAX_FACTOR, max(MIN_FACTOR, 0.85 * rate)), 2)
+        update["capacity_factor"] = round(min(MAX_FACTOR, max(MIN_FACTOR, DEFAULT_FACTOR * rate)), 2)
     pace = {"too_hard": 1.15, "too_easy": 0.9}.get(request.difficulty)
     if pace:
         per_problem = min(60, max(20, plan["settings"]["minutes_per_problem"] * pace))

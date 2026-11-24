@@ -6,8 +6,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from app.coach.api import router as coach_router
 from app.core.db import InMemoryDatabase, get_db
 from app.core.errors import register_error_handlers
+from app.dashboard.api import router as dashboard_router
 from app.interview.api import router as interview_router
 from app.planner.api import router as planner_router
 from app.planner.schemas import PlannerProfile
@@ -35,7 +37,7 @@ def db() -> InMemoryDatabase:
 def client(db) -> TestClient:
     app = FastAPI()
     register_error_handlers(app)
-    for router in (resume_router, interview_router, planner_router):
+    for router in (resume_router, interview_router, planner_router, dashboard_router, coach_router):
         app.include_router(router, prefix="/api/v2")
     app.dependency_overrides[get_db] = lambda: db
     return TestClient(app)

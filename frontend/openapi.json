@@ -1004,10 +1004,662 @@
           }
         ]
       }
+    },
+    "/api/v2/planner/profile": {
+      "get": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Get Profile",
+        "description": "Saved answers (if any) plus suggestions from your resume, gaps and mock interviews.",
+        "operationId": "get_profile_api_v2_planner_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Save Profile",
+        "operationId": "save_profile_api_v2_planner_profile_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannerProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannerProfile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/plans/preview": {
+      "post": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Preview",
+        "description": "What the plan would look like (fits or not, subject mix, phases) without saving anything.",
+        "operationId": "preview_api_v2_plans_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannerProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanPreview"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/plans": {
+      "post": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Create Plan",
+        "operationId": "create_plan_api_v2_plans_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannerProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/plans/current": {
+      "get": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Current",
+        "operationId": "current_api_v2_plans_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/plans/current/tasks": {
+      "get": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Tasks",
+        "operationId": "tasks_api_v2_plans_current_tasks_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskOut"
+                  },
+                  "title": "Response Tasks Api V2 Plans Current Tasks Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/plans/current/replan": {
+      "post": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Replan",
+        "operationId": "replan_api_v2_plans_current_replan_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/plans/current/checkins": {
+      "post": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Checkin",
+        "operationId": "checkin_api_v2_plans_current_checkins_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/tasks/{task_id}": {
+      "patch": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Update Task",
+        "operationId": "update_task_api_v2_tasks__task_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tasks/{task_id}/move": {
+      "post": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Move Task",
+        "operationId": "move_task_api_v2_tasks__task_id__move_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskMove"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/planner/summary": {
+      "get": {
+        "tags": [
+          "planner-v2"
+        ],
+        "summary": "Planner Summary",
+        "description": "Today's tasks, this week's progress, streak and next milestone, for the dashboard and coach.",
+        "operationId": "planner_summary_api_v2_planner_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannerOverview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/dashboard": {
+      "get": {
+        "tags": [
+          "dashboard-v2"
+        ],
+        "summary": "Dashboard",
+        "description": "Readiness (with its formula), setup checklist, next actions, today's tasks and recent activity.",
+        "operationId": "dashboard_api_v2_dashboard_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardOverview"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/me/data": {
+      "delete": {
+        "tags": [
+          "dashboard-v2"
+        ],
+        "summary": "Delete My Data",
+        "description": "Delete everything you created: resumes (and files), JDs, analyses, interviews, plans, coach messages.",
+        "operationId": "delete_my_data_api_v2_me_data_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v2/coach/messages": {
+      "get": {
+        "tags": [
+          "coach-v2"
+        ],
+        "summary": "Messages",
+        "operationId": "messages_api_v2_coach_messages_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CoachMessage"
+                  },
+                  "type": "array",
+                  "title": "Response Messages Api V2 Coach Messages Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "coach-v2"
+        ],
+        "summary": "Send",
+        "description": "Ask the coach. Returns its reply, with 0-3 proposed actions (buttons) that only run when clicked.",
+        "operationId": "send_api_v2_coach_messages_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachMessage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "coach-v2"
+        ],
+        "summary": "Clear",
+        "operationId": "clear_api_v2_coach_messages_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "ActivityItem": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "at": {
+            "type": "string",
+            "title": "At"
+          },
+          "href": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Href"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "title",
+          "at"
+        ],
+        "title": "ActivityItem"
+      },
       "AnalysisDetail": {
         "properties": {
           "id": {
@@ -1447,6 +2099,38 @@
         ],
         "title": "BulletFeedback"
       },
+      "BusyRange": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "BusyRange"
+      },
       "Check": {
         "properties": {
           "id": {
@@ -1486,6 +2170,188 @@
           "message"
         ],
         "title": "Check"
+      },
+      "CheckinRequest": {
+        "properties": {
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "too_easy",
+              "right",
+              "too_hard"
+            ],
+            "title": "Difficulty"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "busy": {
+            "items": {
+              "$ref": "#/components/schemas/BusyRange"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Busy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "difficulty"
+        ],
+        "title": "CheckinRequest"
+      },
+      "CoachAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "open_page",
+              "start_interview",
+              "mark_task_done",
+              "move_task",
+              "replan"
+            ],
+            "title": "Type"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Button text, at most 6 words"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "today",
+                  "planner",
+                  "roadmap",
+                  "interview",
+                  "resume",
+                  "settings"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page",
+            "description": "open_page only"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id",
+            "description": "mark_task_done / move_task: an id from the context's tasks"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date",
+            "description": "move_task only: the new date"
+          },
+          "track": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "mixed",
+                  "resume",
+                  "jd",
+                  "fundamentals",
+                  "behavioral"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track",
+            "description": "start_interview only"
+          },
+          "topics": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "os",
+                "dbms",
+                "cn",
+                "oop"
+              ]
+            },
+            "type": "array",
+            "title": "Topics",
+            "description": "start_interview with fundamentals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "label"
+        ],
+        "title": "CoachAction",
+        "description": "Something the coach proposes. It runs only when the student clicks the button (human in the loop)."
+      },
+      "CoachMessage": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "title": "Role"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/CoachAction"
+            },
+            "type": "array",
+            "title": "Actions"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "role",
+          "content",
+          "created_at"
+        ],
+        "title": "CoachMessage"
       },
       "Contacts": {
         "properties": {
@@ -1752,6 +2618,74 @@
           "raw_text"
         ],
         "title": "CreateJd"
+      },
+      "DashboardOverview": {
+        "properties": {
+          "readiness": {
+            "$ref": "#/components/schemas/Readiness"
+          },
+          "setup": {
+            "items": {
+              "$ref": "#/components/schemas/SetupStep"
+            },
+            "type": "array",
+            "title": "Setup"
+          },
+          "next_actions": {
+            "items": {
+              "$ref": "#/components/schemas/NextAction"
+            },
+            "type": "array",
+            "title": "Next Actions"
+          },
+          "today": {
+            "$ref": "#/components/schemas/PlannerOverview"
+          },
+          "interview_trend": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Interview Trend"
+          },
+          "latest_resume_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Resume Score"
+          },
+          "open_gaps": {
+            "items": {
+              "$ref": "#/components/schemas/GapItem"
+            },
+            "type": "array",
+            "title": "Open Gaps"
+          },
+          "activity": {
+            "items": {
+              "$ref": "#/components/schemas/ActivityItem"
+            },
+            "type": "array",
+            "title": "Activity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "readiness",
+          "setup",
+          "next_actions",
+          "today",
+          "interview_trend",
+          "latest_resume_score",
+          "open_gaps",
+          "activity"
+        ],
+        "title": "DashboardOverview"
       },
       "Delivery": {
         "properties": {
@@ -2047,6 +2981,57 @@
         ],
         "title": "Evidence"
       },
+      "Feasibility": {
+        "properties": {
+          "fits": {
+            "type": "boolean",
+            "title": "Fits"
+          },
+          "must_covered": {
+            "type": "boolean",
+            "title": "Must Covered"
+          },
+          "demand_minutes": {
+            "type": "integer",
+            "title": "Demand Minutes"
+          },
+          "capacity_minutes": {
+            "type": "integer",
+            "title": "Capacity Minutes"
+          },
+          "cut": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cut"
+          },
+          "suggestion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggestion"
+          },
+          "on_track": {
+            "type": "boolean",
+            "title": "On Track",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "fits",
+          "must_covered",
+          "demand_minutes",
+          "capacity_minutes"
+        ],
+        "title": "Feasibility"
+      },
       "FileUrl": {
         "properties": {
           "url": {
@@ -2077,6 +3062,24 @@
           "message"
         ],
         "title": "Finding"
+      },
+      "GapItem": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "source"
+        ],
+        "title": "GapItem"
       },
       "GeneralReview": {
         "properties": {
@@ -2909,6 +3912,694 @@
         ],
         "title": "KnockoutResult"
       },
+      "NextAction": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "href": {
+            "type": "string",
+            "title": "Href"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "href",
+          "reason"
+        ],
+        "title": "NextAction"
+      },
+      "Phase": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "start",
+          "end"
+        ],
+        "title": "Phase"
+      },
+      "PhaseText": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "text"
+        ],
+        "title": "PhaseText"
+      },
+      "PlanDetail": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "target_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Target Date"
+          },
+          "weeks": {
+            "type": "number",
+            "title": "Weeks"
+          },
+          "hours_per_week": {
+            "type": "number",
+            "title": "Hours Per Week"
+          },
+          "allocation": {
+            "items": {
+              "$ref": "#/components/schemas/SubjectAllocation"
+            },
+            "type": "array",
+            "title": "Allocation"
+          },
+          "feasibility": {
+            "$ref": "#/components/schemas/Feasibility"
+          },
+          "roadmap": {
+            "$ref": "#/components/schemas/Roadmap"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "capacity_factor": {
+            "type": "number",
+            "title": "Capacity Factor"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoadmapSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "projects": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ProjectIdea"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Projects"
+          },
+          "topics": {
+            "items": {
+              "$ref": "#/components/schemas/TopicOut"
+            },
+            "type": "array",
+            "title": "Topics"
+          },
+          "study_time": {
+            "type": "string",
+            "title": "Study Time"
+          },
+          "checkin_due": {
+            "type": "boolean",
+            "title": "Checkin Due",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_date",
+          "target_date",
+          "weeks",
+          "hours_per_week",
+          "allocation",
+          "feasibility",
+          "roadmap",
+          "id",
+          "status",
+          "created_at",
+          "capacity_factor",
+          "topics",
+          "study_time"
+        ],
+        "title": "PlanDetail"
+      },
+      "PlanPreview": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "target_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Target Date"
+          },
+          "weeks": {
+            "type": "number",
+            "title": "Weeks"
+          },
+          "hours_per_week": {
+            "type": "number",
+            "title": "Hours Per Week"
+          },
+          "allocation": {
+            "items": {
+              "$ref": "#/components/schemas/SubjectAllocation"
+            },
+            "type": "array",
+            "title": "Allocation"
+          },
+          "feasibility": {
+            "$ref": "#/components/schemas/Feasibility"
+          },
+          "roadmap": {
+            "$ref": "#/components/schemas/Roadmap"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_date",
+          "target_date",
+          "weeks",
+          "hours_per_week",
+          "allocation",
+          "feasibility",
+          "roadmap"
+        ],
+        "title": "PlanPreview"
+      },
+      "PlannerOverview": {
+        "properties": {
+          "has_plan": {
+            "type": "boolean",
+            "title": "Has Plan"
+          },
+          "target_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Date"
+          },
+          "today": {
+            "items": {
+              "$ref": "#/components/schemas/TaskOut"
+            },
+            "type": "array",
+            "title": "Today"
+          },
+          "week_planned_minutes": {
+            "type": "integer",
+            "title": "Week Planned Minutes",
+            "default": 0
+          },
+          "week_done_minutes": {
+            "type": "integer",
+            "title": "Week Done Minutes",
+            "default": 0
+          },
+          "streak_days": {
+            "type": "integer",
+            "title": "Streak Days",
+            "default": 0
+          },
+          "on_track": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "On Track"
+          },
+          "next_milestone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Milestone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "has_plan"
+        ],
+        "title": "PlannerOverview",
+        "description": "Compact summary for the dashboard and coach chat."
+      },
+      "PlannerProfile": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "student",
+              "graduate",
+              "professional"
+            ],
+            "title": "Status"
+          },
+          "degree": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "btech",
+                  "bca",
+                  "mca",
+                  "mtech",
+                  "bsc",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Degree"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          },
+          "graduation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduation"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "internship",
+                  "placement"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "experience_years": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 15.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years"
+          },
+          "current_role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Role"
+          },
+          "stack": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Stack"
+          },
+          "target_role": {
+            "type": "string",
+            "enum": [
+              "sde",
+              "backend",
+              "frontend",
+              "fullstack",
+              "data"
+            ],
+            "title": "Target Role",
+            "default": "sde"
+          },
+          "target_level": {
+            "type": "string",
+            "enum": [
+              "entry",
+              "mid",
+              "senior"
+            ],
+            "title": "Target Level",
+            "default": "entry"
+          },
+          "company_types": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "service",
+                "product",
+                "top_product"
+              ]
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Company Types"
+          },
+          "target_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Date"
+          },
+          "weekday_hours": {
+            "type": "number",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Weekday Hours"
+          },
+          "weekend_hours": {
+            "type": "number",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "title": "Weekend Hours"
+          },
+          "rest_day": {
+            "type": "string",
+            "enum": [
+              "none",
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri",
+              "sat",
+              "sun"
+            ],
+            "title": "Rest Day",
+            "default": "none"
+          },
+          "busy": {
+            "items": {
+              "$ref": "#/components/schemas/BusyRange"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Busy"
+          },
+          "study_time": {
+            "type": "string",
+            "enum": [
+              "morning",
+              "afternoon",
+              "evening",
+              "night"
+            ],
+            "title": "Study Time",
+            "default": "evening"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "cpp",
+              "java",
+              "python",
+              "javascript",
+              "go"
+            ],
+            "title": "Language",
+            "default": "python"
+          },
+          "language_comfort": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Language Comfort",
+            "default": 2
+          },
+          "ratings": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "dsa",
+                "os",
+                "dbms",
+                "cn",
+                "oop",
+                "system_design",
+                "aptitude"
+              ]
+            },
+            "type": "object",
+            "title": "Ratings"
+          },
+          "problems_solved": {
+            "type": "string",
+            "enum": [
+              "0",
+              "lt50",
+              "50_150",
+              "150_300",
+              "300_plus"
+            ],
+            "title": "Problems Solved",
+            "default": "0"
+          },
+          "projects": {
+            "type": "integer",
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Projects",
+            "default": 0
+          },
+          "projects_deployed": {
+            "type": "boolean",
+            "title": "Projects Deployed",
+            "default": false
+          },
+          "include_gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Include Gaps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "company_types",
+          "weekday_hours",
+          "weekend_hours"
+        ],
+        "title": "PlannerProfile",
+        "description": "The answers to the five-step questionnaire. Conditional fields are checked in `_conditional`."
+      },
+      "ProfileResponse": {
+        "properties": {
+          "profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlannerProfile"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "suggestions": {
+            "$ref": "#/components/schemas/ProfileSuggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "profile",
+          "suggestions"
+        ],
+        "title": "ProfileResponse"
+      },
+      "ProfileSuggestions": {
+        "properties": {
+          "resume_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resume Title"
+          },
+          "projects": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Projects"
+          },
+          "stack": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Stack"
+          },
+          "gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Gaps"
+          },
+          "interview_topics": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Interview Topics"
+          },
+          "ratings": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Ratings"
+          }
+        },
+        "type": "object",
+        "title": "ProfileSuggestions",
+        "description": "Pre-filled from the other pillars, for the user to confirm."
+      },
+      "ProjectIdea": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Short project name"
+          },
+          "why": {
+            "type": "string",
+            "title": "Why",
+            "description": "One sentence: why this project fits the target role"
+          },
+          "tech": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tech",
+            "description": "3-6 technologies"
+          },
+          "milestones": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Milestones",
+            "description": "4-6 milestones, each a short action"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "why",
+          "tech",
+          "milestones"
+        ],
+        "title": "ProjectIdea"
+      },
       "QuestionReport": {
         "properties": {
           "question_id": {
@@ -2966,6 +4657,79 @@
           "score"
         ],
         "title": "QuestionReport"
+      },
+      "Readiness": {
+        "properties": {
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/ReadinessPart"
+            },
+            "type": "array",
+            "title": "Parts"
+          },
+          "formula": {
+            "type": "string",
+            "title": "Formula"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score",
+          "parts",
+          "formula"
+        ],
+        "title": "Readiness"
+      },
+      "ReadinessPart": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "weight": {
+            "type": "integer",
+            "title": "Weight"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "value",
+          "weight",
+          "detail"
+        ],
+        "title": "ReadinessPart"
       },
       "RecentAnalysis": {
         "properties": {
@@ -3435,6 +5199,102 @@
         ],
         "title": "ResumeSummary"
       },
+      "Roadmap": {
+        "properties": {
+          "phases": {
+            "items": {
+              "$ref": "#/components/schemas/Phase"
+            },
+            "type": "array",
+            "title": "Phases"
+          },
+          "weeks": {
+            "items": {
+              "$ref": "#/components/schemas/WeekMilestone"
+            },
+            "type": "array",
+            "title": "Weeks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phases",
+          "weeks"
+        ],
+        "title": "Roadmap"
+      },
+      "RoadmapSummary": {
+        "properties": {
+          "overview": {
+            "type": "string",
+            "title": "Overview"
+          },
+          "phases": {
+            "items": {
+              "$ref": "#/components/schemas/PhaseText"
+            },
+            "type": "array",
+            "title": "Phases"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "template"
+            ],
+            "title": "Source",
+            "default": "template"
+          }
+        },
+        "type": "object",
+        "required": [
+          "overview"
+        ],
+        "title": "RoadmapSummary"
+      },
+      "SendMessage": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "content"
+        ],
+        "title": "SendMessage"
+      },
+      "SetupStep": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "done": {
+            "type": "boolean",
+            "title": "Done"
+          },
+          "href": {
+            "type": "string",
+            "title": "Href"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "done",
+          "href"
+        ],
+        "title": "SetupStep"
+      },
       "SubScore": {
         "properties": {
           "key": {
@@ -3467,6 +5327,39 @@
           "explanation"
         ],
         "title": "SubScore"
+      },
+      "SubjectAllocation": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "weight": {
+            "type": "integer",
+            "title": "Weight"
+          },
+          "planned_minutes": {
+            "type": "integer",
+            "title": "Planned Minutes"
+          },
+          "done_minutes": {
+            "type": "integer",
+            "title": "Done Minutes",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "label",
+          "weight",
+          "planned_minutes"
+        ],
+        "title": "SubjectAllocation"
       },
       "TailoredBullet": {
         "properties": {
@@ -3504,6 +5397,164 @@
           "rewrite"
         ],
         "title": "TailoredBullet"
+      },
+      "TaskMove": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "TaskMove"
+      },
+      "TaskOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "position": {
+            "type": "integer",
+            "title": "Position"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "learn",
+              "practice",
+              "review",
+              "project",
+              "mock",
+              "checkpoint"
+            ],
+            "title": "Kind"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "minutes": {
+            "type": "integer",
+            "title": "Minutes"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "done",
+              "skipped"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "date",
+          "position",
+          "kind",
+          "subject",
+          "title",
+          "minutes",
+          "status"
+        ],
+        "title": "TaskOut"
+      },
+      "TaskUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "done",
+              "skipped"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "TaskUpdate"
+      },
+      "TopicOut": {
+        "properties": {
+          "topic_id": {
+            "type": "string",
+            "title": "Topic Id"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "planned_minutes": {
+            "type": "integer",
+            "title": "Planned Minutes"
+          },
+          "done_minutes": {
+            "type": "integer",
+            "title": "Done Minutes"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "topic_id",
+          "subject",
+          "title",
+          "priority",
+          "source",
+          "planned_minutes",
+          "done_minutes",
+          "status"
+        ],
+        "title": "TopicOut"
       },
       "TurnEvaluation": {
         "properties": {
@@ -3729,6 +5780,46 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WeekMilestone": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Week Start"
+          },
+          "phase": {
+            "type": "string",
+            "title": "Phase"
+          },
+          "minutes": {
+            "type": "integer",
+            "title": "Minutes"
+          },
+          "subjects": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Subjects"
+          },
+          "finishes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Finishes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "phase",
+          "minutes",
+          "subjects",
+          "finishes"
+        ],
+        "title": "WeekMilestone"
       }
     },
     "securitySchemes": {

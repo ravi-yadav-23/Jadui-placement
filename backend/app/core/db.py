@@ -31,6 +31,7 @@ class Database(Protocol):
     def delete(self, table: str, user_id: str, row_id: str) -> None: ...
     def insert_many(self, table: str, user_id: str, rows: list[dict]) -> None: ...
     def delete_many(self, table: str, user_id: str, row_ids: list[str]) -> None: ...
+    def delete_all(self, table: str, user_id: str) -> None: ...
     def count_since(self, table: str, user_id: str, since_iso: str) -> int: ...
     def upsert_many(self, table: str, rows: list[dict], on_conflict: str) -> None: ...
     def log(self, table: str, row: dict) -> None: ...
@@ -96,6 +97,9 @@ class SupabaseDatabase:
     def delete_many(self, table, user_id, row_ids):
         if row_ids:
             self.client.table(table).delete().eq("user_id", user_id).in_("id", row_ids).execute()
+
+    def delete_all(self, table, user_id):
+        self.client.table(table).delete().eq("user_id", user_id).execute()
 
     def upsert_many(self, table, rows, on_conflict):
         if rows:
@@ -168,6 +172,13 @@ class InMemoryDatabase:
     def delete_many(self, table, user_id, row_ids):
         for row_id in row_ids:
             self.delete(table, user_id, row_id)
+
+    def delete_all(self, table, user_id):
+        rows = self._table(table)
+        for row_id in [i for i, r in rows.items() if r["user_id"] == user_id]:
+            del rows[row_id]
+        if table in self.logs:
+            self.logs[table] = [r for r in self.logs[table] if r.get("user_id") != user_id]
 
     def count_since(self, table, user_id, since_iso):
         return sum(1 for r in self._owned(table, user_id) if r["created_at"] >= since_iso)

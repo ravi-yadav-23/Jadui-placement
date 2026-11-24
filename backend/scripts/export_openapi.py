@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from fastapi import FastAPI  # noqa: E402
 
+from app.coach.api import router as coach_router  # noqa: E402
+from app.dashboard.api import router as dashboard_router  # noqa: E402
 from app.interview.api import router as interview_router  # noqa: E402
 from app.planner.api import router as planner_router  # noqa: E402
 from app.resume.api import router  # noqa: E402
@@ -22,6 +24,8 @@ app = FastAPI(title="Jadui Placement API v2")
 app.include_router(router, prefix="/api/v2")
 app.include_router(interview_router, prefix="/api/v2")
 app.include_router(planner_router, prefix="/api/v2")
+app.include_router(dashboard_router, prefix="/api/v2")
+app.include_router(coach_router, prefix="/api/v2")
 
 target = Path(__file__).resolve().parents[2] / "frontend" / "openapi.json"
 target.write_text(json.dumps(app.openapi(), indent=2), encoding="utf-8")
