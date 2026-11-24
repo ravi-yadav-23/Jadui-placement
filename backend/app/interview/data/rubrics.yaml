@@ -1,0 +1,85 @@
+# Anchored rating scales (BARS): every dimension has a written description for each score 1-5.
+# The judge picks the anchor that fits best; it never invents a free number.
+# `types` = which question types use the dimension. `gap` = skill-gap name when the session average is <= 2.
+
+dimensions:
+  correctness:
+    label: Correctness
+    gap: Technical accuracy
+    types: [fundamentals]
+    anchors:
+      1: "Wrong, or does not answer the question."
+      2: "Partly right but with a significant error."
+      3: "Mostly correct with minor inaccuracies or vague spots."
+      4: "Correct, with no real errors."
+      5: "Correct and precise, including terminology and edge cases."
+  depth:
+    label: Depth
+    gap: Explaining how things work
+    types: [fundamentals, project, jd]
+    anchors:
+      1: "No explanation; only buzzwords or a name."
+      2: "Names the concept or tool but does not explain how it works."
+      3: "Explains the main mechanism, with gaps."
+      4: "Explains the mechanism and gives one example, trade-off or detail."
+      5: "Explains the mechanism, trade-offs and an edge case or real-world use."
+  clarity:
+    label: Clarity
+    gap: Clear, structured answers
+    types: [fundamentals, project, jd]
+    anchors:
+      1: "Hard to follow or mostly off-topic."
+      2: "Rambling or disorganised; the main point is buried."
+      3: "Understandable, but could be more direct."
+      4: "Clear and logically ordered."
+      5: "Clear, concise and well structured; easy to follow on first hearing."
+  ownership:
+    label: Ownership
+    gap: Showing your own contribution
+    types: [project, jd]
+    anchors:
+      1: "Cannot say what they personally did."
+      2: "Only 'we' statements; their own part is unclear."
+      3: "Describes their part in general terms."
+      4: "Specific about what they built or decided."
+      5: "Specific about their decisions, the reasons behind them, and the results."
+  tradeoffs:
+    label: Trade-offs
+    gap: Explaining trade-offs
+    types: [project, jd]
+    anchors:
+      1: "No alternatives or reasons mentioned."
+      2: "Says what was chosen but not why."
+      3: "Gives a reason, without alternatives."
+      4: "Compares at least one alternative with a reason."
+      5: "Weighs alternatives with concrete costs and benefits, or says what they would change."
+  structure:
+    label: STAR structure
+    gap: Structuring answers (STAR)
+    types: [behavioral]
+    anchors:
+      1: "No story; generic statements only."
+      2: "A story, but situation, actions or result are missing."
+      3: "Has situation, action and result, but loosely."
+      4: "Clear situation, task, own actions and result."
+      5: "Tight STAR story focused on their own actions, with a clear ending."
+  impact:
+    label: Impact
+    gap: Showing measurable impact
+    types: [behavioral]
+    anchors:
+      1: "No outcome mentioned."
+      2: "Vague outcome ('it went well')."
+      3: "A concrete outcome without scale or numbers."
+      4: "A concrete outcome with some scale, numbers or evidence."
+      5: "A clearly measured outcome tied directly to their actions."
+  reflection:
+    label: Reflection
+    gap: Reflecting on lessons learned
+    types: [behavioral]
+    anchors:
+      1: "No lesson or self-awareness."
+      2: "A generic lesson ('I learned teamwork')."
+      3: "A specific lesson."
+      4: "A specific lesson and how it changed their behaviour."
+      5: "A specific lesson, applied later, with evidence that it worked."

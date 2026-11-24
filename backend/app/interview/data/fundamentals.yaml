@@ -1,0 +1,452 @@
+# CS fundamentals question bank (campus technical rounds).
+# Each question lists the KEY POINTS a strong answer covers. The judge only credits a key point
+# when it can quote the candidate's answer, so key points must be concrete and checkable.
+# Fields: id (unique), topic (os | dbms | cn | oop), difficulty (easy | medium | hard),
+#         concept (short name, used for skill gaps), question, key_points (2-6).
+# REVIEW THESE: a wrong key point teaches a wrong answer.
+
+# ---------------- Operating systems ----------------
+- id: os.process_thread
+  topic: os
+  difficulty: easy
+  concept: Processes vs threads
+  question: "What is the difference between a process and a thread? When would you use multiple threads instead of multiple processes?"
+  key_points:
+    - "A process has its own address space; threads of one process share memory, code and open files"
+    - "Each thread has its own stack, registers and program counter"
+    - "Threads are cheaper to create and context-switch than processes"
+    - "Shared memory makes thread communication fast but needs synchronization; a crash in one thread can take down the process"
+
+- id: os.context_switch
+  topic: os
+  difficulty: easy
+  concept: Context switching
+  question: "What happens during a context switch, and why is it considered overhead?"
+  key_points:
+    - "The OS saves the running task's state (registers, program counter, stack pointer) in its PCB/TCB"
+    - "It loads the saved state of the next task chosen by the scheduler"
+    - "No useful work is done during the switch, so frequent switches waste CPU time"
+    - "Switching between processes can also flush caches/TLB, which makes it costlier than a thread switch"
+
+- id: os.deadlock
+  topic: os
+  difficulty: medium
+  concept: Deadlocks
+  question: "What is a deadlock? What conditions must hold for one to happen, and how can it be prevented?"
+  key_points:
+    - "A set of processes each wait for a resource held by another, so none can proceed"
+    - "Four Coffman conditions: mutual exclusion, hold and wait, no preemption, circular wait"
+    - "Prevention breaks one condition, for example acquiring locks in a fixed global order to stop circular wait"
+    - "Alternatives: avoidance (Banker's algorithm) or detection and recovery"
+
+- id: os.mutex_semaphore
+  topic: os
+  difficulty: medium
+  concept: Mutex vs semaphore
+  question: "Explain the difference between a mutex and a semaphore, with an example of when you would use each."
+  key_points:
+    - "A mutex gives exclusive access to one thread at a time and is released by the thread that locked it"
+    - "A counting semaphore allows up to N concurrent holders; wait/signal (P/V) decrement and increment it"
+    - "Mutex example: protecting a shared counter or data structure"
+    - "Semaphore example: limiting access to a pool of N connections, or producer-consumer signalling"
+
+- id: os.race_condition
+  topic: os
+  difficulty: easy
+  concept: Race conditions
+  question: "What is a race condition? Give an example and explain how to fix it."
+  key_points:
+    - "The result depends on the timing or interleaving of threads accessing shared data"
+    - "Example: two threads doing count++ (read, modify, write) can lose an update"
+    - "The code that touches shared data is the critical section"
+    - "Fix with mutual exclusion (locks) or atomic operations"
+
+- id: os.paging
+  topic: os
+  difficulty: medium
+  concept: Paging
+  question: "How does paging work, and what problem does it solve?"
+  key_points:
+    - "Logical memory is split into fixed-size pages and physical memory into frames of the same size"
+    - "A page table maps page numbers to frame numbers; the address is split into page number and offset"
+    - "It removes external fragmentation because any free frame can hold any page"
+    - "The TLB caches recent translations to avoid a page-table lookup on every access"
+
+- id: os.virtual_memory
+  topic: os
+  difficulty: medium
+  concept: Virtual memory
+  question: "What is virtual memory, and what happens on a page fault?"
+  key_points:
+    - "Each process gets a large virtual address space that can exceed physical RAM"
+    - "Pages not in RAM live on disk and are loaded on demand (demand paging)"
+    - "On a page fault the OS finds the page on disk, loads it into a free frame (evicting one if needed), updates the page table and restarts the instruction"
+    - "Too many page faults leads to thrashing"
+
+- id: os.page_replacement
+  topic: os
+  difficulty: hard
+  concept: Page replacement
+  question: "Compare FIFO, LRU and Optimal page replacement. Why is LRU common in practice even though Optimal is better?"
+  key_points:
+    - "FIFO evicts the oldest loaded page and can suffer Belady's anomaly"
+    - "LRU evicts the page unused for the longest time, using recent past to predict the future"
+    - "Optimal evicts the page used farthest in the future; it needs future knowledge, so it is only a benchmark"
+    - "Exact LRU is costly, so systems approximate it, for example with reference bits or the clock algorithm"
+
+- id: os.scheduling
+  topic: os
+  difficulty: medium
+  concept: CPU scheduling
+  question: "Explain Round Robin and Shortest Job First scheduling. What are the trade-offs between them?"
+  key_points:
+    - "Round Robin gives each process a fixed time quantum in turn, which is fair and good for response time"
+    - "Quantum size matters: too small means many context switches, too large behaves like FCFS"
+    - "SJF runs the shortest burst first and minimizes average waiting time"
+    - "SJF needs burst estimates and can starve long jobs; aging is a fix"
+
+- id: os.user_kernel_mode
+  topic: os
+  difficulty: easy
+  concept: User vs kernel mode
+  question: "What is the difference between user mode and kernel mode, and what is a system call?"
+  key_points:
+    - "Kernel mode can run privileged instructions and access hardware; user mode cannot"
+    - "The mode split protects the OS and other processes from buggy or malicious programs"
+    - "A system call is how a user program requests an OS service, such as read, write or fork"
+    - "A system call traps into kernel mode and returns to user mode when done"
+
+# ---------------- DBMS ----------------
+- id: dbms.keys
+  topic: dbms
+  difficulty: easy
+  concept: Database keys
+  question: "Explain primary key, candidate key, foreign key and super key."
+  key_points:
+    - "A super key is any set of columns that uniquely identifies a row"
+    - "A candidate key is a minimal super key; a table can have several"
+    - "The primary key is the chosen candidate key and cannot be NULL"
+    - "A foreign key references another table's key to enforce referential integrity"
+
+- id: dbms.normalization
+  topic: dbms
+  difficulty: medium
+  concept: Normalization
+  question: "What is normalization? Explain 1NF, 2NF and 3NF with a small example."
+  key_points:
+    - "Normalization removes redundancy and update, insert and delete anomalies"
+    - "1NF: atomic values, no repeating groups"
+    - "2NF: 1NF and no partial dependency of a non-key column on part of a composite key"
+    - "3NF: 2NF and no transitive dependency (non-key depending on another non-key column)"
+    - "A concrete example, such as moving customer address out of an orders table"
+
+- id: dbms.acid
+  topic: dbms
+  difficulty: easy
+  concept: ACID properties
+  question: "What are the ACID properties of a transaction? Explain each with an example."
+  key_points:
+    - "Atomicity: all operations happen or none do, e.g. a bank transfer debits and credits together"
+    - "Consistency: a transaction moves the database from one valid state to another, respecting constraints"
+    - "Isolation: concurrent transactions do not see each other's partial results"
+    - "Durability: once committed, changes survive crashes (write-ahead log)"
+
+- id: dbms.indexing
+  topic: dbms
+  difficulty: medium
+  concept: Indexing
+  question: "How does a database index speed up queries? What is the cost of adding indexes?"
+  key_points:
+    - "An index is a separate sorted structure, usually a B+ tree, pointing to rows"
+    - "Lookups become logarithmic instead of a full table scan"
+    - "Clustered index decides the physical row order (one per table); non-clustered indexes are separate"
+    - "Costs: extra storage and slower inserts, updates and deletes because the index must be maintained"
+
+- id: dbms.joins
+  topic: dbms
+  difficulty: easy
+  concept: SQL joins
+  question: "Explain INNER JOIN, LEFT JOIN, RIGHT JOIN and FULL OUTER JOIN."
+  key_points:
+    - "INNER JOIN returns only rows with a match in both tables"
+    - "LEFT JOIN returns all rows from the left table, with NULLs where the right has no match"
+    - "RIGHT JOIN is the mirror: all rows from the right table"
+    - "FULL OUTER JOIN returns all rows from both, matched where possible"
+
+- id: dbms.isolation_levels
+  topic: dbms
+  difficulty: hard
+  concept: Isolation levels
+  question: "What are dirty reads, non-repeatable reads and phantom reads? Which isolation levels prevent which?"
+  key_points:
+    - "Dirty read: reading another transaction's uncommitted change"
+    - "Non-repeatable read: the same row returns different values within one transaction"
+    - "Phantom read: a repeated range query returns new rows"
+    - "Read Uncommitted allows all three; Read Committed stops dirty reads; Repeatable Read stops non-repeatable reads; Serializable stops all"
+
+- id: dbms.sql_nosql
+  topic: dbms
+  difficulty: medium
+  concept: SQL vs NoSQL
+  question: "When would you choose a NoSQL database over a relational one? Give an example."
+  key_points:
+    - "Relational: fixed schema, joins, strong ACID transactions, good for structured related data"
+    - "NoSQL types: document, key-value, wide-column, graph, with flexible schemas"
+    - "NoSQL often scales horizontally more easily but may trade off consistency (eventual consistency)"
+    - "A concrete use case, e.g. a cache or session store in a key-value DB versus payments in SQL"
+
+- id: dbms.transactions_concurrency
+  topic: dbms
+  difficulty: hard
+  concept: Concurrency control
+  question: "How do databases handle concurrent transactions? Explain locking and MVCC."
+  key_points:
+    - "Locking: shared locks for reads, exclusive locks for writes"
+    - "Two-phase locking (growing then shrinking phase) guarantees serializability"
+    - "Locks can cause blocking and deadlocks, which the DB detects and resolves by aborting one transaction"
+    - "MVCC keeps multiple row versions so readers see a snapshot and do not block writers (e.g. PostgreSQL)"
+
+- id: dbms.where_having
+  topic: dbms
+  difficulty: easy
+  concept: WHERE vs HAVING
+  question: "What is the difference between WHERE and HAVING in SQL? Write an example that needs HAVING."
+  key_points:
+    - "WHERE filters rows before grouping"
+    - "HAVING filters groups after GROUP BY and can use aggregates"
+    - "Example: departments with more than 5 employees using GROUP BY department HAVING COUNT(*) > 5"
+
+- id: dbms.denormalization
+  topic: dbms
+  difficulty: medium
+  concept: Denormalization
+  question: "What is denormalization, and when is it a good idea?"
+  key_points:
+    - "Deliberately adding redundant data to avoid expensive joins"
+    - "Improves read performance for read-heavy workloads or reporting"
+    - "Costs: more storage and the risk of inconsistent copies, so writes need extra care"
+    - "Example: storing a cached order total or author name alongside a post"
+
+# ---------------- Computer networks ----------------
+- id: cn.osi_tcpip
+  topic: cn
+  difficulty: easy
+  concept: OSI and TCP/IP models
+  question: "Explain the layers of the OSI model and how they map to the TCP/IP model."
+  key_points:
+    - "Seven OSI layers: physical, data link, network, transport, session, presentation, application"
+    - "TCP/IP has four or five layers: link, internet (IP), transport (TCP/UDP), application"
+    - "Session, presentation and application OSI layers map to the TCP/IP application layer"
+    - "An example protocol per layer, e.g. Ethernet, IP, TCP, HTTP"
+
+- id: cn.tcp_udp
+  topic: cn
+  difficulty: easy
+  concept: TCP vs UDP
+  question: "What are the differences between TCP and UDP? Give a use case for each."
+  key_points:
+    - "TCP is connection-oriented, reliable and ordered, with retransmission"
+    - "TCP has flow control and congestion control"
+    - "UDP is connectionless with no delivery or order guarantees, but lower overhead and latency"
+    - "Use cases: TCP for web pages, file transfer, email; UDP for video calls, gaming, DNS"
+
+- id: cn.handshake
+  topic: cn
+  difficulty: medium
+  concept: TCP handshake
+  question: "Walk me through the TCP three-way handshake. Why does it need three steps?"
+  key_points:
+    - "Client sends SYN with its initial sequence number"
+    - "Server replies SYN-ACK, acknowledging and sending its own sequence number"
+    - "Client sends ACK and the connection is established"
+    - "Three steps let both sides confirm they can send and receive and agree on sequence numbers"
+
+- id: cn.url_flow
+  topic: cn
+  difficulty: medium
+  concept: What happens when you open a URL
+  question: "What happens, step by step, when you type a URL into the browser and press Enter?"
+  key_points:
+    - "DNS resolution turns the domain into an IP address (browser, OS cache, resolver)"
+    - "A TCP connection is opened, plus a TLS handshake for HTTPS"
+    - "The browser sends an HTTP request and the server returns a response"
+    - "The browser parses HTML, fetches CSS/JS/images and renders the page"
+
+- id: cn.dns
+  topic: cn
+  difficulty: medium
+  concept: DNS
+  question: "How does DNS resolution work?"
+  key_points:
+    - "DNS maps domain names to IP addresses"
+    - "Caches are checked first: browser, OS, then the recursive resolver"
+    - "The resolver queries root, then TLD (.com), then the authoritative name server"
+    - "Answers are cached for their TTL; it mostly runs over UDP port 53"
+
+- id: cn.http_https
+  topic: cn
+  difficulty: easy
+  concept: HTTP vs HTTPS
+  question: "What is the difference between HTTP and HTTPS, and how does TLS secure the connection?"
+  key_points:
+    - "HTTPS is HTTP over TLS, which encrypts the traffic"
+    - "The server proves its identity with a certificate signed by a trusted certificate authority"
+    - "The TLS handshake uses asymmetric crypto to agree on a symmetric session key"
+    - "It gives confidentiality, integrity and authentication; default ports 80 vs 443"
+
+- id: cn.http_methods
+  topic: cn
+  difficulty: easy
+  concept: HTTP methods and status codes
+  question: "Explain the main HTTP methods and status code classes. What does idempotent mean here?"
+  key_points:
+    - "GET reads, POST creates, PUT replaces, PATCH partially updates, DELETE removes"
+    - "Idempotent means repeating the request has the same effect as doing it once: GET, PUT and DELETE are; POST is not"
+    - "Status classes: 2xx success, 3xx redirect, 4xx client error, 5xx server error"
+    - "Specific codes such as 200, 201, 301, 400, 401, 403, 404, 500"
+
+- id: cn.ip_subnet
+  topic: cn
+  difficulty: medium
+  concept: IP addressing and subnets
+  question: "What is a subnet mask, and what is the difference between public and private IP addresses?"
+  key_points:
+    - "An IPv4 address is 32 bits, split into network and host parts by the subnet mask (e.g. /24)"
+    - "Subnetting divides a network into smaller networks"
+    - "Private ranges (10.x, 172.16-31.x, 192.168.x) are not routed on the internet"
+    - "NAT lets many private hosts share one public IP"
+
+- id: cn.load_balancer
+  topic: cn
+  difficulty: hard
+  concept: Load balancing
+  question: "What does a load balancer do? Compare layer 4 and layer 7 load balancing."
+  key_points:
+    - "It spreads incoming requests across several servers for scale and availability"
+    - "Algorithms such as round robin, least connections, or IP hash"
+    - "Layer 4 routes by IP and port without reading the request; it is fast"
+    - "Layer 7 reads HTTP (path, headers, cookies) and can route by content, terminate TLS, or keep sticky sessions"
+    - "Health checks remove failed servers"
+
+- id: cn.websocket
+  topic: cn
+  difficulty: medium
+  concept: WebSockets
+  question: "How do WebSockets differ from regular HTTP requests and from polling? When would you use them?"
+  key_points:
+    - "A WebSocket starts as an HTTP request and upgrades to a persistent full-duplex connection"
+    - "Either side can send messages any time without new requests"
+    - "Polling repeats requests and wastes bandwidth and adds latency"
+    - "Use cases: chat, live notifications, multiplayer games, live dashboards"
+
+# ---------------- OOP ----------------
+- id: oop.pillars
+  topic: oop
+  difficulty: easy
+  concept: OOP pillars
+  question: "Explain the four pillars of object-oriented programming with an example of each."
+  key_points:
+    - "Encapsulation: bundle data with methods and hide internal state behind an interface"
+    - "Abstraction: expose what an object does, not how"
+    - "Inheritance: a class reuses and extends another class"
+    - "Polymorphism: the same call behaves differently depending on the object's actual type"
+
+- id: oop.overloading_overriding
+  topic: oop
+  difficulty: easy
+  concept: Overloading vs overriding
+  question: "What is the difference between method overloading and method overriding?"
+  key_points:
+    - "Overloading: same method name, different parameter lists, in the same class"
+    - "Overloading is resolved at compile time (static polymorphism)"
+    - "Overriding: a subclass redefines a parent method with the same signature"
+    - "Overriding is resolved at run time (dynamic polymorphism)"
+
+- id: oop.abstract_interface
+  topic: oop
+  difficulty: medium
+  concept: Abstract class vs interface
+  question: "When would you use an abstract class instead of an interface?"
+  key_points:
+    - "An abstract class can hold state and implemented methods shared by subclasses"
+    - "An interface defines a contract that unrelated classes can implement"
+    - "A class can implement many interfaces but usually extend only one class"
+    - "Use an abstract class for an is-a family with shared code, an interface for a capability"
+
+- id: oop.composition
+  topic: oop
+  difficulty: medium
+  concept: Composition vs inheritance
+  question: "What does 'favor composition over inheritance' mean? Give an example."
+  key_points:
+    - "Inheritance is an is-a relationship; composition is has-a, building objects from other objects"
+    - "Deep inheritance couples classes tightly and the fragile base class problem appears"
+    - "Composition lets you swap behaviour at run time and keeps classes small"
+    - "A concrete example, e.g. a Car has an Engine instead of Car extending Engine"
+
+- id: oop.solid
+  topic: oop
+  difficulty: hard
+  concept: SOLID principles
+  question: "Explain the SOLID principles. Which one do you find most useful in practice, and why?"
+  key_points:
+    - "Single responsibility: a class has one reason to change"
+    - "Open/closed: open for extension, closed for modification"
+    - "Liskov substitution: subclasses must be usable wherever the parent is"
+    - "Interface segregation and dependency inversion: small interfaces; depend on abstractions, not concrete classes"
+    - "A personal example of applying one principle"
+
+- id: oop.static
+  topic: oop
+  difficulty: easy
+  concept: Static members
+  question: "What does the static keyword mean for variables and methods?"
+  key_points:
+    - "Static members belong to the class, not to each object"
+    - "A static variable is shared by all instances"
+    - "Static methods can be called without an object and cannot use instance fields directly"
+    - "Example: a counter of created objects or a utility method"
+
+- id: oop.constructor
+  topic: oop
+  difficulty: easy
+  concept: Constructors
+  question: "What is a constructor? Explain default, parameterized and copy constructors."
+  key_points:
+    - "A constructor initializes a new object and has the class name with no return type"
+    - "A default constructor takes no arguments"
+    - "A parameterized constructor sets fields from arguments"
+    - "A copy constructor creates an object from another; shallow vs deep copy matters"
+
+- id: oop.design_patterns
+  topic: oop
+  difficulty: medium
+  concept: Design patterns
+  question: "Explain the Singleton and Factory patterns. Where have you used or seen them?"
+  key_points:
+    - "Singleton ensures one instance with a global access point, e.g. a config or DB connection pool"
+    - "Singleton drawbacks: global state, hard to test, needs care with threads"
+    - "Factory creates objects without the caller naming the concrete class"
+    - "A real example from a project or framework"
+
+- id: oop.exceptions
+  topic: oop
+  difficulty: medium
+  concept: Exception handling
+  question: "How should exceptions be handled well? What is the difference between checked and unchecked exceptions?"
+  key_points:
+    - "try/catch/finally: finally (or with/using) always runs and frees resources"
+    - "Catch specific exceptions and do not silently swallow errors"
+    - "Checked exceptions must be declared or handled at compile time (Java); unchecked are runtime errors"
+    - "Throw early with clear messages; handle where you can actually recover"
+
+- id: oop.polymorphism_deep
+  topic: oop
+  difficulty: hard
+  concept: Dynamic dispatch
+  question: "How does run-time polymorphism actually work under the hood?"
+  key_points:
+    - "A parent-type reference can point to a child object"
+    - "The method that runs is chosen by the object's actual type at run time (dynamic dispatch)"
+    - "Implemented with a virtual method table (vtable) per class and a pointer to it in each object"
+    - "Lets code depend on a base type and work with new subclasses without changes"

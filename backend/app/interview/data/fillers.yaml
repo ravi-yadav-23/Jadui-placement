@@ -1,0 +1,8 @@
+# Filler words and phrases counted in spoken (voice) answers. Shown as information, never scored.
+fillers: [um, uh, erm, like, basically, actually, literally, "you know", "kind of", "sort of", "i mean", "so yeah"]
+
+# Ignored when listing your most repeated words.
+stopwords: [the, a, an, and, or, but, so, to, of, in, on, at, for, with, is, was, are, were, be, been, it, its,
+            this, that, these, those, i, we, you, he, she, they, my, our, me, us, them, as, by, from, then, than,
+            there, which, who, what, when, where, how, why, will, would, can, could, should, do, did, does, have,
+            has, had, not, no, yes, if, also, just, very, into, about, more, some, all, one, like, um, uh]

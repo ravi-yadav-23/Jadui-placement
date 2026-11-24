@@ -1,0 +1,137 @@
+# HR / behavioral question bank. Key points follow STAR (Situation, Task, Action, Result)
+# plus what the question is really probing. Same fields as fundamentals.yaml; topic is always "behavioral".
+
+- id: hr.intro
+  topic: behavioral
+  difficulty: easy
+  concept: Introducing yourself
+  question: "Tell me about yourself, focusing on what makes you a fit for a software engineering role."
+  key_points:
+    - "Current status: degree, year and focus area"
+    - "One or two concrete projects or experiences, with what you built"
+    - "Specific technical skills tied to those projects"
+    - "Why you want this kind of role and what you want to do next"
+
+- id: hr.challenge
+  topic: behavioral
+  difficulty: medium
+  concept: Handling technical challenges
+  question: "Tell me about the hardest technical problem you have solved. What made it hard?"
+  key_points:
+    - "Situation: the project and the specific problem"
+    - "Why it was hard: constraints, unknowns, or what failed first"
+    - "Your own actions: how you investigated and what you tried"
+    - "Result: the outcome, ideally measurable"
+    - "What you learned or would do differently"
+
+- id: hr.conflict
+  topic: behavioral
+  difficulty: medium
+  concept: Handling conflict
+  question: "Describe a time you disagreed with a teammate. How did you handle it?"
+  key_points:
+    - "Situation: who, what the disagreement was about"
+    - "You listened to and understood the other view"
+    - "Action: how you resolved it, e.g. data, a prototype or a compromise"
+    - "Result: the decision and the relationship afterwards"
+    - "What you learned about working with others"
+
+- id: hr.failure
+  topic: behavioral
+  difficulty: medium
+  concept: Learning from failure
+  question: "Tell me about a time you failed or made a mistake. What happened next?"
+  key_points:
+    - "A real failure you own, not a disguised strength"
+    - "Impact of the mistake"
+    - "What you did to fix or limit it"
+    - "The concrete lesson and how you changed your behaviour afterwards"
+
+- id: hr.deadline
+  topic: behavioral
+  difficulty: medium
+  concept: Working under pressure
+  question: "Tell me about a time you had to deliver something under a tight deadline."
+  key_points:
+    - "Situation: the deadline and why it was tight"
+    - "How you prioritized or cut scope"
+    - "Your own actions to deliver"
+    - "Result: delivered or not, and the quality"
+    - "What you would plan differently next time"
+
+- id: hr.leadership
+  topic: behavioral
+  difficulty: medium
+  concept: Leadership and initiative
+  question: "Describe a time you took the lead or started something without being asked."
+  key_points:
+    - "Situation: the gap or opportunity you noticed"
+    - "Why you chose to act"
+    - "Your actions: how you organized people or work"
+    - "Result: measurable outcome, e.g. people reached or time saved"
+    - "What you learned about leading"
+
+- id: hr.learning
+  topic: behavioral
+  difficulty: easy
+  concept: Learning quickly
+  question: "Tell me about a time you had to learn a new technology quickly for a project."
+  key_points:
+    - "The technology and why it was needed"
+    - "How you learned it: docs, small experiments, asking for help"
+    - "What you built with it"
+    - "How long it took and the result"
+
+- id: hr.teamwork
+  topic: behavioral
+  difficulty: easy
+  concept: Teamwork
+  question: "Describe a team project. What was your specific role and contribution?"
+  key_points:
+    - "The project and team size"
+    - "Your specific responsibility, using 'I' not only 'we'"
+    - "How you coordinated with others"
+    - "The result and your measurable contribution"
+
+- id: hr.why_company
+  topic: behavioral
+  difficulty: easy
+  concept: Motivation for the company
+  question: "Why do you want to join our company, and why this role?"
+  key_points:
+    - "Something specific about the company: product, tech or mission"
+    - "How the role matches your skills or projects"
+    - "What you want to learn or achieve there"
+
+- id: hr.strengths_weakness
+  topic: behavioral
+  difficulty: easy
+  concept: Self-awareness
+  question: "What is your biggest weakness, and what are you doing about it?"
+  key_points:
+    - "A genuine, relevant weakness"
+    - "An example of when it affected your work"
+    - "Concrete steps you are taking to improve"
+    - "Evidence of progress"
+
+- id: hr.feedback
+  topic: behavioral
+  difficulty: medium
+  concept: Handling feedback
+  question: "Tell me about a time you received critical feedback. How did you respond?"
+  key_points:
+    - "The situation and the feedback"
+    - "Your initial reaction, honestly"
+    - "What you changed as a result"
+    - "The outcome after the change"
+
+- id: hr.prioritize
+  topic: behavioral
+  difficulty: hard
+  concept: Prioritization
+  question: "Tell me about a time you had several important tasks at once. How did you decide what to do first?"
+  key_points:
+    - "The competing tasks and their stakes"
+    - "Your criteria for prioritizing, e.g. impact, urgency, dependencies"
+    - "How you communicated trade-offs to others"
+    - "Result and what you would change"

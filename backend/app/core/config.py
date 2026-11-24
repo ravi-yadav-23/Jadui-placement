@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     RESUME_MAX_PAGES: int = 3
     DAILY_UPLOAD_LIMIT: int = 10
     DAILY_ANALYSIS_LIMIT: int = 15
+
+    # --- Interview v2 limits ---
+    DAILY_INTERVIEW_LIMIT: int = 5
+    INTERVIEW_MAX_ANSWER_CHARS: int = 6000
     RESUME_STORAGE_BUCKET: str = "resumes"
 
     # --- Legacy AI settings (old modules, removed at the switchover) ---
