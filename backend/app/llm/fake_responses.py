@@ -138,9 +138,61 @@ def _fake_match(prompt: str) -> dict:
             "summary_suggestion": "Engineering student building backend services and data-driven web apps."}
 
 
+def _content_words(text: str) -> set[str]:
+    return set(re.findall(r"[a-z]{5,}", text.lower()))
+
+
+def _fake_judge(prompt: str) -> dict:
+    """A key point is covered when the answer shares 2+ long words with it; the quote is that sentence."""
+    key_points = json.loads(_quoted_block(prompt))
+    answer = re.search(r"<answer>\n(.*)\n</answer>", prompt, re.DOTALL).group(1)
+    turn_kind = re.search(r"Turn: (\w+)", prompt).group(1)
+    dimension_names = re.search(r"Dimensions to score: (.*)", prompt).group(1).split(", ")
+    sentences = [s.strip() for s in re.split(r"[.!?\n]+", answer) if s.strip()]
+
+    judgments = []
+    for index, point in enumerate(key_points):
+        words = _content_words(point)
+        best = max(sentences, key=lambda s: len(words & _content_words(s)), default="")
+        covered = len(words & _content_words(best)) >= min(2, len(words))
+        judgments.append({"index": index, "covered": covered, "quote": best if covered else None})
+
+    ratio = sum(j["covered"] for j in judgments) / max(len(key_points), 1)
+    anchor = 1 + round(4 * ratio)
+    missed = [p for p, j in zip(key_points, judgments, strict=True) if not j["covered"]]
+    return {
+        "key_points": judgments,
+        "dimensions": [{"name": n, "anchor": anchor, "reason": "Fake judge: based on key point coverage."}
+                       for n in dimension_names],
+        "feedback": "You covered some key points. Add the missing ones with a concrete example."
+                    if missed else "You covered every key point clearly.",
+        "follow_up": "Can you go deeper on that, with a concrete example?" if turn_kind == "main" and missed else None,
+    }
+
+
+def _fake_plan(prompt: str) -> dict:
+    """One question per item, citing that item's id."""
+    items = json.loads(_quoted_block(prompt))
+    count = int(re.search(r"Write exactly (\d+) interview questions", prompt).group(1))
+    questions = []
+    for item in items[:count]:
+        name = item.get("title") or item.get("requirement") or "this"
+        questions.append({
+            "question": f"Walk me through {name}. What did you build yourself, and what was the hardest part?",
+            "key_points": ["Explains what they personally built and why",
+                           "Describes a concrete technical challenge and how it was solved",
+                           "Mentions a trade-off or what they would change"],
+            "source_ids": [item["id"]],
+            "concept": (item.get("skills") or [name])[0][:40],
+        })
+    return {"questions": questions}
+
+
 _HANDLERS = {
+    "interview_plan": _fake_plan,
     "resume_structure": _fake_structure,
     "resume_review": _fake_review,
     "jd_parse": _fake_jd_parse,
     "jd_match": _fake_match,
+    "interview_judge": _fake_judge,
 }
