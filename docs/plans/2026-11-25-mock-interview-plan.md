@@ -1,7 +1,7 @@
 # Mock Interviews v2: Research and Implementation Plan (2026-11-25)
 
 Status: **built (2026-11-25)** with the recommended answers to §14: no DSA round yet, browser voice input,
-interview mode by default with a practice toggle, a reviewed question bank (40 fundamentals + 12 HR), 5 questions
+interview mode by default with a practice toggle, a question bank for you to review (40 fundamentals + 12 HR), 5 questions
 with at most one follow-up each. Differences from this draft: there is no "abandoned" status (an unfinished
 interview can be resumed or ended at any time), and the eval uses 12 questions × 3 labeled answers plus
 generated adversarial variants. How it works: [the study guide](../learn/mock-interview-guide.md). It reuses the foundation from the resume screener
