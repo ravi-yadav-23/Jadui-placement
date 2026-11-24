@@ -1,0 +1,163 @@
+# DSA topics in learning order (each topic's prerequisites come earlier).
+# minutes  = the "learn" part (theory + worked examples)
+# problems = practice problems by target company type; each problem is ~35 min (scaled per user)
+# suggested = LeetCode problem names to start with. REVIEW: add/remove problems you prefer.
+subject: dsa
+label: DSA
+resource: {title: "NeetCode roadmap (free videos per problem)", url: "https://neetcode.io/roadmap"}
+topics:
+  - id: dsa.language
+    title: "{language} for DSA: syntax, collections, input/output"
+    minutes: 240
+    only_if: language_basics
+    resource: {title: "Practice basic problems on HackerRank", url: "https://www.hackerrank.com/domains/algorithms"}
+
+  - id: dsa.complexity
+    title: Time and space complexity (Big-O)
+    minutes: 60
+    problems: {service: 2, product: 2, top_product: 2}
+    suggested: ["Contains Duplicate (compare an O(n²) and an O(n) solution)", "Two Sum"]
+
+  - id: dsa.arrays_hashing
+    title: Arrays and hashing
+    minutes: 60
+    problems: {service: 6, product: 8, top_product: 10}
+    prerequisites: [dsa.complexity]
+    aliases: [array, hashing, hash map]
+    suggested: ["Two Sum", "Valid Anagram", "Group Anagrams", "Top K Frequent Elements",
+                "Product of Array Except Self", "Longest Consecutive Sequence"]
+
+  - id: dsa.two_pointers
+    title: Two pointers
+    minutes: 45
+    problems: {service: 3, product: 5, top_product: 6}
+    prerequisites: [dsa.arrays_hashing]
+    suggested: ["Valid Palindrome", "Two Sum II", "3Sum", "Container With Most Water", "Trapping Rain Water"]
+
+  - id: dsa.sliding_window
+    title: Sliding window
+    minutes: 45
+    problems: {service: 3, product: 5, top_product: 6}
+    prerequisites: [dsa.two_pointers]
+    suggested: ["Best Time to Buy and Sell Stock", "Longest Substring Without Repeating Characters",
+                "Longest Repeating Character Replacement", "Permutation in String", "Minimum Window Substring"]
+
+  - id: dsa.stack
+    title: Stack and monotonic stack
+    minutes: 45
+    problems: {service: 3, product: 5, top_product: 6}
+    prerequisites: [dsa.arrays_hashing]
+    suggested: ["Valid Parentheses", "Min Stack", "Evaluate Reverse Polish Notation", "Daily Temperatures",
+                "Largest Rectangle in Histogram"]
+
+  - id: dsa.binary_search
+    title: Binary search
+    minutes: 60
+    problems: {service: 3, product: 6, top_product: 7}
+    prerequisites: [dsa.arrays_hashing]
+    suggested: ["Binary Search", "Search a 2D Matrix", "Koko Eating Bananas", "Find Minimum in Rotated Sorted Array",
+                "Search in Rotated Sorted Array", "Median of Two Sorted Arrays"]
+
+  - id: dsa.linked_list
+    title: Linked list
+    minutes: 45
+    problems: {service: 3, product: 5, top_product: 6}
+    prerequisites: [dsa.two_pointers]
+    suggested: ["Reverse Linked List", "Merge Two Sorted Lists", "Linked List Cycle", "Reorder List",
+                "Remove Nth Node From End of List", "LRU Cache"]
+
+  - id: dsa.recursion
+    title: Recursion
+    minutes: 60
+    problems: {service: 3, product: 4, top_product: 4}
+    prerequisites: [dsa.complexity]
+    aliases: [recursion]
+    suggested: ["Pow(x, n)", "Subsets", "Generate Parentheses", "Sort an Array (write merge sort)"]
+
+  - id: dsa.trees
+    title: Binary trees and BST
+    minutes: 90
+    problems: {service: 5, product: 8, top_product: 10}
+    prerequisites: [dsa.recursion]
+    aliases: [tree, bst]
+    suggested: ["Invert Binary Tree", "Maximum Depth of Binary Tree", "Diameter of Binary Tree",
+                "Binary Tree Level Order Traversal", "Validate Binary Search Tree", "Kth Smallest Element in a BST",
+                "Lowest Common Ancestor of a Binary Search Tree", "Serialize and Deserialize Binary Tree"]
+
+  - id: dsa.heaps
+    title: Heaps and priority queues
+    minutes: 45
+    problems: {service: 2, product: 4, top_product: 5}
+    prerequisites: [dsa.trees]
+    priority: should
+    aliases: [heap, priority queue]
+    suggested: ["Kth Largest Element in a Stream", "Last Stone Weight", "K Closest Points to Origin",
+                "Task Scheduler", "Find Median from Data Stream"]
+
+  - id: dsa.backtracking
+    title: Backtracking
+    minutes: 60
+    problems: {service: 2, product: 5, top_product: 6}
+    prerequisites: [dsa.recursion]
+    priority: should
+    suggested: ["Subsets II", "Combination Sum", "Permutations", "Word Search", "N-Queens"]
+
+  - id: dsa.graphs
+    title: "Graphs: BFS, DFS and topological sort"
+    minutes: 90
+    problems: {service: 3, product: 7, top_product: 9}
+    prerequisites: [dsa.trees]
+    aliases: [graph, bfs, dfs]
+    suggested: ["Number of Islands", "Clone Graph", "Rotting Oranges", "Pacific Atlantic Water Flow",
+                "Course Schedule", "Course Schedule II", "Number of Connected Components in an Undirected Graph"]
+
+  - id: dsa.shortest_paths
+    title: Shortest paths and union-find
+    minutes: 60
+    problems: {service: 1, product: 3, top_product: 5}
+    prerequisites: [dsa.graphs, dsa.heaps]
+    priority: should
+    suggested: ["Network Delay Time", "Redundant Connection", "Min Cost to Connect All Points",
+                "Cheapest Flights Within K Stops"]
+
+  - id: dsa.greedy_intervals
+    title: Greedy and intervals
+    minutes: 45
+    problems: {service: 2, product: 4, top_product: 5}
+    prerequisites: [dsa.arrays_hashing]
+    priority: should
+    suggested: ["Maximum Subarray", "Jump Game", "Merge Intervals", "Insert Interval", "Non-overlapping Intervals"]
+
+  - id: dsa.dp_1d
+    title: Dynamic programming (1-D)
+    minutes: 90
+    problems: {service: 3, product: 6, top_product: 8}
+    prerequisites: [dsa.recursion]
+    aliases: [dynamic programming, dp]
+    suggested: ["Climbing Stairs", "House Robber", "Coin Change", "Longest Increasing Subsequence", "Word Break",
+                "Decode Ways"]
+
+  - id: dsa.dp_2d
+    title: Dynamic programming (2-D)
+    minutes: 90
+    problems: {service: 2, product: 5, top_product: 7}
+    prerequisites: [dsa.dp_1d]
+    priority: should
+    suggested: ["Unique Paths", "Longest Common Subsequence", "Edit Distance", "Partition Equal Subset Sum",
+                "Best Time to Buy and Sell Stock with Cooldown"]
+
+  - id: dsa.tries
+    title: Tries
+    minutes: 30
+    problems: {service: 1, product: 2, top_product: 3}
+    prerequisites: [dsa.trees]
+    priority: nice
+    suggested: ["Implement Trie (Prefix Tree)", "Design Add and Search Words Data Structure", "Word Search II"]
+
+  - id: dsa.bits
+    title: Bit manipulation
+    minutes: 30
+    problems: {service: 1, product: 2, top_product: 3}
+    prerequisites: [dsa.complexity]
+    priority: nice
+    suggested: ["Single Number", "Number of 1 Bits", "Counting Bits", "Missing Number"]

@@ -1,0 +1,69 @@
+# CS fundamentals: four subjects in one file. Topic names line up with the interview question bank,
+# so interview gaps like "OS: Deadlocks" find their topic through `aliases`.
+# minutes = study time for someone starting from zero (scaled down by the user's self-rating).
+subjects:
+  - subject: os
+    label: Operating systems
+    resource: {title: "GeeksforGeeks: Operating Systems", url: "https://www.geeksforgeeks.org/operating-systems/"}
+    topics:
+      - {id: os.processes, title: "Processes, threads and context switching", minutes: 90,
+         aliases: [process, thread, context switch, kernel mode, user mode, system call]}
+      - {id: os.scheduling, title: CPU scheduling, minutes: 75, prerequisites: [os.processes],
+         aliases: [scheduling, round robin]}
+      - {id: os.synchronization, title: "Synchronization: race conditions, mutexes, semaphores", minutes: 120,
+         prerequisites: [os.processes], aliases: [race condition, mutex, semaphore, synchroni]}
+      - {id: os.deadlocks, title: Deadlocks, minutes: 75, prerequisites: [os.synchronization], aliases: [deadlock]}
+      - {id: os.memory, title: Memory management and paging, minutes: 105,
+         aliases: [paging, memory management, fragmentation]}
+      - {id: os.virtual_memory, title: Virtual memory and page replacement, minutes: 105,
+         prerequisites: [os.memory], aliases: [virtual memory, page replacement, page fault, thrashing]}
+      - {id: os.file_systems, title: File systems and I/O, minutes: 60, priority: nice, aliases: [file system]}
+
+  - subject: dbms
+    label: DBMS
+    resource: {title: "GeeksforGeeks: DBMS", url: "https://www.geeksforgeeks.org/dbms/"}
+    topics:
+      - {id: dbms.keys_er, title: ER model and keys, minutes: 60, aliases: [database keys, er model]}
+      - {id: dbms.normalization, title: Normalization and denormalization, minutes: 90,
+         prerequisites: [dbms.keys_er], aliases: [normaliz]}
+      - {id: dbms.sql, title: "SQL: joins, GROUP BY / HAVING, subqueries", minutes: 150,
+         aliases: [sql, joins, where vs having, postgres, mysql],
+         resource: {title: "SQLZoo (free interactive SQL)", url: "https://sqlzoo.net/"}}
+      - {id: dbms.indexing, title: Indexing and B+ trees, minutes: 75, prerequisites: [dbms.sql], aliases: [index]}
+      - {id: dbms.transactions, title: Transactions and ACID, minutes: 75, aliases: [acid, transaction]}
+      - {id: dbms.concurrency, title: Isolation levels and concurrency control, minutes: 90, priority: should,
+         prerequisites: [dbms.transactions], aliases: [isolation, concurrency control, mvcc]}
+      - {id: dbms.nosql, title: NoSQL and CAP basics, minutes: 60, priority: should,
+         aliases: [nosql, mongodb, sql vs nosql]}
+
+  - subject: cn
+    label: Computer networks
+    resource: {title: "GeeksforGeeks: Computer Networks", url: "https://www.geeksforgeeks.org/computer-network-tutorials/"}
+    topics:
+      - {id: cn.models, title: OSI and TCP/IP models, minutes: 60, aliases: [osi, tcp/ip]}
+      - {id: cn.transport, title: "TCP vs UDP and the three-way handshake", minutes: 90, prerequisites: [cn.models],
+         aliases: [tcp, udp, handshake]}
+      - {id: cn.http, title: "HTTP, HTTPS/TLS, methods and status codes", minutes: 90, prerequisites: [cn.transport],
+         aliases: [http, tls, status code]}
+      - {id: cn.dns_url, title: DNS and what happens when you open a URL, minutes: 60, prerequisites: [cn.http],
+         aliases: [dns, open a url]}
+      - {id: cn.ip, title: "IP addressing, subnets and NAT", minutes: 60, priority: should,
+         aliases: [subnet, ip address]}
+      - {id: cn.web_infra, title: "Load balancing, caching and WebSockets", minutes: 60, priority: should,
+         prerequisites: [cn.http], aliases: [load balanc, websocket]}
+
+  - subject: oop
+    label: OOP
+    resource: {title: "Refactoring Guru: design patterns", url: "https://refactoring.guru/design-patterns"}
+    topics:
+      - {id: oop.pillars, title: "Four pillars: encapsulation, abstraction, inheritance, polymorphism", minutes: 90,
+         aliases: [oop pillars, encapsulation, polymorphism, overload, overrid]}
+      - {id: oop.classes, title: "Classes, interfaces, constructors and static members", minutes: 60,
+         prerequisites: [oop.pillars], aliases: [abstract class, interface, constructor, static member]}
+      - {id: oop.solid, title: SOLID and composition over inheritance, minutes: 75, prerequisites: [oop.classes],
+         aliases: [solid, composition]}
+      - {id: oop.patterns, title: "Design patterns: singleton, factory, strategy, observer", minutes: 120,
+         prerequisites: [oop.solid], aliases: [design pattern, singleton, factory]}
+      - {id: oop.exceptions, title: Exception handling, minutes: 45, priority: should, aliases: [exception]}
+      - {id: oop.dispatch, title: "How dynamic dispatch works (vtables)", minutes: 30, priority: nice,
+         prerequisites: [oop.pillars], aliases: [dynamic dispatch, vtable]}

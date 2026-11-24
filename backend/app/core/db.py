@@ -29,6 +29,8 @@ class Database(Protocol):
     def list(self, table: str, user_id: str, columns: str = "*", limit: int = 50, **equals: Any) -> list[dict]: ...
     def update(self, table: str, user_id: str, row_id: str, fields: dict) -> dict | None: ...
     def delete(self, table: str, user_id: str, row_id: str) -> None: ...
+    def insert_many(self, table: str, user_id: str, rows: list[dict]) -> None: ...
+    def delete_many(self, table: str, user_id: str, row_ids: list[str]) -> None: ...
     def count_since(self, table: str, user_id: str, since_iso: str) -> int: ...
     def upsert_many(self, table: str, rows: list[dict], on_conflict: str) -> None: ...
     def log(self, table: str, row: dict) -> None: ...
@@ -86,6 +88,14 @@ class SupabaseDatabase:
             .execute()
         )
         return resp.count or 0
+
+    def insert_many(self, table, user_id, rows):
+        if rows:
+            self.client.table(table).insert([{**row, "user_id": user_id} for row in rows]).execute()
+
+    def delete_many(self, table, user_id, row_ids):
+        if row_ids:
+            self.client.table(table).delete().eq("user_id", user_id).in_("id", row_ids).execute()
 
     def upsert_many(self, table, rows, on_conflict):
         if rows:
@@ -150,6 +160,14 @@ class InMemoryDatabase:
         row = self._table(table).get(row_id)
         if row and row["user_id"] == user_id:
             del self._table(table)[row_id]
+
+    def insert_many(self, table, user_id, rows):
+        for row in rows:
+            self.insert(table, user_id, row)
+
+    def delete_many(self, table, user_id, row_ids):
+        for row_id in row_ids:
+            self.delete(table, user_id, row_id)
 
     def count_since(self, table, user_id, since_iso):
         return sum(1 for r in self._owned(table, user_id) if r["created_at"] >= since_iso)

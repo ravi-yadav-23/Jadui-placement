@@ -1,0 +1,49 @@
+# Persona eval for the planner (no LLM). Each persona = questionnaire answers + what we expect to see.
+# expect: share_min / share_max = subject shares of scheduled learning time (0-1); fits = expected feasibility.
+personas:
+  - name: "3rd-year B.Tech, backend, product companies, Python (the author)"
+    profile: {status: student, degree: btech, year: 3, goal: internship, target_role: backend,
+              company_types: [product], weekday_hours: 2, weekend_hours: 5, language: python, language_comfort: 3,
+              ratings: {dsa: 1, os: 1, dbms: 2, cn: 0, oop: 2}, problems_solved: lt50, projects: 1}
+    expect: {share_min: {dsa: 0.3}, fits: true}
+
+  - name: "1st-year, 1 h/day, C++ beginner"
+    profile: {status: student, degree: btech, year: 1, goal: internship, company_types: [product],
+              weekday_hours: 1, weekend_hours: 2, language: cpp, language_comfort: 1, problems_solved: "0"}
+    expect: {share_min: {dsa: 0.4}, share_max: {os: 0, cn: 0}}
+
+  - name: "4th-year targeting service companies"
+    profile: {status: student, degree: btech, year: 4, goal: placement, company_types: [service],
+              weekday_hours: 3, weekend_hours: 4, language: java, language_comfort: 3,
+              ratings: {dsa: 2, os: 2, dbms: 2, cn: 1, oop: 3, aptitude: 1}}
+    expect: {share_min: {aptitude: 0.15}}
+
+  - name: "BCA graduate, full-stack, product + service"
+    profile: {status: graduate, degree: bca, graduation: "2026-05", company_types: [product, service],
+              target_role: fullstack, weekday_hours: 4, weekend_hours: 6, language: javascript, language_comfort: 3}
+    expect: {share_min: {dsa: 0.2}}
+
+  - name: "2 years backend, targeting SDE-2 (1 h weekdays, 5 h weekends)"
+    profile: {status: professional, experience_years: 2, current_role: Backend Engineer, target_level: mid,
+              target_role: backend, company_types: [product], weekday_hours: 1, weekend_hours: 5,
+              language: java, language_comfort: 4, ratings: {dsa: 2, os: 2, dbms: 3, cn: 2, oop: 3, system_design: 1},
+              problems_solved: "150_300", projects: 3, projects_deployed: true}
+    expect: {share_min: {lld: 0.1, hld: 0.08}}
+
+  - name: "4 years, targeting senior roles"
+    profile: {status: professional, experience_years: 4, target_level: senior, company_types: [top_product],
+              weekday_hours: 1.5, weekend_hours: 5, language: go, language_comfort: 4,
+              ratings: {dsa: 3, os: 2, dbms: 3, cn: 2, oop: 3, system_design: 2}, problems_solved: "300_plus",
+              projects: 3, projects_deployed: true}
+    expect: {share_min: {hld: 0.18}}
+
+  - name: "Overloaded: top product in 4 weeks with 1 h/day"
+    profile: {status: student, degree: btech, year: 4, goal: placement, company_types: [top_product],
+              weekday_hours: 1, weekend_hours: 1, target_date: "+28", language: python, language_comfort: 2}
+    expect: {fits: false}
+
+  - name: "Rest day + exam fortnight"
+    profile: {status: student, degree: btech, year: 3, goal: internship, company_types: [product],
+              weekday_hours: 2, weekend_hours: 4, rest_day: sun, busy: [{start: "+14", end: "+27", label: exams}],
+              language: python, language_comfort: 3}
+    expect: {}

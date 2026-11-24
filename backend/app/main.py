@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.errors import register_error_handlers
 from app.interview.api import router as interview_v2_router
+from app.planner.api import router as planner_v2_router
 from app.resume.api import router as resume_v2_router
 from modules.mentor_ai.routes import router as mentor_router
 from modules.system_ai.routes import router as system_router
@@ -24,6 +25,7 @@ register_error_handlers(app)
 # v2 (rebuilt) features
 app.include_router(resume_v2_router, prefix="/api/v2")
 app.include_router(interview_v2_router, prefix="/api/v2")
+app.include_router(planner_v2_router, prefix="/api/v2")
 
 # Legacy modules: removed as each pillar is rebuilt.
 app.include_router(mentor_router, prefix="/api")

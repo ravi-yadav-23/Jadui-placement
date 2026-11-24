@@ -1,0 +1,52 @@
+# System design: LLD (low-level design / machine coding) and HLD (high-level design).
+# `levels` decides who gets a topic: entry candidates only get the first LLD topics; HLD starts at mid level.
+subjects:
+  - subject: lld
+    label: Low-level design (LLD)
+    resource: {title: "Awesome Low-Level Design (problems + solutions)", url: "https://github.com/ashishps1/awesome-low-level-design"}
+    topics:
+      - {id: lld.modelling, title: "Modelling classes from requirements (UML, relationships)", minutes: 90,
+         prerequisites: [oop.patterns], aliases: [low level design, lld, uml, machine coding]}
+      - {id: lld.parking_lot, title: "Machine coding: parking lot", minutes: 120, prerequisites: [lld.modelling]}
+      - {id: lld.lru_cache, title: "Machine coding: LRU cache", minutes: 120, prerequisites: [lld.modelling]}
+      - {id: lld.splitwise, title: "Machine coding: Splitwise", minutes: 120, levels: [mid, senior],
+         prerequisites: [lld.parking_lot]}
+      - {id: lld.concurrency, title: "Concurrency for LLD: locks, thread-safe classes, producer-consumer",
+         minutes: 120, levels: [mid, senior], aliases: [concurren, thread-safe, multithread]}
+      - {id: lld.rate_limiter, title: "Machine coding: rate limiter", minutes: 120, levels: [mid, senior],
+         prerequisites: [lld.concurrency]}
+      - {id: lld.task_scheduler, title: "Machine coding: in-memory task scheduler", minutes: 150,
+         levels: [mid, senior], priority: should, prerequisites: [lld.concurrency]}
+      - {id: lld.movie_booking, title: "Machine coding: movie ticket booking", minutes: 120, levels: [mid, senior],
+         priority: should, prerequisites: [lld.splitwise]}
+
+  - subject: hld
+    label: High-level design (HLD)
+    resource: {title: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer"}
+    topics:
+      - {id: hld.basics, title: "System design basics: requirements, estimates, APIs", minutes: 120,
+         levels: [mid, senior], aliases: [system design, hld, high level design, scalab]}
+      - {id: hld.load_balancing, title: Load balancers and horizontal scaling, minutes: 90, levels: [mid, senior],
+         prerequisites: [hld.basics]}
+      - {id: hld.caching, title: "Caching: strategies, eviction, CDN", minutes: 90, levels: [mid, senior],
+         prerequisites: [hld.basics], aliases: [caching, redis, cdn]}
+      - {id: hld.databases, title: "Databases at scale: replication, sharding, SQL vs NoSQL", minutes: 120,
+         levels: [mid, senior], prerequisites: [hld.basics], aliases: [sharding, replication]}
+      - {id: hld.queues, title: Message queues and async processing, minutes: 90, levels: [mid, senior],
+         prerequisites: [hld.basics], aliases: [kafka, rabbitmq, message queue]}
+      - {id: hld.consistency, title: "Consistency, CAP and idempotency", minutes: 90, levels: [mid, senior],
+         prerequisites: [hld.databases], aliases: [consistency, idempot]}
+      - {id: hld.url_shortener, title: "Design: URL shortener", minutes: 120, levels: [mid, senior],
+         prerequisites: [hld.caching, hld.databases]}
+      - {id: hld.rate_limiter, title: "Design: distributed rate limiter", minutes: 120, levels: [mid, senior],
+         priority: should, prerequisites: [hld.caching]}
+      - {id: hld.chat, title: "Design: chat system", minutes: 150, levels: [mid, senior],
+         prerequisites: [hld.queues, hld.databases]}
+      - {id: hld.news_feed, title: "Design: news feed", minutes: 150, levels: [mid, senior], priority: should,
+         prerequisites: [hld.caching, hld.queues]}
+      - {id: hld.notifications, title: "Design: notification system", minutes: 120, levels: [mid, senior],
+         priority: nice, prerequisites: [hld.queues]}
+      - {id: hld.reliability, title: "Reliability: replication, failover, failure modes, observability",
+         minutes: 120, levels: [senior], prerequisites: [hld.consistency]}
+      - {id: hld.tradeoff_drills, title: Estimation and trade-off drills, minutes: 90, levels: [senior],
+         prerequisites: [hld.url_shortener]}

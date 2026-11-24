@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     # --- Interview v2 limits ---
     DAILY_INTERVIEW_LIMIT: int = 5
     INTERVIEW_MAX_ANSWER_CHARS: int = 6000
+
+    # --- Planner v2 ---
+    PLANNER_BUFFER: float = 0.15        # plan with 85% of the hours you state (planning fallacy)
+    PLANNER_HORIZON_DAYS: int = 14      # dated tasks are kept this far ahead; the rest is weekly milestones
     RESUME_STORAGE_BUCKET: str = "resumes"
 
     # --- Legacy AI settings (old modules, removed at the switchover) ---

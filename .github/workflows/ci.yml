@@ -25,6 +25,7 @@ jobs:
         run: |
           python -m evals.resume.run --fake --runs 1
           python -m evals.interview.run --fake --runs 1
+          python -m evals.planner.run
 
   frontend:
     runs-on: ubuntu-latest

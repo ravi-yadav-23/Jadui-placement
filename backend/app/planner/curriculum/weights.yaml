@@ -1,0 +1,17 @@
+# Share of study time per subject (%), from the plan §4.1. Each row must add up to 100.
+# CS fundamentals are split across os / dbms / cn / oop. These are starting defaults: edit and re-run the
+# persona eval (python -m evals.planner.run) to see the effect.
+
+entry:
+  service:     {dsa: 25, os: 6, dbms: 7, cn: 6, oop: 6, projects: 10, aptitude: 25, practice: 10, role: 5}
+  product:     {dsa: 40, os: 6, dbms: 7, cn: 6, oop: 6, lld: 5, projects: 15, practice: 10, role: 5}
+  top_product: {dsa: 45, os: 5, dbms: 5, cn: 5, oop: 5, lld: 10, projects: 10, practice: 10, role: 5}
+
+# For experienced levels the company type changes DSA difficulty, not the mix.
+mid:    {dsa: 30, os: 2, dbms: 3, cn: 2, oop: 3, lld: 20, hld: 15, projects: 5, practice: 15, role: 5}
+senior: {dsa: 20, os: 1, dbms: 2, cn: 1, oop: 1, lld: 15, hld: 30, practice: 25, role: 5}
+
+# Students in their first two years: foundations first. OS/CN come later in most syllabi; no aptitude yet.
+student_year:
+  1: {dsa: 50, oop: 15, projects: 25, practice: 5, role: 5}
+  2: {dsa: 45, oop: 10, dbms: 10, projects: 25, practice: 5, role: 5}

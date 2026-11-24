@@ -1,0 +1,80 @@
+# Projects, aptitude, interview practice and role add-ons.
+subjects:
+  - subject: projects
+    label: Projects
+    resource: {title: "Your resume screener: check the bullets when you finish", url: "/dashboard/resume"}
+    topics:
+      # "build": for students with fewer than 2 deployed projects. "deepen": improve your best existing project.
+      - {id: project.scope, title: "Scope a project: problem, users, features, tech", minutes: 90, track: build}
+      - {id: project.core, title: Build the core feature, minutes: 360, track: build, prerequisites: [project.scope]}
+      - {id: project.second, title: "Build a second feature (auth, search or payments)", minutes: 240, track: build,
+         priority: should, prerequisites: [project.core]}
+      - {id: project.tests, title: Add tests and error handling, minutes: 180, track: build,
+         prerequisites: [project.core]}
+      - {id: project.deploy, title: Deploy it and write a README with screenshots, minutes: 150, track: build,
+         prerequisites: [project.tests]}
+      - {id: project.writeup, title: Write resume bullets with measurable results, minutes: 60, track: build,
+         prerequisites: [project.deploy]}
+      - {id: project.deepen_review, title: "Review your best project: what would an interviewer ask?", minutes: 90,
+         track: deepen}
+      - {id: project.deepen_tests, title: "Add tests, CI and monitoring to your best project", minutes: 240,
+         track: deepen, prerequisites: [project.deepen_review]}
+      - {id: project.deepen_scale, title: "Improve performance or scale, and measure it", minutes: 240,
+         track: deepen, priority: should, prerequisites: [project.deepen_tests]}
+      - {id: project.deepen_writeup, title: Rewrite resume bullets with the new numbers, minutes: 60, track: deepen,
+         prerequisites: [project.deepen_tests]}
+
+  - subject: aptitude
+    label: Aptitude
+    resource: {title: "IndiaBIX aptitude practice", url: "https://www.indiabix.com/"}
+    topics:
+      - {id: apt.quant, title: "Quantitative aptitude: percentages, ratios, time and work, speed", minutes: 300}
+      - {id: apt.logical, title: "Logical reasoning: series, puzzles, arrangements", minutes: 240}
+      - {id: apt.verbal, title: "Verbal ability: reading comprehension, grammar", minutes: 180}
+      - {id: apt.timed, title: Timed mock aptitude tests, minutes: 180, prerequisites: [apt.quant, apt.logical]}
+
+  - subject: practice
+    label: Interview practice
+    resource: {title: "Mock interviews in this app", url: "/dashboard/interview"}
+    topics:
+      - {id: practice.intro, title: "Prepare your intro and two project stories (STAR)", minutes: 90,
+         aliases: [your own contribution, clear, structured, introducing yourself]}
+      - {id: practice.hr, title: "Prepare six STAR stories: conflict, failure, deadline, leadership", minutes: 120,
+         aliases: [star, behavioral, measurable impact, lessons learned]}
+      - {id: practice.mock_resume, title: "Mock interview: resume deep-dive", minutes: 45,
+         prerequisites: [practice.intro], interview: {track: resume}}
+      - {id: practice.mock_hr, title: "Mock interview: HR / behavioral", minutes: 45, prerequisites: [practice.hr],
+         interview: {track: behavioral}}
+      - {id: practice.leadership, title: "Leadership and impact stories: ownership, mentoring, disagreement",
+         minutes: 120, levels: [mid, senior]}
+      - {id: practice.mock_system_design, title: "Mock: explain a system design out loud in 45 minutes", minutes: 60,
+         levels: [mid, senior], prerequisites: [hld.url_shortener], aliases: [trade-off]}
+      - {id: practice.mock_mixed, title: "Mock interview: mixed campus round", minutes: 45,
+         prerequisites: [practice.mock_resume], interview: {track: mixed}}
+
+  - subject: role
+    label: Role skills
+    resource: {title: "roadmap.sh role roadmaps", url: "https://roadmap.sh/"}
+    topics:
+      - {id: role.js, title: "JavaScript in depth: closures, promises, the event loop", minutes: 180,
+         roles: [frontend, fullstack], aliases: [javascript, typescript],
+         resource: {title: "javascript.info", url: "https://javascript.info/"}}
+      - {id: role.react, title: "React: components, state, hooks, data fetching", minutes: 180,
+         roles: [frontend, fullstack], prerequisites: [role.js], aliases: [react, next.js],
+         resource: {title: "react.dev: Learn", url: "https://react.dev/learn"}}
+      - {id: role.browser, title: How browsers render pages; web performance, minutes: 90, roles: [frontend],
+         aliases: [browser, web performance]}
+      - {id: role.api_design, title: "REST API design: resources, status codes, pagination, versioning",
+         minutes: 120, roles: [sde, backend, fullstack], aliases: [rest api, api design, fastapi, express]}
+      - {id: role.auth, title: "Authentication: sessions, JWT, OAuth", minutes: 90, roles: [backend, fullstack],
+         aliases: [authentication, jwt, oauth]}
+      - {id: role.docker, title: "Docker basics: images, containers, compose", minutes: 90,
+         roles: [sde, backend, fullstack], aliases: [docker, container],
+         resource: {title: "Docker: Get started", url: "https://docs.docker.com/get-started/"}}
+      - {id: role.stats, title: "Statistics for data roles: distributions, hypothesis tests", minutes: 180,
+         roles: [data], aliases: [statistic]}
+      - {id: role.ml_basics, title: "ML basics: regression, classification, evaluation", minutes: 240, roles: [data],
+         aliases: [machine learning], resource: {title: "Google ML Crash Course",
+         url: "https://developers.google.com/machine-learning/crash-course"}}
+      - {id: role.sql_analytics, title: "SQL for analytics: window functions, CTEs", minutes: 120, roles: [data],
+         prerequisites: [dbms.sql], aliases: [window function, analytics]}

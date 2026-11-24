@@ -42,6 +42,8 @@ PROMPT_VERSIONS: dict[str, str] = {
     "jd_match": "v1",
     "interview_plan": "v1",
     "interview_judge": "v1",
+    "planner_summary": "v1",
+    "planner_projects": "v1",
 }
 
 

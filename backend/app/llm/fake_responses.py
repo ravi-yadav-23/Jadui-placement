@@ -188,7 +188,23 @@ def _fake_plan(prompt: str) -> dict:
     return {"questions": questions}
 
 
+def _fake_planner_summary(prompt: str) -> dict:
+    facts = json.loads(_quoted_block(prompt))
+    return {"overview": f"Your plan focuses on {', '.join(facts['subjects'][:3])}, in that order of weight.",
+            "phases": [{"name": p["name"], "text": f"In the {p['name'].lower()} phase you build steadily."}
+                       for p in facts["phases"]]}
+
+
+def _fake_planner_projects(prompt: str) -> dict:
+    candidate = json.loads(_quoted_block(prompt))
+    return {"projects": [{"title": "Placement Tracker API", "why": "Shows API design and data modelling.",
+                          "tech": candidate["allowed_tech"][:4],
+                          "milestones": ["Design the tables", "Build the API", "Add tests", "Deploy it"]}]}
+
+
 _HANDLERS = {
+    "planner_summary": _fake_planner_summary,
+    "planner_projects": _fake_planner_projects,
     "interview_plan": _fake_plan,
     "resume_structure": _fake_structure,
     "resume_review": _fake_review,
