@@ -42,3 +42,25 @@ Deferred tasks to do before the project is called finished. Tick them off as you
 - [ ] **Drop the legacy interview tables** `interview_sessions` and `interview_answers` once you've checked
       nothing in them is worth keeping (the code that used them is deleted).
 - [ ] **Update CV bullets** with numbers from the eval report (drafts in `docs/learn/mock-interview-guide.md` §14).
+
+## Planner, coach and v1 app: go-live (2026-11-26)
+
+- [ ] **Apply the new migrations, in order:** `20261127000000_planner_v2.sql`, then `20261128000000_coach.sql`
+      (after the resume and interview ones).
+- [ ] **Review the curriculum** in `backend/app/planner/curriculum/*.yaml`: topics, minutes, suggested problems,
+      resources and the subject weights in `weights.yaml`. Then run `python -m evals.planner.run` from `backend/`.
+- [ ] **Supabase Auth settings** (dashboard → Authentication → URL configuration): set the Site URL to your
+      deployed frontend and add `/auth/reset` and `/dashboard` as redirect URLs (password reset and email
+      confirmation links land there).
+- [ ] **Deploy env vars**: frontend needs only `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and
+      `NEXT_PUBLIC_BACKEND_URL` (no AI keys on the frontend any more). Backend: see `.env.example`.
+- [ ] **Try the full loop with a real account**: sign up → questionnaire → plan → tick tasks → mock interview →
+      coach. Check that the AI roadmap summary and project ideas appear (they fall back to templates silently).
+- [ ] **Drop the legacy tables** once you've checked there's nothing to keep. The code that used them is deleted:
+      ```sql
+      drop table if exists public.user_system_state, public.resume_files, public.resume_results,
+        public.interview_sessions, public.interview_answers, public.workshops, public.github_pr_reviews,
+        public.github_repo_analyses cascade;
+      alter table public.profiles drop column if exists role;   -- only if a legacy profiles table exists
+      ```
+- [ ] **Update CV bullets** with the planner and coach drafts (`docs/learn/task-planner-guide.md` §12).

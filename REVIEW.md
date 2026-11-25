@@ -1,6 +1,9 @@
 # Jadui Placement — Full Project Review (2026-11-24)
 
-> **Status (2026-11-25):** the resume screener is rebuilt (v2), and the Phase 0 cleanup is done: admin/TPO
+> **Status (2026-11-26):** all five pillars are rebuilt (resume, interviews, planner, dashboard, coach) with a new UI;
+> every legacy module listed below is deleted. See README and `docs/learn/`.
+>
+> Earlier status (2026-11-25): the resume screener is rebuilt (v2), and the Phase 0 cleanup is done: admin/TPO
 > panel, workshops, student dossiers, GitHub PR review and GitHub profile analytics are deleted, with unused
 > packages and stale docs. The legacy interview, mentor and system modules stay until their pillars are
 > rebuilt. File references below describe the code as it was on 2026-11-24.

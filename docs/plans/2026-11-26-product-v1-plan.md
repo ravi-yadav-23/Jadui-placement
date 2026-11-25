@@ -1,6 +1,6 @@
 # Jadui Placement v1: product plan (UI rebuild, dashboard, coach, cleanup) — 2026-11-26
 
-Status: **being built in one pass** (no approval stops). The resume, interview and planner backends are done.
+Status: **built (2026-11-26)**. Guide: [dashboard, coach and UI system](../learn/product-guide.md). The resume, interview and planner backends are done.
 This plan covers everything else needed to ship it as one coherent product.
 
 ---

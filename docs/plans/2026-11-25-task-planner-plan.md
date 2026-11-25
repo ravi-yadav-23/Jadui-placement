@@ -1,6 +1,10 @@
 # AI Goal-Based Task Planner v2: Research and Implementation Plan (2026-11-25)
 
-Status: **draft for review.** Nothing here is built yet. It reuses the foundation from the resume and interview
+Status: **built (2026-11-26)** with the recommended answers to §14. Additions found while building: spare time becomes
+"extra practice" topics (the persona eval showed subjects with little content fell below their share), and missed
+tasks are kept as history so check-ins can measure them. How it works: [the study guide](../learn/task-planner-guide.md).
+
+Original status: draft for review. It reuses the foundation from the resume and interview
 pillars (auth, data layer, LLM client, background jobs, test setup) and reads their outputs (`skill_gaps`,
 resume profile, interview topic scores).
 

@@ -1,38 +1,77 @@
-# Jadui Placement: AI Career Coach
+# Jadui Placement
 
-![Stack](https://img.shields.io/badge/Stack-Next.js%20|%20FastAPI%20|%20Supabase-blue?style=for-the-badge)
-![AI](https://img.shields.io/badge/LLM-Gemini%20|%20Groq-emerald?style=for-the-badge)
+![Stack](https://img.shields.io/badge/Stack-Next.js%20|%20FastAPI%20|%20Supabase-0f766e?style=flat-square)
+![LLM](https://img.shields.io/badge/LLM-Gemini%20|%20Groq-0f766e?style=flat-square)
 
-**Jadui Placement** is an AI career coach for students preparing for placements. The goal is one connected
-loop: screen your resume (in general and against a job description), practise mock interviews, get an AI task
-plan for your goal, track it on a dashboard, and ask a coach chat that knows all of it.
+**Jadui Placement** helps students prepare for software engineering placements. It brings four things together
+and feeds each into the next:
+- a **study plan** built around your real week
+- **mock interviews** scored with evidence
+- an honest **resume review**
+- a **coach** that answers from your own progress
 
-The project is being rebuilt pillar by pillar. Each pillar gets a research-backed plan, tests and a study guide.
+| Today | Planner | Mock interviews (dark theme) |
+|:---:|:---:|:---:|
+| ![Today](docs/screenshots/today-light.png) | ![Planner](docs/screenshots/planner-light.png) | ![Interviews](docs/screenshots/interviews-dark.png) |
 
-| Pillar | Status |
-|:---|:---|
-| Resume screener (general review + JD match) | **Rebuilt (v2)** |
-| Mock interviews (resume, JD, CS fundamentals, HR tracks) | **Rebuilt (v2)** |
-| AI goal-based task planner | Legacy, planned |
-| Dashboard | Legacy, planned |
-| Coach chat | Legacy, planned |
+| Part | What it does | Status |
+|:---|:---|:---|
+| Study planner | 5-question profile → dated roadmap across DSA, OS, DBMS, CN, OOP, LLD/HLD, projects (+ aptitude for service companies) | **v2** |
+| Mock interviews | Resume, JD, CS fundamentals and HR tracks; key points credited only with quotes from your answer | **v2** |
+| Resume screener | Layout-aware parsing, parse-health checks, truth-guarded review, evidence-cited JD match | **v2** |
+| Coach | Chat grounded in your data; proposes actions you confirm with a click | **v2** |
+| Today dashboard | Readiness with a visible formula, today's tasks, next actions, activity | **v2** |
+
+**Principle across the app:** code does what can be computed (schedules, scores, checks), and the LLM does only
+what needs language. Every LLM output is schema-validated and checked against your data before you see it.
 
 ---
 
 ## Architecture
 
 ```
-Next.js 14 (App Router, TypeScript for new code, React Query)
-        |  Supabase session JWT on every request
+Next.js 14 (TypeScript, React Query, in-house UI kit, light + dark themes)
+        |  Supabase Auth session -> Bearer JWT on every request
 FastAPI (Python 3.13)
-  app/core     auth (JWT/JWKS), errors, user-scoped data layer
-  app/llm      one LLM client: versioned prompts, schema validation, retry, fallback, call log
-  app/resume     resume v2 pipeline, API at /api/v2
-  app/interview  interview v2 engine, API at /api/v2
-  modules/       legacy mentor and system modules (replaced as each pillar is rebuilt)
+  app/core       auth (JWT/JWKS), errors, user-scoped data layer
+  app/llm        one LLM client: versioned prompts, schema validation, repair retry, Gemini -> Groq, call log
+  app/resume     resume screener            app/interview  mock-interview engine
+  app/planner    curriculum + scheduler     app/coach      grounded chat with checked actions
+  app/dashboard  readiness, next actions, delete-my-data
         |
-Supabase: Postgres with RLS, private Storage, Auth
+Supabase: Postgres with row-level security, private Storage, Auth
 ```
+
+Study guides (design decisions, formulas, interview Q&A):
+- [Resume screener](docs/learn/resume-screener-guide.md)
+- [Mock interviews](docs/learn/mock-interview-guide.md)
+- [Task planner](docs/learn/task-planner-guide.md)
+- [Dashboard, coach and UI system](docs/learn/product-guide.md)
+
+---
+
+## Study Planner (v2)
+
+```
+questionnaire -> topic selection (level, role, company type, year, self-ratings, gaps, interview scores)
+  -> calendar (weekday/weekend hours × 0.85, rest day, busy dates) -> fit or cut, with a suggestion
+  -> deterministic scheduler: weighted interleaving, prerequisites, spaced reviews (+2/+7/+21 days), mock checkpoints
+  -> 14 days of dated tasks, re-planned from what you actually did
+```
+
+- **Code plans, the LLM explains.** LLMs fail at multi-constraint planning (0.6% on TravelPlanner), so a tested
+  scheduler owns every date and hour. The LLM writes the roadmap summary and project ideas, which are validated (no
+  numbers, only subjects in the plan, tech from your stack or gaps).
+- **Honest about time.** A 15% buffer up front; weekly check-ins re-plan with your real completion rate. If the goal
+  doesn't fit, it says what was cut and how many extra hours or weeks would fit it.
+- **Tested.** Property tests over generated profiles (never over a day's capacity, prerequisites first, reviews
+  spaced) plus an 8-persona eval in CI.
+
+## Coach
+
+- Answers from a server-built snapshot of your plan, tasks, scores and gaps.
+- Can propose up to three actions (open a page, start an interview, mark or move a task, re-plan). They're buttons:
+  nothing runs until you click, and the proposals are validated in code (OWASP LLM06, excessive agency).
 
 ---
 
@@ -87,11 +126,11 @@ Study guide: [docs/learn/mock-interview-guide.md](docs/learn/mock-interview-guid
 
 | Layer | Technology |
 |:---|:---|
-| **Frontend** | Next.js 14, TypeScript, Tailwind CSS, React Query, Recharts |
-| **Backend** | FastAPI, Pydantic v2, Uvicorn |
+| **Frontend** | Next.js 14, TypeScript, Tailwind CSS (CSS-variable design tokens), React Query, Playwright |
+| **Backend** | FastAPI, Pydantic v2, Uvicorn, PyMuPDF, RapidFuzz |
 | **Database** | Supabase (Postgres with RLS, Storage, Auth) |
 | **LLM** | Gemini (primary) + Groq (fallback), schema-validated structured output |
-| **Quality** | pytest, Playwright, ruff, ESLint, eval harness, GitHub Actions CI |
+| **Quality** | pytest (200+ tests), ruff, ESLint, typecheck, 4 Playwright E2E flows, 3 eval harnesses, GitHub Actions CI |
 
 ---
 
@@ -99,7 +138,7 @@ Study guide: [docs/learn/mock-interview-guide.md](docs/learn/mock-interview-guid
 
 ### Prerequisites
 - Node.js 18+ and Python 3.13
-- A Supabase project (apply the migrations in `supabase/migrations/`)
+- A Supabase project (apply every file in `supabase/migrations/`, in order)
 - API keys: `GEMINI_API_KEY` (and optionally `GROQ_API_KEY` for the fallback)
 
 ### Environment
