@@ -67,6 +67,22 @@
 
 @layer utilities {
   .tabular { font-variant-numeric: tabular-nums; }
+  /* A faint dot grid for the landing hero (border colour, fades out at the edges). */
+  .bg-dots {
+    background-image: radial-gradient(rgb(var(--border-strong) / 0.35) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+  }
+}
+
+/* Respect the OS "reduce motion" setting everywhere (WCAG 2.3.3). Scripted demos also jump to their end state. */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Compatibility classes used by the resume/interview components: same names, new look. */

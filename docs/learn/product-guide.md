@@ -76,7 +76,26 @@ POST /coach/messages {content}
   Dialog (native `<dialog>`, so focus trap and Esc come for free), Progress, Sparkline, EmptyState.
 - **Theme without a flash:** a tiny inline script sets the `dark` class before React loads.
 
-## 5. Bugs worth telling as stories
+## 5. The landing page (`frontend/src/features/landing/`)
+
+- **Why no video:** the "how it works" demos are scripted React components, not screen recordings. They use the
+  same markup and tokens as the app, so they stay sharp at any size, switch with the theme and weigh almost
+  nothing. Update them by hand when the real screens change.
+- **How a scene plays:** `useSteps(count, ms, playing)` is a timer that counts 0 → `count`. Each element shows when
+  the step reaches its number (`<Reveal show={step >= 3}>`), and hidden elements keep their space so nothing jumps.
+- **The player (`Walkthrough.tsx`):** six chapters (questionnaire, scheduler, interview, resume, coach, re-planning).
+  A CSS progress bar under the active chapter runs for the chapter's length; its `animationend` moves to the next.
+  It pauses off-screen (IntersectionObserver), on hover and with a Pause button (WCAG 2.2.2: moving content needs
+  a pause control).
+- **Reduced motion:** with the OS setting on, every scene shows its final state and nothing auto-advances; a global
+  CSS rule also stops transitions.
+- **Honest numbers:** every figure on the page is real (52 questions, 16 parse checks, reviews at 2/7/21 days,
+  8 personas, the scoring and capacity formulas). The "Who it's for" bars come from
+  `backend/app/planner/curriculum/weights.yaml`; keep them in sync if the weights change.
+- **Test:** `e2e/landing.spec.ts` switches chapters, pauses, and checks the page is no wider than a phone (a grid
+  without `min-w-0` once let the chapter strip stretch the page to 1,200 px).
+
+## 6. Bugs worth telling as stories
 
 - **A browser change broke an effect.** `useEffect(() => el.scrollIntoView({behavior: 'smooth'}))` crashed the coach
   page: newer Chrome returns a Promise from smooth `scrollIntoView`, and React tried to call it as the cleanup
@@ -84,7 +103,7 @@ POST /coach/messages {content}
 - **Optimistic checkboxes.** Task checkboxes waited for the server, so they felt laggy (and Playwright's `check()`
   failed). Now the status updates immediately and rolls back on error.
 
-## 6. File map
+## 7. File map
 
 | Area | Files |
 |---|---|
@@ -92,4 +111,5 @@ POST /coach/messages {content}
 | Coach | `backend/app/coach/*`, `backend/app/llm/prompts/coach.v1.md`, `frontend/src/app/dashboard/coach/page.tsx` |
 | Auth | `frontend/src/features/auth/*`, `frontend/src/app/auth/*`, `backend/app/core/auth.py` |
 | Shell + UI kit | `frontend/src/components/shell/*`, `frontend/src/components/ui/*`, `frontend/src/app/globals.css`, `tailwind.config.js` |
-| E2E | `frontend/e2e/{resume,interview,planner}.spec.ts` |
+| Landing | `frontend/src/app/page.tsx`, `frontend/src/features/landing/*` |
+| E2E | `frontend/e2e/{resume,interview,planner,landing}.spec.ts` |

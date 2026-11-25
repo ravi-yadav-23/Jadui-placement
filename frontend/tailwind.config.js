@@ -43,8 +43,21 @@ module.exports = {
         '3xl': ['30px', '38px'],
         '4xl': ['40px', '48px'],
         '5xl': ['52px', '58px'],
+        '6xl': ['64px', '68px'],
       },
       borderRadius: { DEFAULT: '6px', md: '8px', lg: '10px', xl: '12px' },
+      keyframes: {
+        'fade-up': { from: { opacity: '0', transform: 'translateY(8px)' }, to: { opacity: '1', transform: 'none' } },
+        scan: { '0%': { top: '0%' }, '100%': { top: '100%' } },
+        fill: { from: { transform: 'scaleX(0)' }, to: { transform: 'scaleX(1)' } },
+        dot: { '0%, 80%, 100%': { opacity: '0.25' }, '40%': { opacity: '1' } },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.6s ease-out both',
+        scan: 'scan 1.6s ease-in-out infinite alternate',
+        dot: 'dot 1.2s ease-in-out infinite',
+        fill: 'fill 1s linear both', // duration set inline
+      },
       boxShadow: {
         xs: '0 1px 2px rgb(0 0 0 / 0.04)',
         sm: '0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04)',
