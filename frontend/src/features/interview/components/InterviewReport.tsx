@@ -18,7 +18,7 @@ export default function InterviewReport({ interview, report }: { interview: Inte
             <h2 className="text-lg font-semibold text-fg">Interview score</h2>
             <p className={cn('text-sm font-medium', band.style)}>{band.label}</p>
           </div>
-          <p className={cn('text-5xl font-black', scoreColor(report.score))} data-testid="interview-score">
+          <p className={cn('tabular text-4xl font-semibold', scoreColor(report.score))} data-testid="interview-score">
             {report.score}<span className="text-lg text-muted">/100</span>
           </p>
         </div>

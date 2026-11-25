@@ -15,7 +15,7 @@ export default function AnalysisPage({ params }: { params: { analysisId: string 
   const data = analysis.data
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="space-y-6">
       {data && (
         <Link href={`/dashboard/resume/${data.resume_id}`} className="flex items-center gap-1 text-sm text-muted hover:text-fg">
           <ArrowLeft className="h-4 w-4" /> Back to resume

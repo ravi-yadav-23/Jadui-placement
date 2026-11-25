@@ -13,7 +13,7 @@ export default function ScoreCard({ title, score, subScores, footnote }: {
     <section className="card-base space-y-5" data-testid="score-card">
       <div className="flex items-end justify-between">
         <h2 className="text-lg font-semibold text-fg">{title}</h2>
-        <p className={cn('text-5xl font-black', scoreColor(score))} data-testid="overall-score">
+        <p className={cn('tabular text-4xl font-semibold', scoreColor(score))} data-testid="overall-score">
           {score}<span className="text-lg text-muted">/100</span>
         </p>
       </div>

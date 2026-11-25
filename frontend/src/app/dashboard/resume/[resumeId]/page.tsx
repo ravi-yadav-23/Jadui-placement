@@ -16,7 +16,7 @@ export default function ResumePage({ params }: { params: { resumeId: string } })
   const file = useResumeFileUrl(params.resumeId, ready)
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="space-y-6">
       <Link href="/dashboard/resume" className="flex items-center gap-1 text-sm text-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> All resumes
       </Link>
