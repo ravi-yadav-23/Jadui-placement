@@ -45,7 +45,7 @@ function BulletCard({ bullet }: { bullet: BulletFeedback }) {
   return (
     <li className="rounded-lg border border-border bg-surface/40 p-4" data-testid="bullet-feedback">
       <p className="text-xs text-muted">{bullet.entry_title ?? bullet.section}</p>
-      <p className="mt-1 text-sm text-white">{bullet.text}</p>
+      <p className="mt-1 text-sm text-fg">{bullet.text}</p>
       {bullet.issues && bullet.issues.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
           {bullet.issues.map((issue) => (
@@ -63,7 +63,7 @@ function BulletCard({ bullet }: { bullet: BulletFeedback }) {
             </span>
             <CopyButton text={bullet.rewrite} />
           </div>
-          <p className="mt-1 text-sm text-white"><WithPlaceholders text={bullet.rewrite} /></p>
+          <p className="mt-1 text-sm text-fg"><WithPlaceholders text={bullet.rewrite} /></p>
         </div>
       )}
       {bullet.coach_questions && bullet.coach_questions.length > 0 && (
@@ -92,8 +92,8 @@ export default function GeneralReviewView({ review }: { review: GeneralReview })
 
       {(review.top_actions?.length ?? 0) > 0 && (
         <section className="card-base">
-          <h2 className="text-lg font-semibold text-white">Top fixes</h2>
-          <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-white">
+          <h2 className="text-lg font-semibold text-fg">Top fixes</h2>
+          <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-fg">
             {review.top_actions?.map((a) => <li key={a}>{a}</li>)}
           </ol>
           {(review.strengths?.length ?? 0) > 0 && (
@@ -104,14 +104,14 @@ export default function GeneralReviewView({ review }: { review: GeneralReview })
 
       {(review.findings?.length ?? 0) > 0 && (
         <section className="card-base space-y-2">
-          <h2 className="text-lg font-semibold text-white">Resume-wide findings</h2>
+          <h2 className="text-lg font-semibold text-fg">Resume-wide findings</h2>
           {review.findings?.map((f) => <p key={f.code} className="text-sm text-warning">{f.message}</p>)}
         </section>
       )}
 
       <section className="card-base space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Bullet by bullet</h2>
+          <h2 className="text-lg font-semibold text-fg">Bullet by bullet</h2>
           <span className="flex items-center gap-1 text-xs text-muted">
             <ShieldCheck className="h-3 w-3 text-success" /> Rewrites never add facts; [X] = fill in your real number
           </span>

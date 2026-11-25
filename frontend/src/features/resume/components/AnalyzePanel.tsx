@@ -37,7 +37,7 @@ export default function AnalyzePanel({ resumeId }: { resumeId: string }) {
     <button
       onClick={() => setMode(value)}
       className={cn('flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium',
-        mode === value ? 'bg-primary text-white' : 'text-muted hover:text-white')}
+        mode === value ? 'bg-primary text-primary-fg' : 'text-muted hover:text-fg')}
     >
       <Icon className="h-4 w-4" /> {label}
     </button>
@@ -45,7 +45,7 @@ export default function AnalyzePanel({ resumeId }: { resumeId: string }) {
 
   return (
     <section className="card-base space-y-4">
-      <div className="flex w-fit gap-1 rounded-xl border border-border bg-surface p-1">
+      <div className="flex w-fit gap-1 rounded-lg border border-border bg-surface p-1">
         {tab('general', 'General review', FileSearch)}
         {tab('jd', 'Match a job', Briefcase)}
       </div>

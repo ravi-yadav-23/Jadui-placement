@@ -1,7 +1,8 @@
 'use client'
 
+import { PageHeader } from '@/components/ui'
 import Link from 'next/link'
-import { FileText, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 
 import { useAnalyses, useDeleteResume, useResumes } from '@/features/resume/hooks'
 import UploadDropzone from '@/features/resume/components/UploadDropzone'
@@ -16,20 +17,13 @@ export default function ResumeLibraryPage() {
   const titles = Object.fromEntries((resumes.data ?? []).map((r) => [r.id, r.title]))
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <header>
-        <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
-          <FileText className="h-6 w-6 text-primary" /> Resume Screener
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          Check how parsers read your resume, get bullet-by-bullet feedback, and match it against real job descriptions.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader title="Resume" description="See how parsers read your resume, get bullet-by-bullet feedback, and match it against real job descriptions." />
 
       <UploadDropzone />
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-white">Your resumes</h2>
+        <h2 className="text-lg font-semibold text-fg">Your resumes</h2>
         {resumes.isLoading && <Spinner label="Loading…" />}
         {resumes.error && <ErrorBox error={resumes.error} />}
         {resumes.data?.length === 0 && <p className="text-sm text-muted">No resumes yet. Upload one above.</p>}
@@ -37,7 +31,7 @@ export default function ResumeLibraryPage() {
           {resumes.data?.map((resume) => (
             <li key={resume.id} className="card-base flex items-start justify-between gap-3 p-4">
               <Link href={`/dashboard/resume/${resume.id}`} className="min-w-0 flex-1">
-                <p className="truncate font-medium text-white hover:text-primary">{resume.title}</p>
+                <p className="truncate font-medium text-fg hover:text-primary">{resume.title}</p>
                 <p className="mt-1 flex items-center gap-2 text-xs text-muted">
                   {formatDate(resume.created_at)} <StatusBadge status={resume.status} />
                 </p>
@@ -56,13 +50,13 @@ export default function ResumeLibraryPage() {
 
       {(analyses.data?.length ?? 0) > 0 && (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-white">Recent analyses</h2>
+          <h2 className="text-lg font-semibold text-fg">Recent analyses</h2>
           <ul className="space-y-2">
             {analyses.data?.slice(0, 10).map((a) => (
               <li key={a.id}>
                 <Link href={`/dashboard/resume/analysis/${a.id}`}
                   className="card-base flex items-center justify-between p-3 hover:border-primary/50">
-                  <span className="text-sm text-white">
+                  <span className="text-sm text-fg">
                     {a.mode === 'jd' ? 'JD match' : 'General review'} · {titles[a.resume_id] ?? 'resume'}
                     <span className="ml-2 text-xs text-muted">{formatDate(a.created_at)}</span>
                   </span>

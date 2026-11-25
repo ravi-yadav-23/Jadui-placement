@@ -1,60 +1,39 @@
-/** Small shared pieces for the resume screener pages. */
+/** Shared helpers for the resume and interview pages, built on the app's UI kit. */
 import Link from 'next/link'
-import { AlertTriangle, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
+import { Badge, Notice, Spinner as BaseSpinner } from '@/components/ui'
 import { ApiError } from '@/lib/api/client'
-import { cn } from '@/lib/utils'
+import { TONE_TEXT, scoreTone } from '@/lib/utils'
 
-const STATUS_STYLE: Record<string, string> = {
-  ready: 'bg-success/10 text-success border-success/30',
-  done: 'bg-success/10 text-success border-success/30',
-  failed: 'bg-error/10 text-error border-error/30',
-  queued: 'bg-primary/10 text-primary border-primary/30',
-  processing: 'bg-primary/10 text-primary border-primary/30',
-  running: 'bg-primary/10 text-primary border-primary/30',
+const STATUS_TONE: Record<string, 'success' | 'danger' | 'primary'> = {
+  ready: 'success', done: 'success', failed: 'danger', queued: 'primary', processing: 'primary', running: 'primary',
 }
 
 export function StatusBadge({ status }: { status: string }) {
   const working = status === 'queued' || status === 'processing' || status === 'running'
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium',
-      STATUS_STYLE[status] ?? 'border-border text-muted')}>
-      {working && <Loader2 className="h-3 w-3 animate-spin" />}
+    <Badge tone={STATUS_TONE[status] ?? 'neutral'}>
+      {working && <Loader2 className="h-3 w-3 animate-spin" aria-hidden />}
       {working ? 'processing' : status}
-    </span>
+    </Badge>
   )
 }
 
 export function Spinner({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3 py-10 text-muted">
-      <Loader2 className="h-5 w-5 animate-spin text-primary" /> {label}
-    </div>
-  )
+  return <BaseSpinner label={label} />
 }
 
 /** Shows an API error; for 401 it links to sign-in instead. */
 export function ErrorBox({ error }: { error: unknown }) {
   if (error instanceof ApiError && error.status === 401) {
-    return (
-      <div className="card-base text-sm text-muted">
-        Please <Link href="/auth/login" className="text-primary underline">sign in</Link> to continue.
-      </div>
-    )
+    return <Notice tone="neutral">Please <Link href="/auth/login" className="text-primary underline">sign in</Link> to continue.</Notice>
   }
-  const message = error instanceof Error ? error.message : 'Something went wrong.'
-  return (
-    <div className="flex items-start gap-2 rounded-lg border border-error/30 bg-error/10 p-3 text-sm text-error">
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" /> {message}
-    </div>
-  )
+  return <Notice>{error instanceof Error ? error.message : 'Something went wrong.'}</Notice>
 }
 
 export function scoreColor(score: number, max = 100) {
-  const ratio = score / max
-  if (ratio >= 0.75) return 'text-success'
-  if (ratio >= 0.5) return 'text-warning'
-  return 'text-error'
+  return TONE_TEXT[scoreTone(score, max)]
 }
 
 export function formatDate(iso: string) {

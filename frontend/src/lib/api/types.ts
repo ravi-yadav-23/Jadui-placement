@@ -34,3 +34,22 @@ export type TurnOut = Schemas['TurnOut']
 export type TurnEvaluation = Schemas['TurnEvaluation']
 export type AnswerRequest = Schemas['AnswerRequest']
 export type InterviewOverview = Schemas['InterviewOverview']
+
+// Planner (v2)
+export type PlannerProfile = Schemas['PlannerProfile']
+export type ProfileResponse = Schemas['ProfileResponse']
+export type ProfileSuggestions = Schemas['ProfileSuggestions']
+export type PlanPreview = Schemas['PlanPreview']
+export type PlanDetail = Schemas['PlanDetail']
+export type PlanTask = Schemas['TaskOut']
+export type SubjectAllocation = Schemas['SubjectAllocation']
+export type WeekMilestone = Schemas['WeekMilestone']
+export type Feasibility = Schemas['Feasibility']
+export type CheckinRequest = Schemas['CheckinRequest']
+export type PlannerOverview = Schemas['PlannerOverview']
+
+// Dashboard + coach (v2)
+export type DashboardOverview = Schemas['DashboardOverview']
+export type ReadinessPart = Schemas['ReadinessPart']
+export type CoachMessage = Schemas['CoachMessage']
+export type CoachAction = Schemas['CoachAction']

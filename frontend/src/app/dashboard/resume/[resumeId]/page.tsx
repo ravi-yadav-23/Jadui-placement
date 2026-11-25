@@ -17,7 +17,7 @@ export default function ResumePage({ params }: { params: { resumeId: string } })
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <Link href="/dashboard/resume" className="flex items-center gap-1 text-sm text-muted hover:text-white">
+      <Link href="/dashboard/resume" className="flex items-center gap-1 text-sm text-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> All resumes
       </Link>
       {resume.error && <ErrorBox error={resume.error} />}
@@ -26,7 +26,7 @@ export default function ResumePage({ params }: { params: { resumeId: string } })
       {resume.data && (
         <>
           <header className="flex items-center justify-between gap-3">
-            <h1 className="truncate text-2xl font-bold text-white">{resume.data.title}</h1>
+            <h1 className="truncate text-2xl font-bold text-fg">{resume.data.title}</h1>
             <div className="flex items-center gap-3">
               {file.data && (
                 <a href={file.data.url} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm text-primary">

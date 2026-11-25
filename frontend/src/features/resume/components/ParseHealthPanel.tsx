@@ -23,7 +23,7 @@ export default function ParseHealthPanel({ checks, rawText }: { checks: Check[];
   return (
     <section className="card-base space-y-4" data-testid="parse-health">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Parse health</h2>
+        <h2 className="text-lg font-semibold text-fg">Parse health</h2>
         <span className="text-sm text-muted">{passes.length}/{checks.length} checks passed</span>
       </div>
       <p className="text-xs text-muted">
@@ -34,7 +34,7 @@ export default function ParseHealthPanel({ checks, rawText }: { checks: Check[];
       <ul className="space-y-2">
         {problems.map((check) => (
           <li key={check.id} className="rounded-lg border border-border bg-surface/50 p-3">
-            <div className="flex items-center gap-2 text-sm text-white">{ICON[check.status]} {check.message}</div>
+            <div className="flex items-center gap-2 text-sm text-fg">{ICON[check.status]} {check.message}</div>
             {check.fix && <p className="ml-6 mt-1 text-xs text-muted">Fix: {check.fix}</p>}
           </li>
         ))}

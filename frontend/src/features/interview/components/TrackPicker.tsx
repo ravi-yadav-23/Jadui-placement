@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Play } from 'lucide-react'
 
 import type { CreateInterview } from '@/lib/api/types'
@@ -18,8 +18,11 @@ export default function TrackPicker() {
   const resumes = (useResumes().data ?? []).filter((r) => r.status === 'ready')
   const jds = (useJds().data ?? []).filter((j) => j.status === 'ready')
 
-  const [track, setTrack] = useState<TrackKey>('mixed')
-  const [topics, setTopics] = useState<TopicKey[]>(['os', 'dbms', 'cn', 'oop'])
+  const params = useSearchParams()
+  const fromUrl = params.get('track') as TrackKey | null
+  const topicsFromUrl = (params.get('topics')?.split(',') ?? []).filter((t): t is TopicKey => t in TOPICS)
+  const [track, setTrack] = useState<TrackKey>(fromUrl && fromUrl in TRACKS ? fromUrl : 'mixed')
+  const [topics, setTopics] = useState<TopicKey[]>(topicsFromUrl.length ? topicsFromUrl : ['os', 'dbms', 'cn', 'oop'])
   const [difficulty, setDifficulty] = useState<CreateInterview['difficulty']>('any')
   const [count, setCount] = useState(5)
   const [mode, setMode] = useState<'interview' | 'practice'>('interview')
@@ -46,9 +49,9 @@ export default function TrackPicker() {
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(Object.keys(TRACKS) as TrackKey[]).map((key) => (
           <button key={key} onClick={() => setTrack(key)} data-testid={`track-${key}`}
-            className={cn('rounded-xl border p-4 text-left transition',
+            className={cn('rounded-lg border p-4 text-left transition',
               track === key ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50')}>
-            <p className="font-semibold text-white">{TRACKS[key].label}</p>
+            <p className="font-semibold text-fg">{TRACKS[key].label}</p>
             <p className="mt-1 text-xs text-muted">{TRACKS[key].hint}</p>
           </button>
         ))}
@@ -98,9 +101,9 @@ export default function TrackPicker() {
             placeholder="e.g. Backend SDE intern" className="input-base mt-1" />
         </label>
         <label className="text-sm text-muted">
-          Questions: <b className="text-white">{count}</b> <span className="text-xs">(+ up to one follow-up each)</span>
+          Questions: <b className="text-fg">{count}</b> <span className="text-xs">(+ up to one follow-up each)</span>
           <input type="range" min={3} max={8} value={count} onChange={(e) => setCount(Number(e.target.value))}
-            className="mt-2 w-full accent-primary" />
+            className="mt-2 w-full accent-[rgb(var(--primary))]" />
         </label>
       </div>
 
@@ -108,7 +111,7 @@ export default function TrackPicker() {
         <div className="flex rounded-lg border border-border p-1 text-sm">
           {(['interview', 'practice'] as const).map((m) => (
             <button key={m} onClick={() => setMode(m)}
-              className={cn('rounded-md px-3 py-1', mode === m ? 'bg-primary text-white' : 'text-muted')}>
+              className={cn('rounded-md px-3 py-1', mode === m ? 'bg-primary text-primary-fg' : 'text-muted')}>
               {m === 'interview' ? 'Interview mode' : 'Practice mode'}
             </button>
           ))}

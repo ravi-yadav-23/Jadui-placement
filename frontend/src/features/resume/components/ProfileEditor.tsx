@@ -48,7 +48,7 @@ export default function ProfileEditor({ resumeId, profile }: { resumeId: string;
         <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">{label}</h3>
         {(profile[key] ?? []).map((entry, i) => (
           <div key={entry.id} className="space-y-1">
-            <p className="text-sm font-medium text-white">
+            <p className="text-sm font-medium text-fg">
               {entry.title}{entry.org ? ` · ${entry.org}` : ''}
               {(entry.start || entry.end) && <span className="text-muted"> ({entry.start} – {entry.end})</span>}
             </p>
@@ -66,7 +66,7 @@ export default function ProfileEditor({ resumeId, profile }: { resumeId: string;
 
   return (
     <details className="card-base" open={ungrounded > 0}>
-      <summary className="cursor-pointer text-lg font-semibold text-white">
+      <summary className="cursor-pointer text-lg font-semibold text-fg">
         Check what we extracted {profile.education?.length ? '' : '(no education found)'}
       </summary>
       <div className="mt-4 space-y-5">

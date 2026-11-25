@@ -7,7 +7,7 @@ const VAGUE = 'I am not completely sure about this one, I would need to look it 
 test('fundamentals interview: answer -> follow-up -> next question -> end -> report', async ({ page }) => {
   page.on('dialog', (dialog) => dialog.accept())   // "End the interview now?"
   await page.goto('/dashboard/interview')
-  await expect(page.getByRole('heading', { name: 'Mock Interviews' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Mock interviews' })).toBeVisible()
 
   await page.getByTestId('track-fundamentals').click()
   await page.getByRole('button', { name: 'Practice mode' }).click()

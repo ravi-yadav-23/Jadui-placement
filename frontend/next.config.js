@@ -1,20 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  images: {
-    domains: ['avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
-  },
-  env: {
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000',
-  },
-  async rewrites() {
+  // Old routes from the previous version of the app.
+  async redirects() {
     return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/api/:path*`,
-      },
+      { source: '/dashboard/tasks', destination: '/dashboard/planner', permanent: true },
+      { source: '/dashboard/progress', destination: '/dashboard/planner?tab=progress', permanent: true },
+      { source: '/dashboard/chat', destination: '/dashboard/coach', permanent: true },
+      { source: '/admin/:path*', destination: '/dashboard', permanent: true },
     ]
   },
 }

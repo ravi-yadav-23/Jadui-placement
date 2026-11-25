@@ -25,7 +25,7 @@ export default function VersionCompare({ current }: { current: AnalysisDetail })
 
   return (
     <section className="card-base space-y-3" data-testid="version-compare">
-      <h2 className="text-lg font-semibold text-white">Compare with another version</h2>
+      <h2 className="text-lg font-semibold text-fg">Compare with another version</h2>
       <select className="input-base" value={otherId} onChange={(e) => setOtherId(e.target.value)}>
         <option value="">Choose an earlier analysis…</option>
         {candidates.map((a) => (
@@ -47,9 +47,9 @@ export default function VersionCompare({ current }: { current: AnalysisDetail })
                 const delta = Math.round((s.score - was) * 10) / 10
                 return (
                   <tr key={s.key} className={cn('border-t border-border', s.key === 'overall' ? 'font-semibold' : '')}>
-                    <td className="py-1 text-white">{s.label}</td>
+                    <td className="py-1 text-fg">{s.label}</td>
                     <td className="text-muted">{was}</td>
-                    <td className="text-white">{s.score}</td>
+                    <td className="text-fg">{s.score}</td>
                     <td className={delta > 0 ? 'text-success' : delta < 0 ? 'text-error' : 'text-muted'}>
                       {delta > 0 ? `+${delta}` : delta}
                     </td>

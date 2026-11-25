@@ -58,7 +58,7 @@ export default function AnswerBox({ question, turnKey, busy, onSubmit }: {
   return (
     <section className="card-base space-y-4">
       <div className="flex items-start justify-between gap-4">
-        <p className="text-lg font-medium leading-relaxed text-white" data-testid="question">{question}</p>
+        <p className="text-lg font-medium leading-relaxed text-fg" data-testid="question">{question}</p>
         <button title="Read questions aloud" onClick={() => setReadAloud((v) => !v)}
           className={cn('shrink-0 rounded-lg border p-2', readAloud ? 'border-primary text-primary' : 'border-border text-muted')}>
           <Volume2 className="h-4 w-4" />
@@ -72,7 +72,7 @@ export default function AnswerBox({ question, turnKey, busy, onSubmit }: {
         rows={7}
         disabled={busy}
         placeholder="Answer as you would in the interview. Explain your reasoning, give an example."
-        className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-white placeholder:text-muted focus:border-primary focus:outline-none"
+        className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-fg placeholder:text-muted focus:border-primary focus:outline-none"
         data-testid="answer-box"
       />
 
@@ -83,7 +83,7 @@ export default function AnswerBox({ question, turnKey, busy, onSubmit }: {
           {speech.supported && (
             <button onClick={toggleMic} disabled={busy}
               className={cn('flex items-center gap-1 rounded-lg border px-3 py-1.5',
-                speech.listening ? 'border-error text-error' : 'border-border text-white hover:border-primary')}>
+                speech.listening ? 'border-error text-error' : 'border-border text-fg hover:border-primary')}>
               {speech.listening ? <><MicOff className="h-4 w-4" /> Stop</> : <><Mic className="h-4 w-4" /> Speak</>}
             </button>
           )}

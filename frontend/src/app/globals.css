@@ -1,183 +1,87 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Variables ────────────────────────────────────────────────────────── */
+/*
+ * Design tokens (RGB triplets so Tailwind can add opacity: bg-primary/10).
+ * Neutral zinc greys + one accent ("jade"). Text colours pass WCAG AA (4.5:1) on their backgrounds,
+ * borders/focus rings 3:1. No gradients, glows or glass: depth comes from borders and spacing.
+ */
 :root {
-  --background:  #0a0a14;
-  --surface:     #111120;
-  --card:        #16162a;
-  --border:      rgba(99, 102, 241, 0.18);
-  --primary:     #6366f1;
-  --secondary:   #8b5cf6;
-  --accent:      #06b6d4;
-  --text:        #f8fafc;
-  --text-muted:  #94a3b8;
-  --radius:      0.75rem;
+  --bg: 250 250 250;
+  --surface: 255 255 255;
+  --subtle: 244 244 245;
+  --border: 228 228 231;
+  --border-strong: 140 140 148;
+  --fg: 24 24 27;
+  --fg-muted: 82 82 91;
+  --fg-subtle: 113 113 122;
+  --primary: 15 118 110;
+  --primary-hover: 17 94 89;
+  --primary-fg: 255 255 255;
+  --primary-soft: 240 253 250;
+  --primary-soft-fg: 17 94 89;
+  --success: 21 128 61;
+  --success-soft: 240 253 244;
+  --warning: 180 83 9;
+  --warning-soft: 255 251 235;
+  --danger: 185 28 28;
+  --danger-soft: 254 242 242;
+  color-scheme: light;
 }
 
-/* ─── Base Reset ────────────────────────────────────────────────────────────── */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.dark {
+  --bg: 9 9 11;
+  --surface: 19 19 22;
+  --subtle: 32 32 36;
+  --border: 39 39 42;
+  --border-strong: 100 100 110;
+  --fg: 244 244 245;
+  --fg-muted: 161 161 170;
+  --fg-subtle: 139 139 148;
+  --primary: 45 212 191;
+  --primary-hover: 94 234 212;
+  --primary-fg: 4 47 46;
+  --primary-soft: 17 43 41;
+  --primary-soft-fg: 153 246 228;
+  --success: 74 222 128;
+  --success-soft: 17 38 25;
+  --warning: 251 191 36;
+  --warning-soft: 45 33 10;
+  --danger: 248 113 113;
+  --danger-soft: 48 18 18;
+  color-scheme: dark;
 }
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-bg text-fg text-base antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  h1, h2, h3, h4 { @apply font-semibold tracking-tight text-fg; }
+  ::selection { @apply bg-primary/20; }
+  :focus-visible { @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg; }
+  input, textarea, select, button { font: inherit; }
 }
 
-body {
-  background-color: var(--background);
-  color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* ─── Custom Scrollbar ──────────────────────────────────────────────────────── */
-::-webkit-scrollbar         { width: 6px; height: 6px; }
-::-webkit-scrollbar-track   { background: var(--surface); }
-::-webkit-scrollbar-thumb   { background: rgba(99,102,241,0.4); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.7); }
-
-/* ─── Selection ─────────────────────────────────────────────────────────────── */
-::selection { background: rgba(99,102,241,0.3); color: #fff; }
-
-/* ─── Gradient Text Utility ─────────────────────────────────────────────────── */
 @layer utilities {
-  .gradient-text {
-    background: linear-gradient(135deg, #fff 0%, #a5b4fc 40%, #8b5cf6 80%, #06b6d4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-text-primary {
-    background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .glass {
-    background: rgba(22, 22, 42, 0.4);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  }
-
-  .glass-light {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .text-gradient-animated {
-    background: linear-gradient(270deg, #6366f1, #8b5cf6, #06b6d4, #6366f1);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradient-shift 4s ease infinite;
-  }
-
-  @keyframes gradient-shift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  .chart-glow {
-    position: relative;
-    overflow: hidden;
-  }
-  .chart-glow::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
+  .tabular { font-variant-numeric: tabular-nums; }
 }
 
-/* ─── Card Base ─────────────────────────────────────────────────────────────── */
+/* Compatibility classes used by the resume/interview components: same names, new look. */
 @layer components {
-  .card-base {
-    @apply bg-card border border-border rounded-xl p-6 transition-all duration-300;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.08);
-  }
-  .card-base:hover {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.22);
-    border-color: rgba(99,102,241,0.3);
-  }
-
+  .card-base { @apply rounded-lg border border-border bg-surface p-5 shadow-xs; }
   .btn-primary {
-    @apply bg-primary hover:bg-primary-hover text-white font-semibold px-6 py-3 rounded-lg
-           transition-all duration-200 inline-flex items-center gap-2;
-    box-shadow: 0 0 20px rgba(99,102,241,0.3);
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium
+           text-primary-fg transition-colors hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-50;
   }
-  .btn-primary:hover {
-    box-shadow: 0 0 32px rgba(99,102,241,0.5);
-    transform: translateY(-1px);
-  }
-
   .btn-outline {
-    @apply border border-border bg-transparent text-white font-semibold px-6 py-3 rounded-lg
-           transition-all duration-200 inline-flex items-center gap-2;
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-surface px-4
+           text-sm font-medium text-fg transition-colors hover:bg-subtle disabled:pointer-events-none disabled:opacity-50;
   }
-  .btn-outline:hover {
-    @apply border-primary bg-primary/10;
-    transform: translateY(-1px);
-  }
-
   .input-base {
-    @apply w-full bg-surface border border-border rounded-lg px-4 py-3 text-white
-           placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1
-           focus:ring-primary/40 transition-all duration-200;
+    @apply h-9 w-full rounded-md border border-border-strong bg-surface px-3 text-sm text-fg
+           placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25;
   }
-
-  .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted font-medium
-           transition-all duration-200 cursor-pointer text-sm;
-  }
-  .sidebar-link:hover {
-    @apply bg-primary/10 text-white;
-  }
-  .sidebar-link.active {
-    @apply bg-primary/15 text-primary border-r-2 border-primary;
-  }
-}
-
-/* ─── Typing Cursor Animation ───────────────────────────────────────────────── */
-.typing-cursor::after {
-  content: '|';
-  animation: blink 1s step-end infinite;
-  color: var(--primary);
-}
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-/* ─── Progress Bar ──────────────────────────────────────────────────────────── */
-.progress-bar {
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  border-radius: 99px;
-  transition: width 1s ease;
-}
-
-/* ─── Orb Background ────────────────────────────────────────────────────────── */
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
 }

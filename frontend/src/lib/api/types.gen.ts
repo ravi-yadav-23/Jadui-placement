@@ -289,10 +289,263 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/planner/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Profile
+         * @description Saved answers (if any) plus suggestions from your resume, gaps and mock interviews.
+         */
+        get: operations["get_profile_api_v2_planner_profile_get"];
+        /** Save Profile */
+        put: operations["save_profile_api_v2_planner_profile_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview
+         * @description What the plan would look like (fits or not, subject mix, phases) without saving anything.
+         */
+        post: operations["preview_api_v2_plans_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Plan */
+        post: operations["create_plan_api_v2_plans_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current */
+        get: operations["current_api_v2_plans_current_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans/current/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tasks */
+        get: operations["tasks_api_v2_plans_current_tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans/current/replan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Replan */
+        post: operations["replan_api_v2_plans_current_replan_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/plans/current/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Checkin */
+        post: operations["checkin_api_v2_plans_current_checkins_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/tasks/{task_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Task */
+        patch: operations["update_task_api_v2_tasks__task_id__patch"];
+        trace?: never;
+    };
+    "/api/v2/tasks/{task_id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move Task */
+        post: operations["move_task_api_v2_tasks__task_id__move_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/planner/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Planner Summary
+         * @description Today's tasks, this week's progress, streak and next milestone, for the dashboard and coach.
+         */
+        get: operations["planner_summary_api_v2_planner_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dashboard
+         * @description Readiness (with its formula), setup checklist, next actions, today's tasks and recent activity.
+         */
+        get: operations["dashboard_api_v2_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete My Data
+         * @description Delete everything you created: resumes (and files), JDs, analyses, interviews, plans, coach messages.
+         */
+        delete: operations["delete_my_data_api_v2_me_data_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/coach/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Messages */
+        get: operations["messages_api_v2_coach_messages_get"];
+        put?: never;
+        /**
+         * Send
+         * @description Ask the coach. Returns its reply, with 0-3 proposed actions (buttons) that only run when clicked.
+         */
+        post: operations["send_api_v2_coach_messages_post"];
+        /** Clear */
+        delete: operations["clear_api_v2_coach_messages_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActivityItem */
+        ActivityItem: {
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** At */
+            at: string;
+            /** Href */
+            href?: string | null;
+        };
         /** AnalysisDetail */
         AnalysisDetail: {
             /** Id */
@@ -421,6 +674,21 @@ export interface components {
             /** Guard Notes */
             guard_notes?: string[];
         };
+        /** BusyRange */
+        BusyRange: {
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
+            /**
+             * End
+             * Format: date
+             */
+            end: string;
+            /** Label */
+            label?: string | null;
+        };
         /** Check */
         Check: {
             /** Id */
@@ -434,6 +702,75 @@ export interface components {
             message: string;
             /** Fix */
             fix?: string | null;
+        };
+        /** CheckinRequest */
+        CheckinRequest: {
+            /**
+             * Difficulty
+             * @enum {string}
+             */
+            difficulty: "too_easy" | "right" | "too_hard";
+            /** Note */
+            note?: string | null;
+            /** Busy */
+            busy?: components["schemas"]["BusyRange"][];
+        };
+        /**
+         * CoachAction
+         * @description Something the coach proposes. It runs only when the student clicks the button (human in the loop).
+         */
+        CoachAction: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "open_page" | "start_interview" | "mark_task_done" | "move_task" | "replan";
+            /**
+             * Label
+             * @description Button text, at most 6 words
+             */
+            label: string;
+            /**
+             * Page
+             * @description open_page only
+             */
+            page?: ("today" | "planner" | "roadmap" | "interview" | "resume" | "settings") | null;
+            /**
+             * Task Id
+             * @description mark_task_done / move_task: an id from the context's tasks
+             */
+            task_id?: string | null;
+            /**
+             * Date
+             * @description move_task only: the new date
+             */
+            date?: string | null;
+            /**
+             * Track
+             * @description start_interview only
+             */
+            track?: ("mixed" | "resume" | "jd" | "fundamentals" | "behavioral") | null;
+            /**
+             * Topics
+             * @description start_interview with fundamentals
+             */
+            topics?: ("os" | "dbms" | "cn" | "oop")[];
+        };
+        /** CoachMessage */
+        CoachMessage: {
+            /** Id */
+            id: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "assistant";
+            /** Content */
+            content: string;
+            /** Actions */
+            actions?: components["schemas"]["CoachAction"][];
+            /** Created At */
+            created_at: string;
         };
         /** Contacts */
         Contacts: {
@@ -514,6 +851,23 @@ export interface components {
             title?: string | null;
             /** Company */
             company?: string | null;
+        };
+        /** DashboardOverview */
+        DashboardOverview: {
+            readiness: components["schemas"]["Readiness"];
+            /** Setup */
+            setup: components["schemas"]["SetupStep"][];
+            /** Next Actions */
+            next_actions: components["schemas"]["NextAction"][];
+            today: components["schemas"]["PlannerOverview"];
+            /** Interview Trend */
+            interview_trend: number[];
+            /** Latest Resume Score */
+            latest_resume_score: number | null;
+            /** Open Gaps */
+            open_gaps: components["schemas"]["GapItem"][];
+            /** Activity */
+            activity: components["schemas"]["ActivityItem"][];
         };
         /** Delivery */
         Delivery: {
@@ -608,6 +962,26 @@ export interface components {
             /** Text */
             text: string;
         };
+        /** Feasibility */
+        Feasibility: {
+            /** Fits */
+            fits: boolean;
+            /** Must Covered */
+            must_covered: boolean;
+            /** Demand Minutes */
+            demand_minutes: number;
+            /** Capacity Minutes */
+            capacity_minutes: number;
+            /** Cut */
+            cut?: string[];
+            /** Suggestion */
+            suggestion?: string | null;
+            /**
+             * On Track
+             * @default true
+             */
+            on_track: boolean;
+        };
         /** FileUrl */
         FileUrl: {
             /** Url */
@@ -619,6 +993,13 @@ export interface components {
             code: string;
             /** Message */
             message: string;
+        };
+        /** GapItem */
+        GapItem: {
+            /** Skill */
+            skill: string;
+            /** Source */
+            source: string;
         };
         /** GeneralReview */
         GeneralReview: {
@@ -893,6 +1274,275 @@ export interface components {
             /** Message */
             message: string;
         };
+        /** NextAction */
+        NextAction: {
+            /** Label */
+            label: string;
+            /** Href */
+            href: string;
+            /** Reason */
+            reason: string;
+        };
+        /** Phase */
+        Phase: {
+            /** Name */
+            name: string;
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
+            /**
+             * End
+             * Format: date
+             */
+            end: string;
+        };
+        /** PhaseText */
+        PhaseText: {
+            /** Name */
+            name: string;
+            /** Text */
+            text: string;
+        };
+        /** PlanDetail */
+        PlanDetail: {
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Weeks */
+            weeks: number;
+            /** Hours Per Week */
+            hours_per_week: number;
+            /** Allocation */
+            allocation: components["schemas"]["SubjectAllocation"][];
+            feasibility: components["schemas"]["Feasibility"];
+            roadmap: components["schemas"]["Roadmap"];
+            /** Id */
+            id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "archived";
+            /** Created At */
+            created_at: string;
+            /** Capacity Factor */
+            capacity_factor: number;
+            summary?: components["schemas"]["RoadmapSummary"] | null;
+            /** Projects */
+            projects?: components["schemas"]["ProjectIdea"][] | null;
+            /** Topics */
+            topics: components["schemas"]["TopicOut"][];
+            /** Study Time */
+            study_time: string;
+            /**
+             * Checkin Due
+             * @default false
+             */
+            checkin_due: boolean;
+        };
+        /** PlanPreview */
+        PlanPreview: {
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
+            /**
+             * Target Date
+             * Format: date
+             */
+            target_date: string;
+            /** Weeks */
+            weeks: number;
+            /** Hours Per Week */
+            hours_per_week: number;
+            /** Allocation */
+            allocation: components["schemas"]["SubjectAllocation"][];
+            feasibility: components["schemas"]["Feasibility"];
+            roadmap: components["schemas"]["Roadmap"];
+        };
+        /**
+         * PlannerOverview
+         * @description Compact summary for the dashboard and coach chat.
+         */
+        PlannerOverview: {
+            /** Has Plan */
+            has_plan: boolean;
+            /** Target Date */
+            target_date?: string | null;
+            /** Today */
+            today?: components["schemas"]["TaskOut"][];
+            /**
+             * Week Planned Minutes
+             * @default 0
+             */
+            week_planned_minutes: number;
+            /**
+             * Week Done Minutes
+             * @default 0
+             */
+            week_done_minutes: number;
+            /**
+             * Streak Days
+             * @default 0
+             */
+            streak_days: number;
+            /** On Track */
+            on_track?: boolean | null;
+            /** Next Milestone */
+            next_milestone?: string | null;
+        };
+        /**
+         * PlannerProfile
+         * @description The answers to the five-step questionnaire. Conditional fields are checked in `_conditional`.
+         */
+        PlannerProfile: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "student" | "graduate" | "professional";
+            /** Degree */
+            degree?: ("btech" | "bca" | "mca" | "mtech" | "bsc" | "other") | null;
+            /** Year */
+            year?: number | null;
+            /** Graduation */
+            graduation?: string | null;
+            /** Goal */
+            goal?: ("internship" | "placement") | null;
+            /** Experience Years */
+            experience_years?: number | null;
+            /** Current Role */
+            current_role?: string | null;
+            /** Stack */
+            stack?: string[];
+            /**
+             * Target Role
+             * @default sde
+             * @enum {string}
+             */
+            target_role: "sde" | "backend" | "frontend" | "fullstack" | "data";
+            /**
+             * Target Level
+             * @default entry
+             * @enum {string}
+             */
+            target_level: "entry" | "mid" | "senior";
+            /** Company Types */
+            company_types: ("service" | "product" | "top_product")[];
+            /** Target Date */
+            target_date?: string | null;
+            /** Weekday Hours */
+            weekday_hours: number;
+            /** Weekend Hours */
+            weekend_hours: number;
+            /**
+             * Rest Day
+             * @default none
+             * @enum {string}
+             */
+            rest_day: "none" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+            /** Busy */
+            busy?: components["schemas"]["BusyRange"][];
+            /**
+             * Study Time
+             * @default evening
+             * @enum {string}
+             */
+            study_time: "morning" | "afternoon" | "evening" | "night";
+            /**
+             * Language
+             * @default python
+             * @enum {string}
+             */
+            language: "cpp" | "java" | "python" | "javascript" | "go";
+            /**
+             * Language Comfort
+             * @default 2
+             */
+            language_comfort: number;
+            /** Ratings */
+            ratings?: {
+                [key: string]: number;
+            };
+            /**
+             * Problems Solved
+             * @default 0
+             * @enum {string}
+             */
+            problems_solved: "0" | "lt50" | "50_150" | "150_300" | "300_plus";
+            /**
+             * Projects
+             * @default 0
+             */
+            projects: number;
+            /**
+             * Projects Deployed
+             * @default false
+             */
+            projects_deployed: boolean;
+            /** Include Gaps */
+            include_gaps?: string[];
+        };
+        /** ProfileResponse */
+        ProfileResponse: {
+            profile: components["schemas"]["PlannerProfile"] | null;
+            suggestions: components["schemas"]["ProfileSuggestions"];
+        };
+        /**
+         * ProfileSuggestions
+         * @description Pre-filled from the other pillars, for the user to confirm.
+         */
+        ProfileSuggestions: {
+            /** Resume Title */
+            resume_title?: string | null;
+            /** Projects */
+            projects?: number | null;
+            /** Stack */
+            stack?: string[];
+            /** Gaps */
+            gaps?: string[];
+            /** Interview Topics */
+            interview_topics?: {
+                [key: string]: number;
+            };
+            /** Ratings */
+            ratings?: {
+                [key: string]: number;
+            };
+        };
+        /** ProjectIdea */
+        ProjectIdea: {
+            /**
+             * Title
+             * @description Short project name
+             */
+            title: string;
+            /**
+             * Why
+             * @description One sentence: why this project fits the target role
+             */
+            why: string;
+            /**
+             * Tech
+             * @description 3-6 technologies
+             */
+            tech: string[];
+            /**
+             * Milestones
+             * @description 4-6 milestones, each a short action
+             */
+            milestones: string[];
+        };
         /** QuestionReport */
         QuestionReport: {
             /** Question Id */
@@ -917,6 +1567,28 @@ export interface components {
             covered?: components["schemas"]["CoveredPoint"][];
             /** Missed */
             missed?: string[];
+        };
+        /** Readiness */
+        Readiness: {
+            /** Score */
+            score: number | null;
+            /** Parts */
+            parts: components["schemas"]["ReadinessPart"][];
+            /** Formula */
+            formula: string;
+        };
+        /** ReadinessPart */
+        ReadinessPart: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: number | null;
+            /** Weight */
+            weight: number;
+            /** Detail */
+            detail: string;
         };
         /** RecentAnalysis */
         RecentAnalysis: {
@@ -1093,6 +1765,42 @@ export interface components {
             /** Created At */
             created_at: string;
         };
+        /** Roadmap */
+        Roadmap: {
+            /** Phases */
+            phases: components["schemas"]["Phase"][];
+            /** Weeks */
+            weeks: components["schemas"]["WeekMilestone"][];
+        };
+        /** RoadmapSummary */
+        RoadmapSummary: {
+            /** Overview */
+            overview: string;
+            /** Phases */
+            phases?: components["schemas"]["PhaseText"][];
+            /**
+             * Source
+             * @default template
+             * @enum {string}
+             */
+            source: "ai" | "template";
+        };
+        /** SendMessage */
+        SendMessage: {
+            /** Content */
+            content: string;
+        };
+        /** SetupStep */
+        SetupStep: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Done */
+            done: boolean;
+            /** Href */
+            href: string;
+        };
         /** SubScore */
         SubScore: {
             /** Key */
@@ -1106,6 +1814,22 @@ export interface components {
             /** Explanation */
             explanation: string;
         };
+        /** SubjectAllocation */
+        SubjectAllocation: {
+            /** Subject */
+            subject: string;
+            /** Label */
+            label: string;
+            /** Weight */
+            weight: number;
+            /** Planned Minutes */
+            planned_minutes: number;
+            /**
+             * Done Minutes
+             * @default 0
+             */
+            done_minutes: number;
+        };
         /** TailoredBullet */
         TailoredBullet: {
             /** Bullet Id */
@@ -1118,6 +1842,75 @@ export interface components {
             keywords?: string[];
             /** Guard Notes */
             guard_notes?: string[];
+        };
+        /** TaskMove */
+        TaskMove: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+        };
+        /** TaskOut */
+        TaskOut: {
+            /** Id */
+            id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Position */
+            position: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "learn" | "practice" | "review" | "project" | "mock" | "checkpoint";
+            /** Subject */
+            subject: string;
+            /** Topic Id */
+            topic_id?: string | null;
+            /** Title */
+            title: string;
+            /** Minutes */
+            minutes: number;
+            /** Details */
+            details?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "todo" | "done" | "skipped";
+        };
+        /** TaskUpdate */
+        TaskUpdate: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "todo" | "done" | "skipped";
+        };
+        /** TopicOut */
+        TopicOut: {
+            /** Topic Id */
+            topic_id: string;
+            /** Subject */
+            subject: string;
+            /** Title */
+            title: string;
+            /** Priority */
+            priority: string;
+            /** Source */
+            source: string;
+            /** Planned Minutes */
+            planned_minutes: number;
+            /** Done Minutes */
+            done_minutes: number;
+            /** Status */
+            status: string;
         };
         /** TurnEvaluation */
         TurnEvaluation: {
@@ -1186,6 +1979,24 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** WeekMilestone */
+        WeekMilestone: {
+            /**
+             * Week Start
+             * Format: date
+             */
+            week_start: string;
+            /** Phase */
+            phase: string;
+            /** Minutes */
+            minutes: number;
+            /** Subjects */
+            subjects: {
+                [key: string]: number;
+            };
+            /** Finishes */
+            finishes: string[];
         };
     };
     responses: never;
@@ -1863,6 +2674,429 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["InterviewOverview"];
                 };
+            };
+        };
+    };
+    get_profile_api_v2_planner_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
+            };
+        };
+    };
+    save_profile_api_v2_planner_profile_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlannerProfile"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlannerProfile"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_api_v2_plans_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlannerProfile"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanPreview"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_plan_api_v2_plans_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlannerProfile"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    current_api_v2_plans_current_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanDetail"];
+                };
+            };
+        };
+    };
+    tasks_api_v2_plans_current_tasks_get: {
+        parameters: {
+            query?: {
+                start?: string | null;
+                end?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    replan_api_v2_plans_current_replan_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanDetail"];
+                };
+            };
+        };
+    };
+    checkin_api_v2_plans_current_checkins_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_task_api_v2_tasks__task_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    move_task_api_v2_tasks__task_id__move_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskMove"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    planner_summary_api_v2_planner_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlannerOverview"];
+                };
+            };
+        };
+    };
+    dashboard_api_v2_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardOverview"];
+                };
+            };
+        };
+    };
+    delete_my_data_api_v2_me_data_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    messages_api_v2_coach_messages_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachMessage"][];
+                };
+            };
+        };
+    };
+    send_api_v2_coach_messages_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessage"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachMessage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    clear_api_v2_coach_messages_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

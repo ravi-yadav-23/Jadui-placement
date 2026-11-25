@@ -23,7 +23,7 @@ export default function InterviewSessionPage({ params }: { params: { interviewId
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/dashboard/interview" className="flex items-center gap-1 text-sm text-muted hover:text-white">
+      <Link href="/dashboard/interview" className="flex items-center gap-1 text-sm text-muted hover:text-fg">
         <ArrowLeft className="h-4 w-4" /> All interviews
       </Link>
 
@@ -42,7 +42,7 @@ export default function InterviewSessionPage({ params }: { params: { interviewId
           <>
             <header className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-white">{TRACKS[data.track].label}</span>
+                <span className="text-fg">{TRACKS[data.track].label}</span>
                 <span className="text-muted" data-testid="progress">Question {data.question_number} of {data.question_count}</span>
               </div>
               <div className="h-1.5 rounded-full bg-surface">
@@ -67,8 +67,8 @@ export default function InterviewSessionPage({ params }: { params: { interviewId
 
             {current.status === 'evaluating' && (
               <section className="card-base space-y-3">
-                <p className="font-medium text-white">{current.question}</p>
-                <p className="whitespace-pre-wrap text-sm text-white/70">{current.answer}</p>
+                <p className="font-medium text-fg">{current.question}</p>
+                <p className="whitespace-pre-wrap text-sm text-fg/70">{current.answer}</p>
                 <Spinner label="The interviewer is reviewing your answer…" />
               </section>
             )}
@@ -86,7 +86,7 @@ export default function InterviewSessionPage({ params }: { params: { interviewId
 
             <div className="flex justify-between">
               <button onClick={() => skip.mutate(undefined)} disabled={busy || current.status !== 'asked'}
-                className="flex items-center gap-1 text-sm text-muted hover:text-white disabled:opacity-40">
+                className="flex items-center gap-1 text-sm text-muted hover:text-fg disabled:opacity-40">
                 <SkipForward className="h-4 w-4" /> Skip question
               </button>
               <button onClick={() => confirm('End the interview now? Unanswered questions are left out of the report.')
@@ -103,8 +103,8 @@ export default function InterviewSessionPage({ params }: { params: { interviewId
                 <ul className="mt-3 space-y-3">
                   {earlier.map((t) => (
                     <li key={t.id} className="border-l-2 border-border pl-3">
-                      <p className="text-white">{t.kind === 'follow_up' ? 'Follow-up: ' : ''}{t.question}</p>
-                      <p className="mt-1 whitespace-pre-wrap text-white/60">{t.status === 'skipped' ? '(skipped)' : t.answer}</p>
+                      <p className="text-fg">{t.kind === 'follow_up' ? 'Follow-up: ' : ''}{t.question}</p>
+                      <p className="mt-1 whitespace-pre-wrap text-fg/60">{t.status === 'skipped' ? '(skipped)' : t.answer}</p>
                     </li>
                   ))}
                 </ul>

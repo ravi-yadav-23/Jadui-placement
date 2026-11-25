@@ -42,7 +42,7 @@ export default function UploadDropzone() {
       <div
         {...getRootProps()}
         data-testid="upload-dropzone"
-        className={cn('cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors',
+        className={cn('cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors',
           isDragActive ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50')}
       >
         <input {...getInputProps()} />
@@ -51,7 +51,7 @@ export default function UploadDropzone() {
         ) : (
           <Upload className="mx-auto h-8 w-8 text-primary" />
         )}
-        <p className="mt-3 font-medium text-white">{upload.isPending ? 'Uploading…' : 'Drop your resume here'}</p>
+        <p className="mt-3 font-medium text-fg">{upload.isPending ? 'Uploading…' : 'Drop your resume here'}</p>
         <p className="mt-1 text-sm text-muted">PDF or DOCX · max 5 MB · max 3 pages</p>
       </div>
       {fileRejections.length > 0 && <ErrorBox error={new Error('Only PDF or DOCX files up to 5 MB.')} />}

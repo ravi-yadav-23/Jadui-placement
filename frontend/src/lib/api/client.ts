@@ -5,7 +5,7 @@
  * - Attaches the Supabase access token as `Authorization: Bearer ...`.
  * - Turns the backend's error shape `{ error: { code, message } }` into an ApiError.
  */
-import { supabase } from '@/lib/supabase'
+import { E2E_TOKEN, supabase } from '@/lib/supabase'
 
 const BASE_URL = (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000').replace(/\/$/, '')
 
@@ -16,10 +16,7 @@ export class ApiError extends Error {
 }
 
 async function accessToken(): Promise<string | null> {
-  // The Playwright E2E run has no Supabase Auth; it builds the app with a token signed by the
-  // test backend's secret. Never set this variable for a real deployment.
-  const e2eToken = process.env.NEXT_PUBLIC_E2E_ACCESS_TOKEN
-  if (e2eToken) return e2eToken
+  if (E2E_TOKEN) return E2E_TOKEN   // Playwright run only (see lib/supabase.ts)
   if (!supabase) return null
   const { data } = await supabase.auth.getSession()
   return data.session?.access_token ?? null

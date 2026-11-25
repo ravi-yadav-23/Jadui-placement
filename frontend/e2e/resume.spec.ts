@@ -7,7 +7,7 @@ const fixtures = path.join(__dirname, 'fixtures')
 
 test('upload -> parse health -> general review -> JD match', async ({ page }) => {
   await page.goto('/dashboard/resume')
-  await expect(page.getByRole('heading', { name: 'Resume Screener' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resume', exact: true })).toBeVisible()
 
   // Upload: the dropzone wraps a hidden <input type=file>.
   await page.locator('[data-testid=upload-dropzone] input[type=file]')

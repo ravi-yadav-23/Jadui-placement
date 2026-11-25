@@ -36,7 +36,7 @@ export function useSpeechInput(onText: (text: string) => void) {
   const startedAt = useRef<number | null>(null)
   const spokenMs = useRef(0) // total time the mic was on, for words-per-minute
 
-  useEffect(() => setSupported(recognitionClass() !== null), [])
+  useEffect(() => { setSupported(recognitionClass() !== null) }, [])
   useEffect(() => () => recognition.current?.stop(), [])
 
   const start = useCallback((existingText: string) => {
